@@ -1,4 +1,5 @@
-# Project structure: 
+### Project Structure
+[Dependency Graph & Planning](https://drive.google.com/drive/folders/1grtk0Vnl6vUNuBGqPvI5pR31Esl_z2pb?usp=sharing)
 
     /arm11_04
     |
@@ -16,7 +17,11 @@
     |
     |____/src        (every source file, .c and .h)
     |    |
-    |    |__/modules (modules that need to be separate)
+    |    |__/module1 (hypothetical module 1)
+    |    |
+    |    |__/module2 (hypothetical module 2)
+    |    |
+    |    |__/test    (for writing our own unit tests independent of provided tests)
     |
     |
     |____/obj        (where the generated .o files will be)

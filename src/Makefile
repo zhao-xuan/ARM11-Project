@@ -12,6 +12,7 @@ BUILD=$(BIN_DIR)/assemble $(BIN_DIR)/emulate
 
 all: $(BUILD)
 
+# NOTE: please leave the following explicit, make gets cunfused easily when folders are involved. 
 $(BIN_DIR)/assemble: $(OBJ_DIR)/assemble.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
