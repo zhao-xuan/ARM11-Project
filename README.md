@@ -9,19 +9,16 @@
     |____/doc        (project documentation)
     |
     |
-    |____/lab        (place for individual experimentation)
-    |
-    |
     |____/programs   (Provided programs, DO NOT CONFUSE WITH /bin)
     |
     |
     |____/src        (every source file, .c and .h)
     |    |
-    |    |__/module1 (hypothetical module 1)
+    |    |__/emulate  (src files for part 1, including submodules and tests)
     |    |
-    |    |__/module2 (hypothetical module 2)
+    |    |__/assemble (src files for part 2, including submodules and tests)
     |    |
-    |    |__/test    (for writing our own unit tests independent of provided tests)
+    |    |__/utils    (utilities used by both part 1 and 2)
     |
     |
     |____/obj        (where the generated .o files will be)
