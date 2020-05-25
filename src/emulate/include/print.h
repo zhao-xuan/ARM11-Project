@@ -1,12 +1,12 @@
 /* 
-	1. Output the final state of the machine. 
+  Output the final state of the machine. 
  */
 
 #ifndef PRINT_H
 #define PRINT_H
 
 #include "state.h"
-#include "../utils/utils.h"
+#include "../../utils/utils.h"
 #include "global.h"
 
 

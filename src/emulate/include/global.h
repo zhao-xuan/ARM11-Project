@@ -1,5 +1,5 @@
 /* 
-	1. Macro definitions 
+	Macro definitions 
  */
 
 #ifndef GLOBAL_H
