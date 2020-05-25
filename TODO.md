@@ -43,7 +43,7 @@ Memory implementation: array?
 			* Cond(see Cond section below), Offset: a signed 24 bit offset(notice this is 2’s complement signed)
 			* The offset is first shifted left by 2 bits, sign extends to 32 bits and then added to the PC. Remember to take into account of the pipeline effect: PC_Exe = PC_Fetched + 8
 			* When branch is executed, the pipeline is cleared(the fetched instruction is no longer valid).
-			* Cond: eq, ne, ge, lt, gt, le, al. All instructions have this, see page 4.
+		* Cond: eq, ne, ge, lt, gt, le, al. All instructions have this, see page 4.
 		* Maybe more as an extension…
 	* Finally, create the emulator loop to execute the pipeline and the execution of the four types of instructions, and terminate when executing all-0 instructions.
 	* Testing using test suite and additional test cases
