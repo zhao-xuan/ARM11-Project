@@ -6,7 +6,7 @@ SRC_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CC      = gcc
-CFLAGS  = -I../../lib -Wall -g -D_POSIX_SOURCE -D_BSD_SOURCE -std=c99 #-Werror -pedantic
+CFLAGS  = -I../../lib -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
 LDFLAGS = 
 
 
