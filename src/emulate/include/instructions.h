@@ -1,5 +1,5 @@
 /* 
-	1. contains the instructions. 
+	Structure for instructions. 
  */
 
 #ifndef INSTRUCTION_H

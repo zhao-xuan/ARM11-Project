@@ -1,7 +1,5 @@
 /* 
-	1. RAM
-	2. Registers
-	3. Pipeline status
+	Structure for RAM, Registers, and the Pipeline Status.
  */
 
 #ifndef STATE_H
