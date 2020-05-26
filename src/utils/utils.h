@@ -19,14 +19,14 @@
  *  @returns: -1 if an error occurred, and 0 if OK.
  *  @example:
  *    uint32_t *buffer = NULL;
- *    int size;
+ *    size_t size;
  *    if (read_binary_file("./hello", &buffer, &size) == 0) {
- *      printf("%d\n", size);
+ *      printf("%ld\n", size);
  *      dump_buffer(buffer, size);
  *      free(buffer);
  *    }
  */
-int read_binary_file(char *path, uint32_t **buffer, int *size);
+int read_binary_file(const char *path, uint32_t **buffer, size_t *size);
 
 /*
  *  @brief: takes in an unsigned 32 bit number, and print out its bits.
@@ -41,6 +41,6 @@ void print_bits(uint32_t x);
  *    buffer: the buffer to be dumped.
  *    size: the size of the buffer.
  */
-void dump_buffer(uint32_t *buffer, int size);
+void dump_buffer(uint32_t *buffer, size_t size);
 
 #endif

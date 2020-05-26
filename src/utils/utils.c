@@ -1,6 +1,6 @@
 #include "utils.h"
 
-int read_binary_file(char *path, uint32_t **buffer, int *size) {
+int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
@@ -22,9 +22,10 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
     fclose(file);
     return -1;
   }
-  (void) fread(*buffer, file_length, 1, file);
-  if (ferror(file)) {
+
+  if (fread(*buffer, file_length, 1, file) != 1 || ferror(file)) {
     fprintf(stderr, "Error reading from file.\n");
+    fclose(file);
     return -1;
   }
   fclose(file);
@@ -45,7 +46,6 @@ void print_bits(uint32_t x) {
   printf("\n");
 }
 
-void dump_buffer(uint32_t *buffer, int size) {
+void dump_buffer(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) print_bits(buffer[i]);
 }
-
