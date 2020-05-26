@@ -24,8 +24,8 @@ I agree. We should define core functions with its argument like in the java test
 * Any instruction is executed if and only if the CPSR is satisfied
 
 ### A rough to-do-list:
-* Build a binary file loader(potentially it’s basically a reader)
-Memory implementation: array?
+* Build a binary file loader(potentially it’s basically a reader) (Daniel)
+* Memory implementation: array?
 * General register implementation: another array? Struct?
 * The pipeline:
 	* Fetch instruction from memory: copy from PC, PC + 4
