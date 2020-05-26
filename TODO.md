@@ -7,6 +7,32 @@
 * Remember to submit the pdf on CATe. The pdf reports are also in the doc folder in the repository
 * Testing platform: git clone https://gitlab.doc.ic.ac.uk/kgk/arm11_testsuite.git. Ruby has to be installed in order to use the testsuite
 
+## Task Assignment
+
+### Part 1
+
+| Task                               | Name   | Status      |
+| ---------------------------------- | ------ | ----------- |
+| Binary file loader                 | Daniel | In progress |
+| Headers and includes               | Hoang  | In progress |
+| Memory and register Implementation |        | Incomplete  |
+| Data Processing instructions       |        | Incomplete  |
+| Multiply and Branch                |        | Incomplete  |
+| Single Data Transfer               |        | Incomplete  |
+| Pipeline and integration           |        | Incomplete  |
+| Testing                            |        | Incomplete  |
+
+### Part 2
+
+| Task                                        | Name | Status     |
+| ------------------------------------------- | ---- | ---------- |
+| Binary file writer                          |      | Incomplete |
+| Tokenizer and symbol table                  |      | Incomplete |
+| Data processing instructions                |      | Incomplete |
+| Multiply and Branch                         |      | Incomplete |
+| Single Data Transfer & Special Instrucitons |      | Incomplete |
+| Testing                                     |      | Incomplete |
+
 ## Part 1
 Should we workout the overall structure of the project and write “emulate.c” (main function) and all the header files first?
 I agree. We should define core functions with its argument like in the java tests so that everyone knows what info to process and pass on. We can define that in the header file for each module
@@ -24,7 +50,7 @@ I agree. We should define core functions with its argument like in the java test
 * Any instruction is executed if and only if the CPSR is satisfied
 
 ### A rough to-do-list:
-* Build a binary file loader(potentially it’s basically a reader) (Daniel)
+* Build a binary file loader(potentially it’s basically a reader)
 * Memory implementation: array?
 * General register implementation: another array? Struct?
 * The pipeline:
