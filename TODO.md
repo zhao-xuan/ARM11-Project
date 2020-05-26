@@ -15,9 +15,9 @@
 | ---------------------------------- | ------ | ----------- |
 | Binary file loader                 | Daniel | In progress |
 | Headers and includes               | Hoang  | In progress |
-| Memory and register Implementation |        | Incomplete  |
+| Memory and register Implementation | Tom    | Incomplete  |
 | Data Processing instructions       |        | Incomplete  |
-| Multiply and Branch                |        | Incomplete  |
+| Multiply and Branch                | Tom    | Incomplete  |
 | Single Data Transfer               |        | Incomplete  |
 | Pipeline and integration           |        | Incomplete  |
 | Testing                            |        | Incomplete  |
