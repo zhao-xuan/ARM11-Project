@@ -20,13 +20,13 @@
 	@example: 
 		uint32_t *buffer = NULL;
 		int size;
-		if (ReadBinaryFile("./hello", &buffer, &size) == 0) {
+		if (read_binary_file("./hello", &buffer, &size) == 0) {
 			printf("%d\n", size);
 			dump_buffer(buffer, size);
 			free(buffer);
   	}
 */
-int readBinaryFile(char *path, uint32_t **buffer, int *size);
+int read_binary_file(char *path, uint32_t **buffer, int *size);
 
 
 /*
@@ -34,7 +34,7 @@ int readBinaryFile(char *path, uint32_t **buffer, int *size);
 	@param: 
 		x: the number to be printed. 
 */
-void printBits(uint32_t x);
+void print_bits(uint32_t x);
 
 
 

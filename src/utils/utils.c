@@ -1,6 +1,6 @@
 #include "utils.h"
 
-int readBinaryFile(char *path, uint32_t **buffer, int *size) {
+int read_binary_file(char *path, uint32_t **buffer, int *size) {
   FILE *file;
   size_t fileLen;
 
@@ -27,7 +27,7 @@ int readBinaryFile(char *path, uint32_t **buffer, int *size) {
   return 0;
 }
 
-void printBits(uint32_t x) {
+void print_bits(uint32_t x) {
   int i;
   uint32_t mask = 1 << 31;
   for (i = 0; i < 32; ++i) {
@@ -42,16 +42,5 @@ void printBits(uint32_t x) {
 }
 
 void dump_buffer(uint32_t *buffer, int size) {
-  for (int i = 0; i < size; i++) printBits(buffer[i]);
-}
-
-int main(void){
-		uint32_t *buffer = NULL;
-		int size;
-		if (readBinaryFile("./hello", &buffer, &size) == 0) {
-			printf("%d\n", size);
-			dump_buffer(buffer, size);
-			free(buffer);
-  	}
-	return 0;
+  for (int i = 0; i < size; i++) print_bits(buffer[i]);
 }
