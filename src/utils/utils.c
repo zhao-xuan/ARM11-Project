@@ -14,8 +14,9 @@ int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   file_length = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  *size = file_length + 1;
-  *buffer = (uint32_t *)malloc(*size);
+  size_t size_bytes = file_length + 1;
+  *buffer = (uint32_t *)malloc(size_bytes);
+  *size = size_bytes / 4;
 
   if (!*buffer) {
     fprintf(stderr, "Memory error!\n");
@@ -49,3 +50,14 @@ void print_bits(uint32_t x) {
 void dump_buffer(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) print_bits(buffer[i]);
 }
+
+void dump_hex(uint32_t *buffer, size_t size) {
+  for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
+}
+
+void swap_endian(uint32_t **buffer, size_t size) {
+  for (int i = 0; i < size; i++) {
+    (*buffer)[i] = __builtin_bswap32((*buffer)[i]);
+  }
+}
+

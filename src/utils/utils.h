@@ -12,6 +12,7 @@
 /*
  *  @brief: pass by value-result. REMEMBER TO FREE buffer when done.
  *  Takes in path to a file, returns content of the file, and size of the file.
+ *  Remember to swap endianness when loading memory. 
  *  @param:
  *    *path: path to the required file.
  *    **buffer: an empty pointer, will point to the content of the file.
@@ -22,7 +23,8 @@
  *    size_t size;
  *    if (read_binary_file("./hello", &buffer, &size) == 0) {
  *      printf("%ld\n", size);
- *      dump_buffer(buffer, size);
+ *      swap_endian(&buffer, size);
+ *      dump_hex(buffer, size);
  *      free(buffer);
  *    }
  */
@@ -42,5 +44,23 @@ void print_bits(uint32_t x);
  *    size: the size of the buffer.
  */
 void dump_buffer(uint32_t *buffer, size_t size);
+
+
+/*
+ *  @brief: takes in an array of 32 bit numbers, and print out its hex form.
+ *  @param:
+ *    buffer: the buffer to be dumped.
+ *    size: the size of the buffer.
+ */
+void dump_hex(uint32_t *buffer, size_t size);
+
+
+/*
+ *  @brief: takes in an array of 32 bit numbers, and swaps endianness of each one. 
+ *  @param:
+ *    **buffer: pointeer to the buffer to convert. 
+ *    size: the size of the buffer.
+ */
+void swap_endian(uint32_t **buffer, size_t size);
 
 #endif
