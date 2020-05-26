@@ -1,6 +1,4 @@
-#include <stdlib.h>
-
-#include "../utils/utils.h"
+#include "utils.h"
 #include "print.h"
 #include "decode.h"
 #include "execute.h"
