@@ -2,7 +2,7 @@
 
 int read_binary_file(char *path, uint32_t **buffer, int *size) {
   FILE *file;
-  size_t fileLen;
+  size_t file_length;
 
   file = fopen(path, "rb");
   if (!file) {
@@ -11,10 +11,10 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
   }
 
   fseek(file, 0, SEEK_END);
-  fileLen = ftell(file);
+  file_length = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  *size = fileLen + 1;
+  *size = file_length + 1;
   *buffer = (uint32_t *)malloc(*size);
 
   if (!*buffer) {
@@ -22,7 +22,7 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
     fclose(file);
     return -1;
   }
-  fread(*buffer, fileLen, 1, file);
+  fread(*buffer, file_length, 1, file);
   fclose(file);
   return 0;
 }
