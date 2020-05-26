@@ -25,6 +25,7 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
   (void) fread(*buffer, file_length, 1, file);
   if (ferror(file)) {
     fprintf(stderr, "Error reading from file.\n");
+    return -1;
   }
   fclose(file);
   return 0;
