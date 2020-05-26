@@ -6,7 +6,7 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
 
   file = fopen(path, "rb");
   if (!file) {
-    fprintf(stderr, "Unable to open file %s", path);
+    fprintf(stderr, "Unable to open file %s\n", path);
     return -1;
   }
 
@@ -18,11 +18,14 @@ int read_binary_file(char *path, uint32_t **buffer, int *size) {
   *buffer = (uint32_t *)malloc(*size);
 
   if (!*buffer) {
-    fprintf(stderr, "Memory error!");
+    fprintf(stderr, "Memory error!\n");
     fclose(file);
     return -1;
   }
-  fread(*buffer, file_length, 1, file);
+  (void) fread(*buffer, file_length, 1, file);
+  if (ferror(file)) {
+    fprintf(stderr, "Error reading from file.\n");
+  }
   fclose(file);
   return 0;
 }
@@ -44,3 +47,4 @@ void print_bits(uint32_t x) {
 void dump_buffer(uint32_t *buffer, int size) {
   for (int i = 0; i < size; i++) print_bits(buffer[i]);
 }
+
