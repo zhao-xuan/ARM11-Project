@@ -1,7 +1,7 @@
 #include "include/decode.h"
 
 instruction_t *decode(const uint32_t binary) {
-    enum Instructions_type instr_type = check_instruction_type(binary);
+    enum InstructionType instr_type = check_instruction_type(binary);
     instruction_t *instr_struct = malloc(sizeof(instruction_t));
 
     instr_struct -> type = instr_type;
@@ -62,7 +62,7 @@ instruction_t *decode(const uint32_t binary) {
     return instr_struct;
 }
 
-enum Instructions_type check_instruction_type(const uint32_t binary) {
+enum InstructionType check_instruction_type(const uint32_t binary) {
     //check if it is the all-0 halt instruction
     if ((binary | 0) == 0) {
         return HALT;
@@ -85,5 +85,6 @@ enum Instructions_type check_instruction_type(const uint32_t binary) {
         return DATA_PROCESSING;
     }
 
+    //Clearly something better can be done here! Maybe another type ERROR in enum?
     return HALT;
 }

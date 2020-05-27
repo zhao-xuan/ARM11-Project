@@ -23,7 +23,7 @@ instruction_t *decode(const uint32_t binary);
  * @return: Instructions_type type: enum for instruction type
  */
 
-enum Instructions_type check_instruction_type(uint32_t);
+enum InstructionType check_instruction_type(uint32_t);
 
 
 
