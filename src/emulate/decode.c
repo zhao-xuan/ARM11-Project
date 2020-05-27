@@ -1,6 +1,6 @@
 #include "include/decode.h"
 
-instruction *decode(const word binary) {
+instruction *decode(const word_t binary) {
     /*
      * IMPORTANT: this code works with Big-Endian Encoding!
      */
@@ -42,7 +42,7 @@ instruction *decode(const word binary) {
     return instr_struct;
 }
 
-enum InstructionType check_instruction_type(const word binary) {
+enum InstructionType check_instruction_type(const word_t binary) {
     /* check if it is the all-0 halt instruction */
     if ((binary | 0) == 0) {
         return HALT;
@@ -70,7 +70,7 @@ enum InstructionType check_instruction_type(const word binary) {
     return HALT;
 }
 
-static void data_processing_helper(word binary, instruction *struct_p, data_processing *instr_p) {
+static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p) {
     instr_p -> cond = binary & (0xf << 28);
     instr_p -> rn = binary & (0xf << 16);
     instr_p -> rd = binary & (0xf << 12);
@@ -81,7 +81,7 @@ static void data_processing_helper(word binary, instruction *struct_p, data_proc
     (struct_p -> instructions).data_processing = *instr_p;
 }
 
-static void multiply_helper(word binary, instruction *struct_p, multiply *instr_p) {
+static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p) {
     instr_p -> cond = binary & (0xf << 28);
     instr_p -> rm = binary & 0xf;
     instr_p -> rd = binary & (0xf << 16);
@@ -92,7 +92,7 @@ static void multiply_helper(word binary, instruction *struct_p, multiply *instr_
     (struct_p -> instructions).multiply = *instr_p;
 }
 
-static void data_transfer_helper(word binary, instruction *struct_p, data_transfer *instr_p) {
+static void data_transfer_helper(word_t binary, instruction_t *struct_p, data_transfer_t *instr_p) {
     instr_p -> offset = binary & 0xfff;
     instr_p -> cond = binary & (0xf << 28);
     instr_p -> rd = binary & (0xf << 12);
@@ -104,7 +104,7 @@ static void data_transfer_helper(word binary, instruction *struct_p, data_transf
     (struct_p -> instructions).data_transfer = *instr_p;
 }
 
-static void branch_helper(word binary, instruction *struct_p, branch *instr_p) {
+static void branch_helper(word_t binary, instruction_t *struct_p, branch_t *instr_p) {
     instr_p -> cond = binary & (0xf << 28);
     instr_p -> offset = binary & 0xffffff;
     (struct_p -> instructions).branch = *instr_p;
