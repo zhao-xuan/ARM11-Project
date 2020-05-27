@@ -7,6 +7,9 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 
+
+#include <limits.h>
+
 #include "global.h"
 
 
@@ -22,9 +25,12 @@
  *  
  *  @execution:
  *    If you pass in a null pointer, it will only write the carry out 
- *    *res = op1 <operator> op2;
+ *    *res = op1 <operator> op2
  *      
- *    *cout = overflow or underflow or bit-31 carryout depending on the instruction;
+ *    *cout = see the description in the spec for C-bit 
+ *    
+ *      NOTICE that this Carryout is ONLY responsible for the C-bit
+ *      of the instruction currently being executed
  */
 void and(word_t op1, word_t op2, bool *cout, word_t *res);
 void eor(word_t op1, word_t op2, bool *cout, word_t *res);
@@ -35,10 +41,10 @@ void orr(word_t op1, word_t op2, bool *cout, word_t *res);
 void mov(word_t op1, word_t op2, bool *cout, word_t *res);
 
 
-void lsl(word_t op1, word_t op2, bool *cout, word_t *res);
-void lsr(word_t op1, word_t op2, bool *cout, word_t *res);
-void ars(word_t op1, word_t op2, bool *cout, word_t *res);
-void ror(word_t op1, word_t op2, bool *cout, word_t *res);
+void lsl(byte_t shamt, word_t op2, bool *cout, word_t *res);
+void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
 
 /*
  *  @brief: An array of function pointer to choose which function to perform
@@ -48,8 +54,9 @@ void ror(word_t op1, word_t op2, bool *cout, word_t *res);
  *          use other functions
  * 
  *  @usage: 
- *    - For Data_Processing Instruction: you have the opcode from the instruction
- *    
+ *    - For Data_Processing Instruction: you can implement it very nicely as shown 
+ *          + No need for case statement     
+ *
  *    int index = opcode  > 10 ? opcode % 8 + 1 : opcode % 8;
  *    bool cout;
  *    word_t res, op1 = ..., op2 = ...;
@@ -60,13 +67,14 @@ void ror(word_t op1, word_t op2, bool *cout, word_t *res);
 void (*alu[7]) (word_t op1, word_t op2, bool *cout, word_t *res); 
 
 
+
 /*
  *  @brief: The idea is similar to that of the above. 
  *          The only difference is that we can index straight into this array using 
  *          the ShiftType in the instruction
  */
 
-void (*barrel_shifter[4]) (word_t op1, word_t op2, bool *cout, word_t *res);
+void (*barrel_shifter[4]) (byte_t shamt, word_t op2, bool *cout, word_t *res);
 
 
 #endif
