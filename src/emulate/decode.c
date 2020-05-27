@@ -1,6 +1,11 @@
 #include "include/decode.h"
 
-instruction *decode(const word_t binary) {
+static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p);
+static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p);
+static void data_transfer_helper(word_t binary, instruction_t *struct_p, data_transfer_t *instr_p);
+static void branch_helper(word_t binary, instruction_t *struct_p, branch_t *instr_p);
+
+instruction_t *decode(const word_t binary) {
     /*
      * IMPORTANT: this code works with Big-Endian Encoding!
      */
@@ -32,10 +37,10 @@ instruction *decode(const word_t binary) {
             break;
         }
         case HALT:
-            printf(stderr, "Halted! Do something!");
+            fprintf(stderr, "Halted! Do something!");
             break;
         default:
-            printf(stderr, "Instruction type doesn't match!");
+            fprintf(stderr, "Instruction type doesn't match!");
             break;
     }
 
