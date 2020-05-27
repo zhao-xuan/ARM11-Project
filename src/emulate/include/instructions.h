@@ -10,8 +10,6 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include <stdbool.h>
-
 #include "global.h"
 
 
@@ -41,7 +39,7 @@ typedef struct {
     byte_t rd;
     byte_t rs;
     byte_t rn;
-    bool accmulate;
+    bool accumulate;
     bool set;
 } multiply_t;
 
