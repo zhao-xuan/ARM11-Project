@@ -23,10 +23,12 @@ void eor(word_t op1, word_t op2, bool *cout, word_t *res){
 
 /*  SUBTRACTION */
 void sub(word_t op1, word_t op2, bool *cout, word_t *res){
-    *res = op1 - op2;
-    bool overflow = op1 < 0 && (op2 > INT_MAX + op1);
-    bool underflow = op1 > 0 && (op2 < INT_MAX + op1);
-    *cout = overflow | underflow;
+    int32_t signed_op1 = (int32_t) op1;
+    int32_t signed_op2 = (int32_t) op2;
+    *res = (word_t) (signed_op1 - signed_op2);
+    bool overflow = signed_op1 < 0 && (signed_op2 > INT_MAX + signed_op1);
+    bool underflow = signed_op1 > 0 && (signed_op2 < INT_MAX + signed_op1);
+    *cout = overflow || underflow;
 }
 
 
@@ -37,10 +39,12 @@ void rsb(word_t op1, word_t op2, bool *cout, word_t *res){
 
 /*  ADDITION */
 void add(word_t op1, word_t op2, bool *cout, word_t *res){
-    *res = op1 + op2;
-    bool overflow = op1 > 0 && (op2 > INT_MAX - op1);
-    bool underflow = op1 < 0 && (op2 < INT_MAX - op1);
-    *cout = overflow | underflow;
+    int32_t signed_op1 = (int32_t) op1;
+    int32_t signed_op2 = (int32_t) op2;
+    *res = (word_t) (signed_op1 + signed_op2);
+    bool overflow = signed_op1 > 0 && (signed_op2 > INT_MAX - signed_op1);
+    bool underflow = signed_op1 < 0 && (signed_op2 < INT_MAX - signed_op1);
+    *cout = overflow || underflow;
 }
 
 
@@ -58,7 +62,7 @@ void mov(word_t op1, word_t op2, bool *cout, word_t *res){
 
 /*
  *  @param: shiftamount and number
- *  @return: 32-bit unsigned integer
+ *  @return: 32-bit unsigned integer (word_t)
  */
 void lsl(byte_t shamt, word_t n, bool *cout, word_t *res){
     *cout = (n >> (32 - shamt)) & 1;
@@ -71,7 +75,7 @@ void lsr(byte_t shamt, word_t n, bool *cout, word_t *res){
 }
 
 void asr(byte_t shamt, word_t n, bool *cout, word_t *res){
-    *cout = shamt > 0 ? (n >> (shamt - 1)) & 1 : 0;
+    *cout = shamt > 0 && (n >> (shamt - 1));
     n >>= shamt;
     word_t mask = 1 << (31 - shamt);
     word_t trailing_ones = (n & mask) - 1;
