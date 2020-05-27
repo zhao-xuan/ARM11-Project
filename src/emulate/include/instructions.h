@@ -1,9 +1,9 @@
-/* 
- *  Structure for instructions. 
+/*
+ *  Structure for instructions.
  *
  *  The following file declares the interface for:
  *      1. The 4 types of instructions
- *      2. A wrapper instruction which has one of the instruction along with an 
+ *      2. A wrapper instruction which has one of the instruction along with an
  *         enum to identify which instruction it is
  */
 
@@ -15,9 +15,9 @@
 #include "global.h"
 
 
-/* 
- *  4 types of instructions with its components broken down as in the spec 
- *   
+/*
+ *  4 types of instructions with its components broken down as in the spec
+ *
  *  The order of the parts are different from the spec to minimise padding
  */
 
@@ -31,7 +31,7 @@ typedef struct {
     word_t operand2;
     bool imm_const;
     bool set;
-} data_processing_instruction;
+} data_processing_t;
 
 
 /* MULTIPLY */
@@ -41,15 +41,15 @@ typedef struct {
     byte_t rd;
     byte_t rs;
     byte_t rn;
-    bool accumulate;
+    bool accmulate;
     bool set;
-} multiply_instruction;
+} multiply_t;
 
 
 
 /* DATA TRANSFER */
 typedef struct {
-    word_t offset;
+    address_t offset;
     byte_t cond;
     byte_t rn;
     byte_t rd;
@@ -57,15 +57,15 @@ typedef struct {
     bool pre_index;
     bool up_bit;
     bool load;
-} data_transfer_instruction;
+} data_transfer_t;
 
 
 
 /* BRANCH */
 typedef struct {
+    address_t offset;
     byte_t cond;
-    word_t offset;
-} branch_instruction;
+} branch_t;
 
 
 
@@ -85,10 +85,10 @@ enum InstructionType {DATA_PROCESSING, MULTIPLY, BRANCH, DATA_TRANSFER, HALT};
 typedef struct {
     enum InstructionType type;
     union {
-        data_processing_instruction *instr_data_processing;
-        multiply_instruction *instr_multiply;
-        data_transfer_instruction *instr_data_transfer;
-        branch_instruction *instr_branch;
+        data_processing_t data_processing;
+        multiply_t multiply;
+        data_transfer_t data_transfer;
+        branch_t branch;
     } instructions;
 } instruction_t;
 

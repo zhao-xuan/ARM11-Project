@@ -55,9 +55,9 @@ void dump_hex(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
-void swap_endian(uint32_t **buffer, size_t size) {
+void swap_endian(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) {
-    (*buffer)[i] = __builtin_bswap32((*buffer)[i]);
+    buffer[i] = __builtin_bswap32(buffer[i]);
   }
 }
 

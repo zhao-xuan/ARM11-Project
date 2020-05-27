@@ -21,9 +21,9 @@
  *  @example:
  *    uint32_t *buffer = NULL;
  *    size_t size;
- *    if (read_binary_file("./hello", &buffer, &size) == 0) {
+ *    if (read_binary_file(argv[1], &buffer, &size) == 0) {
  *      printf("%ld\n", size);
- *      swap_endian(&buffer, size);
+ *      swap_endian(buffer, size);
  *      dump_hex(buffer, size);
  *      free(buffer);
  *    }
@@ -58,9 +58,9 @@ void dump_hex(uint32_t *buffer, size_t size);
 /*
  *  @brief: takes in an array of 32 bit numbers, and swaps endianness of each one. 
  *  @param:
- *    **buffer: pointeer to the buffer to convert. 
+ *    *buffer: buffer to convert. 
  *    size: the size of the buffer.
  */
-void swap_endian(uint32_t **buffer, size_t size);
+void swap_endian(uint32_t *buffer, size_t size);
 
 #endif
