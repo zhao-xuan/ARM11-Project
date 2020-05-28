@@ -19,7 +19,7 @@ $(OBJ_DIR)/%.o: %.c
 $(UTIL_OBJ_DIR)/utils.o: ../utils/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-tests: 
+test: 
 	cd tests; make all;
 	
 clean:
@@ -29,4 +29,4 @@ clean:
 	cd tests; make clean
 
 .SUFFIXES: .c .o .h
-.PHONY: clean
+.PHONY: clean test
