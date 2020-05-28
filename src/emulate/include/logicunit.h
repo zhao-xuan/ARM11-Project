@@ -7,11 +7,12 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 
-
 #include <limits.h>
 
 #include "global.h"
+#include "state.h"
 
+#define UNKNOWN_OPCODE 1
 
 
 /*
@@ -46,35 +47,21 @@ void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
 void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
 void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
 
-/*
- *  @brief: An array of function pointer to choose which function to perform
- *          based on the given opcode for the ALU.
- *          
- *          Notice that there are only 7 operations for the ALU as tst, teq and cmp
- *          use other functions
- * 
- *  @usage: 
- *    - For Data_Processing Instruction: you can implement it very nicely as shown 
- *          + No need for case statement     
+
+/* 
+ *  Make a call to the ALU
+ *  
+ *  @param: op1, op2, opcode, set_flag
+ *      set_flag: whether or not to set flags NZC in the CPSR
  *
- *    int index = opcode  > 10 ? opcode % 8 + 1 : opcode % 8;
- *    bool cout;
- *    word_t res, op1 = ..., op2 = ...;
- *    (*alu[index]) (op1, op2, &cout, &res);
  *
+ *  @return: exit status
+ *      0 - if everything goes well
+ *      1 - Unknown opcode as defined at the top
  */
+int alu(word_t op1, word_t op2, byte_t opcode, bool set);
 
-void (*alu[7]) (word_t op1, word_t op2, bool *cout, word_t *res); 
-
-
-
-/*
- *  @brief: The idea is similar to that of the above. 
- *          The only difference is that we can index straight into this array using 
- *          the ShiftType in the instruction
- */
-
-void (*barrel_shifter[4]) (byte_t shamt, word_t op2, bool *cout, word_t *res);
-
+/* Similar to the ALU */
+int shifter(word_t op1, word_t op2, byte_t shift_type, bool set);
 
 #endif
