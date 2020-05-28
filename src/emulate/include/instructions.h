@@ -39,7 +39,7 @@ typedef struct {
     byte_t rd;
     byte_t rs;
     byte_t rn;
-    bool accmulate;
+    bool accumulate;
     bool set;
 } multiply_t;
 
@@ -68,10 +68,11 @@ typedef struct {
 
 
 /*
- *   Enum InstructionsType
- *
+ *   Enum Instructions_type
+ *       - To help with the while loop for the pipeline
+ *       
  */
-enum InstructionType {DATA_PROCESSINNG, MULTIPLY, BRANCH, DATA_TRANSFER, HALT};
+enum InstructionType {DATA_PROCESSING, MULTIPLY, BRANCH, DATA_TRANSFER, HALT};
 
 
 /*
