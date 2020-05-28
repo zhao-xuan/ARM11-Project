@@ -1,4 +1,4 @@
-#include "include/decode.h"
+#include "decode.h"
 
 static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p);
 static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p);
