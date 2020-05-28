@@ -61,3 +61,9 @@ void swap_endian(uint32_t *buffer, size_t size) {
   }
 }
 
+void out_of_bound_check(uint32_t addr, size_t size) {
+  if (addr < 0 || addr >= size) {
+    fprintf(stderr, "Index out of bound. ");
+    exit(EXIT_FAILURE);
+  }
+}
