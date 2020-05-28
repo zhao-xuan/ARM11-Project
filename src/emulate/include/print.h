@@ -9,5 +9,8 @@
 #include "utils.h"
 #include "global.h"
 
-
+/* 
+ * @brief: prints out the current state of the machine. 
+ */
+void print_state();
 #endif

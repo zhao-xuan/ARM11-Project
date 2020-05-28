@@ -43,7 +43,8 @@ typedef uint8_t byte_t;
 typedef uint32_t word_t;
 /* Define memory address */
 typedef uint16_t address_t;
-
+/* Define flag position */
+typedef int flag_t;
 
 #endif
 
