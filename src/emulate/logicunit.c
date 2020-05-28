@@ -9,10 +9,10 @@ void (*barrel_shifter[4]) (byte_t op1, word_t op2, bool *cout, word_t *res) =
   { lsl, lsr, asr, ror };
 
 /* A helper function to set the flags of the top 3 bits in CPSR*/
-void set_nzc_flags(bool neg, bool zero, bool cout) {
-  word_t newflag = neg << 31 | zero << 30 | cout << 29; 
-  word_t oldflag = get_reg(CPSR) & ((1 << 29) - 1);
-  set_reg(CPSR, newflag | oldflag);
+void set_alu_flags(word_t res, bool cout) {
+    if (res >> 31) set_flag(N_FLAG);
+    if (res == 0) set_flag(Z_FLAG);
+    if (cout) set_flag(C_FLAG);
 }
 
 
@@ -25,7 +25,7 @@ int alu(word_t op1, word_t op2, byte_t opcode, bool set) {
   bool cout;
   int index = opcode % 8 + (opcode > 10 ? 1 : 0);
   (*alu_selector[index]) (op1, op2, &cout, &res);
-  if (set) set_nzc_flags((res >> 31) & 1, res == 0, cout); 
+  if (set) set_alu_flags(res, cout); 
   return 0;
 }
 
@@ -35,7 +35,7 @@ int shifter(word_t op1, word_t op2, byte_t shift_type, bool set) {
   word_t res;
   bool cout;
   (*barrel_shifter[shift_type])(op1, op2, &cout, &res);
-  if (set) set_nzc_flags((res >> 31) & 1, res == 0, cout); 
+  if (set) set_alu_flags(res, cout); 
   return 0;
 }
 

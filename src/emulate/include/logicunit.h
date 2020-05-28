@@ -12,7 +12,7 @@
 #include "global.h"
 #include "state.h"
 
-#define UNKNOWN_OPCODE 1
+#define UNKNOWN_OPCODE 404 
 
 
 /*
