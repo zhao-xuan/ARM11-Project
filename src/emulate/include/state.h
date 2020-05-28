@@ -14,10 +14,10 @@
 
 /* Structure for Memory, Registers and the Pipeline */
 typedef struct {
-  /* Memory[MEM_ADDR] */
-  byte_t *memory;
-  /* Registers[REG_NUM] */
-  word_t *registers;
+  /* Memory*/
+  byte_t memory[MEM_ADDR];
+  /* Registers*/
+  word_t registers[REG_NUM];
   /* Instruction that has already been fetched in the pipeline */
   word_t fetched_instruction;
   /* Instruction that has already been decoded in the pipeline */
