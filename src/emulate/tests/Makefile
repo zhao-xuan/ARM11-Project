@@ -10,7 +10,7 @@ BUILD = $(patsubst %_test.c, %_test, $(TEST_FILES))
 
 SRC_FILES = $(wildcard ../*.c)
 SRC_NO_MAIN = $(filter-out ../emulate.c, $(SRC_FILES))
-OBJ_FILES = $(patsubst ../%.c, %.o,$(SRC_NO_MAIN))
+OBJ_FILES = $(patsubst ../%.c, %.o,$(SRC_NO_MAIN)) utils.o
 
 all: testutils $(BUILD)
 
@@ -23,7 +23,7 @@ all: testutils $(BUILD)
 %.o: ../%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-utils.o: ../utils/utils.c
+utils.o: ../../utils/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:
