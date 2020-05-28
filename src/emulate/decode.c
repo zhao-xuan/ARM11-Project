@@ -76,41 +76,41 @@ enum InstructionType check_instruction_type(const word_t binary) {
 }
 
 static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p) {
-    instr_p -> cond = binary & (0xf << 28);
-    instr_p -> rn = binary & (0xf << 16);
-    instr_p -> rd = binary & (0xf << 12);
-    instr_p -> opcode = binary & (0xf << 21);
+    instr_p -> cond = (binary >> 28) & 0xf;
+    instr_p -> rn = (binary >> 16) & 0xf;
+    instr_p -> rd = (binary >> 12) & 0xf;
+    instr_p -> opcode = (binary >> 21) & 0xf;
     instr_p -> operand2 = binary & 0xfff;
-    instr_p -> imm_const = binary & (1 << 25);
-    instr_p -> set = binary & (1 << 20);
+    instr_p -> imm_const = (binary >> 25) & 1;
+    instr_p -> set = (binary >> 20) & 1;
     (struct_p -> instructions).data_processing = *instr_p;
 }
 
 static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p) {
-    instr_p -> cond = binary & (0xf << 28);
+    instr_p -> cond = (binary >> 28) & 0xf;
     instr_p -> rm = binary & 0xf;
-    instr_p -> rd = binary & (0xf << 16);
-    instr_p -> rs = binary & (0xf << 8);
-    instr_p -> rn = binary & (0xf << 12);
-    instr_p -> accumulate = binary & (1 << 21);
-    instr_p -> set = binary & (1 << 20);
+    instr_p -> rd = (binary >> 16) & 0xf;
+    instr_p -> rs = (binary >> 8) & 0xf;
+    instr_p -> rn = (binary >> 12) & 0xf;
+    instr_p -> accumulate = (binary >> 21) & 1;
+    instr_p -> set = (binary >> 20) & 1;
     (struct_p -> instructions).multiply = *instr_p;
 }
 
 static void data_transfer_helper(word_t binary, instruction_t *struct_p, data_transfer_t *instr_p) {
     instr_p -> offset = binary & 0xfff;
-    instr_p -> cond = binary & (0xf << 28);
-    instr_p -> rd = binary & (0xf << 12);
-    instr_p -> rn = binary & (0xf << 16);
-    instr_p -> imm_offset = binary & (1 << 25);
-    instr_p -> pre_index = binary & (1 << 24);
-    instr_p -> up_bit = binary & (1 << 23);
-    instr_p -> load = binary & (1 << 20);
+    instr_p -> cond = (binary >> 28) & 0xf;
+    instr_p -> rd = (binary >> 12) & 0xf;
+    instr_p -> rn = (binary >> 16) & 0xf;
+    instr_p -> imm_offset = (binary >> 25) & 1;
+    instr_p -> pre_index = (binary >> 24) & 1;
+    instr_p -> up_bit = (binary >> 23) & 1;
+    instr_p -> load = (binary >> 20) & 1;
     (struct_p -> instructions).data_transfer = *instr_p;
 }
 
 static void branch_helper(word_t binary, instruction_t *struct_p, branch_t *instr_p) {
-    instr_p -> cond = binary & (0xf << 28);
+    instr_p -> cond = (binary >> 28) & 0xf;
     instr_p -> offset = binary & 0xffffff;
     (struct_p -> instructions).branch = *instr_p;
 }
