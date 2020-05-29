@@ -61,6 +61,7 @@ static void test_memory_operations() {
 
     char *name;
     const address_t STEP = 2048;
+    const word_t LITTLE_ENDIAN_TEST_NUM = 100;
 
     for (address_t addr = 1; addr < MEM_ADDR - STEP; addr += STEP) {
         printf("Address: %d\n", addr);
@@ -74,7 +75,7 @@ static void test_memory_operations() {
         word_t test_instr = addr;
         byte_t test_value = addr;
         set_memory(addr, test_value);
-        testword(get_memory(addr), test_value, name);
+        testbyte(get_memory(addr), test_value, name);
 
         /* Testing memory size after set_memory()*/
         name = "Testing if memory has the right size after calling set_memory()";
@@ -88,6 +89,12 @@ static void test_memory_operations() {
         /* Testing memory size after set_word() */
         name = "Testing if memory has the right size after calling set_word()";
         testsize(sizeof(get_word(addr)), sizeof(word_t), name);
+
+        /* Testing the underlying memory is in little endian format */
+        set_word(addr, 0);
+        name = "Testing if the underlying memory is in little endian format";
+        set_word(addr, LITTLE_ENDIAN_TEST_NUM);
+        testbyte(get_memory(addr + 3), LITTLE_ENDIAN_TEST_NUM, name);
     }
 }
 
