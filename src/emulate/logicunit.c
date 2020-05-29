@@ -9,7 +9,7 @@ void (*barrel_shifter[4]) (byte_t op1, word_t op2, bool *cout, word_t *res) =
   { lsl, lsr, asr, ror };
 
 /* A helper function to set the flags of the top 3 bits in CPSR*/
-void set_alu_flags(word_t res, bool cout) {
+static void set_alu_flags(word_t res, bool cout) {
     if (res >> 31) set_flag(N_FLAG);
     if (res == 0) set_flag(Z_FLAG);
     if (cout) set_flag(C_FLAG);
