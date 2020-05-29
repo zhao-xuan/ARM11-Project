@@ -32,8 +32,33 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
+
+
+/* Opcodes */
+
 /* Unknown Opcode for ALU */
 #define UNKNOWN_OPCODE 404
+/* Bitwise And */
+#define AND_OPCODE 0
+/* Bitwise Exclusive Or */
+#define EOR_OPCODE 1
+/* Arithmetic Subtraction */
+#define SUB_OPCODE 2
+/* Reversed Arithmetic Subtraction */
+#define RSB_OPCODE 3
+/* Arithmetic Addition */
+#define ADD_OPCODE 4
+/* Test */
+#define TST_OPCODE 8
+/* Test Equal */
+#define TEQ_OPCODE 9
+/* Compare */
+#define CMP_OPCODE 10
+/* Bitwise Or */
+#define ORR_OPCODE 12
+/* Mov */
+#define MOV_OPCODE 13
+
 
 
 /* Type Aliases */

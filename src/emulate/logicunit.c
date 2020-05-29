@@ -47,25 +47,23 @@ static void set_alu_flags(word_t res, bool cout) {
 
 
 /* A function visible to the 'outside world' defined in the header file */
-int alu(word_t op1, word_t op2, byte_t opcode, bool set) {
+int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
   if ((opcode >= 5 && opcode <= 7) || opcode == 11 || opcode > 13) {
     return UNKNOWN_OPCODE;
   }
-  word_t res;
   bool cout;
   int index = opcode % 8 + (opcode > 10 ? 1 : 0);
-  (*alu_selector[index]) (op1, op2, &cout, &res);
-  if (set) set_alu_flags(res, cout); 
+  (*alu_selector[index]) (op1, op2, &cout, result);
+  if (set) set_alu_flags(*result, cout); 
   return 0;
 }
 
 /* A function visible to the 'outside world' for the barrel shifter */
-int shifter(word_t op1, word_t op2, byte_t shift_type, bool set) {
+int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set) {
   if (shift_type > 4) return UNKNOWN_OPCODE;
-  word_t res;
   bool cout;
-  (*barrel_shifter[shift_type])(op1, op2, &cout, &res);
-  if (set) set_alu_flags(res, cout); 
+  (*barrel_shifter[shift_type])(op1, op2, &cout, result);
+  if (set) set_alu_flags(*result, cout); 
   return 0;
 }
 

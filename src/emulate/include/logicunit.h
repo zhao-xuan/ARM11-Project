@@ -15,17 +15,18 @@
 /* 
  *  Make a call to the ALU and Barrel Shifter
  *  
- *  @param: op1, op2, opcode, set_flag
+ *  @param: op1, op2, *result, opcode, set_flag
  *      set: whether or not to set flags NZC in the CPSR
+ *      *result: Address to which teh result is stored
  *
  *
  *  @return: exit status
  *            0        - if everything goes well
  *      UNKNOWN_OPCODE - Unknown opcode as defined at the top
  */
-int alu(word_t op1, word_t op2, byte_t opcode, bool set);
+int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set);
 
 /* Similar to the ALU */
-int shifter(word_t op1, word_t op2, byte_t shift_type, bool set);
+int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set);
 
 #endif
