@@ -4,7 +4,7 @@
 #include "testutils.h"
 
 void test_and() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test and */
@@ -25,7 +25,7 @@ void test_and() {
 }
 
 void test_eor() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test eor */
@@ -46,7 +46,7 @@ void test_eor() {
 }
 
 void test_sub() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test sub */
@@ -67,7 +67,7 @@ void test_sub() {
 }
 
 void test_rsb() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test rsb */
@@ -90,7 +90,7 @@ void test_rsb() {
 }
 
 void test_add() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test add */
@@ -111,7 +111,7 @@ void test_add() {
 }
 
 void test_orr() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test orr */
@@ -132,7 +132,7 @@ void test_orr() {
 }
 
 void test_mov() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test mov */
@@ -153,7 +153,7 @@ void test_mov() {
 }
 
 void test_lsl() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test lsl */
@@ -176,7 +176,7 @@ void test_lsl() {
 }
 
 void test_lsr() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test lsr */
@@ -199,7 +199,7 @@ void test_lsr() {
 }
 
 void test_asr() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test asr */
@@ -221,7 +221,7 @@ void test_asr() {
 }
 
 void test_ror() {
-  int op1, op2;
+  word_t op1, op2;
   word_t result, expected;
   bool carry;
   char *name; /* Test ror */

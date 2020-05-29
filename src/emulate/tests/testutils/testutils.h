@@ -10,4 +10,4 @@ extern void testint( int got, int expected, char * testname );
 extern void testlong( long got, long expected, char * testname );
 extern void testdouble( double got, double expected, char * testname );
 extern void teststring( char * got, char * expected, char * testname );
-extern void testword( uint32_t got, uint32_t expect, char *testname);
+extern void testword( uint32_t got, uint32_t expected, char *testname);
