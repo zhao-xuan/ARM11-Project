@@ -1,27 +1,38 @@
 # This Makefile is for testing purpose ONLY
 
 CC = gcc
-CFLAGS = -g -Wall -Itestutils -I../include -D_DEFAULT_SOURCE -std=c99 #-Werror -pedantic
+CFLAGS = -g -Wall -Itestutils -I../include -I../../utils/ -D_DEFAULT_SOURCE -std=c99 #-Werror -pedantic
 LDFLAGS =
 LDLIBS = -Ltestutils -ltestutils
-BUILD = logicunit_test
+
+TEST_FILES = $(wildcard *_test.c)
+BUILD = $(patsubst %_test.c, %_test, $(TEST_FILES))
+
+SRC_FILES = $(wildcard ../*.c)
+SRC_NO_MAIN = $(filter-out ../emulate.c, $(SRC_FILES))
+OBJ_FILES = $(patsubst ../%.c, %.o,$(SRC_NO_MAIN)) utils.o
 
 all: testutils $(BUILD)
 
-logicunit_test: logicunit.o logicunit_test.o
+%_test: %_test.o $(OBJ_FILES)
 	$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-logicunit.o: ../logicunit.c
+%_test.o: %_test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-logicunit_test.o: logicunit_test.c
+%.o: ../%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+utils.o: ../../utils/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:
 	cd testutils; make
 
 clean:
-	rm -f logicunit_test *.o core; cd testutils; make clean 
+	rm -f $(BUILD) *.o core
+	rm -f memory_test.txt
+	cd testutils; make clean 
 
 .PHONY: clean, testutils
 

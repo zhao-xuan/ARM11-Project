@@ -44,12 +44,12 @@ void testword( uint32_t got, uint32_t expected, char *testname) {
     testname, expected, got, expected==got?"OK":"FAIL");
 }
 
-void testbyte( uint8_t got, uint8_t expected, char *testname ) {
-    printf( "T %s (expected=0x%08x, got=0x%08x): %s\n",
-            testname, expected, got, expected==got?"OK":"FAIL");
+void testbyte( uint8_t got, uint8_t expected, char *testname) {
+  printf( "T %s (expected=0x%08x, got=0x%08x): %s\n",
+    testname, expected, got, expected==got?"OK":"FAIL");
 }
 
-void testsize( size_t got, size_t expected, char *testname ) {
-    printf( "T %s (expected=0x%08x, got=0x%08x): %s\n",
-            testname, expected, got, expected==got?"OK":"FAIL");
+void testsize( size_t got, size_t expected, char *testname) {
+  printf( "T %s (expected=0x%zu, got=0x%zu): %s\n",
+    testname, expected, got, expected==got?"OK":"FAIL");
 }
