@@ -63,4 +63,12 @@ void dump_hex(uint32_t *buffer, size_t size);
  */
 void swap_endian(uint32_t *buffer, size_t size);
 
+/*
+ *  @brief: checks whether a given value is out of bounds. 
+ *  @param:
+ *    addr: the position to be verified. 
+ *    size: the size of the total array. 
+ */
+void out_of_bound_check(uint32_t addr, size_t size);
+
 #endif
