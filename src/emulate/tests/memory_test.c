@@ -36,6 +36,8 @@ static void test_flag_operations() {
     set_flag(N_FLAG);
     set_flag(V_FLAG);
     set_flag(Z_FLAG);
+
+    /* Test flag set */
     name = "Testing if flags can be set properly";
     testbool(get_flag(C_FLAG) && get_flag(N_FLAG)
             && get_flag(V_FLAG) && get_flag(Z_FLAG), name);
@@ -43,6 +45,8 @@ static void test_flag_operations() {
     clear_flag(N_FLAG);
     clear_flag(V_FLAG);
     clear_flag(Z_FLAG);
+
+    /* Test flag clear */
     name = "Testing if flags can be cleared properly";
     testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG)
             || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
@@ -122,8 +126,7 @@ static void test_load_program() {
 static void test_return_state() {
     /*
      * Test return_state(FILE *fp):
-     * Check if the state is printed correctly after executing the
-     * testing functions above
+     * Check if the state is printed correctly after executing the testing functions above
      */
     FILE *f = fopen("memory_test.txt", "w+");
     if (f == NULL) {
