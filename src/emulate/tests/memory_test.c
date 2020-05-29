@@ -113,7 +113,6 @@ static void test_load_program() {
     size_t size;
 
     if (read_binary_file("factorial", &buffer, &size) == 0) {
-        swap_endian(buffer, size);
         load_program(buffer, size);
     } else {
         fprintf(stdout, "Failed to load binary file into the buffer!");
