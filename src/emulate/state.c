@@ -78,3 +78,20 @@ void load_program(word_t *buffer, size_t size) {
     set_word(i << 2, buffer[i]);
   }
 }
+
+word_t get_fetched() {
+  return state->fetched_instruction;
+}
+
+void set_fetched(word_t fetched_instruction) {
+  state->fetched_instruction = fetched_instruction; 
+}
+
+instruction_t get_decoded() {
+  return state->decoded_instruction;
+}
+
+void set_decoded(instruction_t decoded_instruction) {
+  state->decoded_instruction = decoded_instruction; 
+}
+

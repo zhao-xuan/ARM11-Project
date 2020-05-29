@@ -99,4 +99,31 @@ void set_memory(address_t addr, byte_t value);
  * @brief: Loads program in buffer into the memory.
  */
 void load_program(word_t *buffer, size_t size);
+
+/*
+ * @param: fetched_instruction   : the value to set fetched_instruction
+ * @brief: sets fetched_instruction to the param specified. 
+ */
+void set_fetched(word_t fetched_instruction);
+
+
+/*
+ * @returns: the value of fetched_instruction in the current state. 
+ */
+word_t get_fetched();
+
+/*
+ * @param: decoded_instruction   : the value to set decoded_instruction
+ * @brief: sets decoded_instruction to the param specified. 
+ */
+void set_decoded(instruction_t decoded_instruction);
+
+
+
+/*
+ * @returns: the value of decoded_instruction in the current state. 
+ */
+instruction_t get_decoded();
+
+
 #endif
