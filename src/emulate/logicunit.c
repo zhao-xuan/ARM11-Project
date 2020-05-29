@@ -1,5 +1,35 @@
 #include "logicunit.h"
 
+
+/*
+ *  The following functions define require ALU operations
+ *  required for Data-Processing-Instructions for part 1
+ *  
+ *  @param: 
+ *    op1, op2: the 2 operands 
+ *    cout: pointer to write the carry-out bit into
+ *    res: pointer to where to write the result into
+ *  
+ *    
+ *  NOTICE that this Carryout is ONLY responsible for the C-bit
+ *  of the instruction currently being executed
+ */
+static void and(word_t op1, word_t op2, bool *cout, word_t *res);
+static void eor(word_t op1, word_t op2, bool *cout, word_t *res);
+static void sub(word_t op1, word_t op2, bool *cout, word_t *res);
+static void rsb(word_t op1, word_t op2, bool *cout, word_t *res);
+static void add(word_t op1, word_t op2, bool *cout, word_t *res);
+static void orr(word_t op1, word_t op2, bool *cout, word_t *res);
+static void mov(word_t op1, word_t op2, bool *cout, word_t *res);
+
+
+static void lsl(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
+
+
+
 /* Array of pointer to ALU functions */
 void (*alu_selector[7]) (word_t op1, word_t op2, bool *cout, word_t *res) = 
   { and, eor, sub, rsb, add, orr, mov }; 
