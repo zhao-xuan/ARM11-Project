@@ -1,29 +1,5 @@
 #include "execute.h"
 
-void fetch_instruction(state_t state) {
-    state.fetched_instruction = state.memory[get_reg(PC)];
-    set_reg(PC, get_reg(PC) + 4);
-}
-
-void decode_instruction(state_t state) {
-    state.decoded_instruction = *(decode(state.fetched_instruction));
-    fetch_instruction(state);
-}
-
-int execute_instruction(state_t state) {
-    intruction_t instr_to_exec = state.decoded_instruction;
-    decode_instruction(state);
-    execute();
-}
-
-int pipeline(state_t state) {
-    while (true) {
-        fetch_instruction(state);
-        decode_instruction(state);
-        execute_instruction(state);
-    }
-}
-
 int execute(instruction_t instr_to_exec) {
     switch (instr_to_exec.type) {
         case DATA_PROCESSING:
@@ -40,6 +16,7 @@ int execute(instruction_t instr_to_exec) {
             break;
         default:
             fprintf(stderr, "Instruction Type Error!");
+            exit(EXIT_FAILURE);
     }
 
     return 0;
