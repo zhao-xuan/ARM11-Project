@@ -9,16 +9,12 @@ int execute(instruction_t instr_to_exec) {
     switch (instr_to_exec.type) {
         case DATA_PROCESSING:
             return data_processing_execute(instr_to_exec.instructions.data_processing);
-            break;
         case MULTIPLY:
             return multiply_execute(instr_to_exec.instructions.multiply);
-            break;
         case DATA_TRANSFER:
             return data_transfer_execute(instr_to_exec.instructions.data_transfer);
-            break;
         case BRANCH:
             return branch_execute(instr_to_exec.instructions.branch);
-            break;
         default:
             fprintf(stderr, "Instruction Type Error!");
             exit(EXIT_FAILURE);
