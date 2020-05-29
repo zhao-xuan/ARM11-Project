@@ -31,19 +31,19 @@
  *      NOTICE that this Carryout is ONLY responsible for the C-bit
  *      of the instruction currently being executed
  */
-void and(word_t op1, word_t op2, bool *cout, word_t *res);
-void eor(word_t op1, word_t op2, bool *cout, word_t *res);
-void sub(word_t op1, word_t op2, bool *cout, word_t *res);
-void rsb(word_t op1, word_t op2, bool *cout, word_t *res);
-void add(word_t op1, word_t op2, bool *cout, word_t *res);
-void orr(word_t op1, word_t op2, bool *cout, word_t *res);
-void mov(word_t op1, word_t op2, bool *cout, word_t *res);
+static void and(word_t op1, word_t op2, bool *cout, word_t *res);
+static void eor(word_t op1, word_t op2, bool *cout, word_t *res);
+static void sub(word_t op1, word_t op2, bool *cout, word_t *res);
+static void rsb(word_t op1, word_t op2, bool *cout, word_t *res);
+static void add(word_t op1, word_t op2, bool *cout, word_t *res);
+static void orr(word_t op1, word_t op2, bool *cout, word_t *res);
+static void mov(word_t op1, word_t op2, bool *cout, word_t *res);
 
 
-void lsl(byte_t shamt, word_t op2, bool *cout, word_t *res);
-void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
-void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
-void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void lsl(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
 
 
 /* 
