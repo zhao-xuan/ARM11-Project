@@ -14,6 +14,7 @@
 
 /* Macro definitions for the state of the machine */
 
+
 /* Word length for this architecture */
 #define WORD_LENGTH 32
 /* Number of addresses for memory */
@@ -58,6 +59,14 @@
 #define ORR_OPCODE 12
 /* Mov */
 #define MOV_OPCODE 13
+/* Logical Shift Left */
+#define LSL_OPCODE 0
+/* Logical Shift Right */
+#define LSR_OPCODE 1
+/* Arithmetic Shift Right */
+#define ASR_OPCODE 2
+/* Rotate Right */
+#define ROR_OPCODE 3
 
 
 

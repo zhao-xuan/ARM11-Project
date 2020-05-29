@@ -31,9 +31,9 @@ void init_state();
 
 
 /*
- * Prints out the current state and prints out the memory. Then frees both. 
+ * Free the heap storing the structure 
  */
-void return_state(FILE* fp);
+void free_state();
 
 /*
  * @param reg_no : number of the required register. 

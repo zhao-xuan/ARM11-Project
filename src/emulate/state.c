@@ -14,8 +14,7 @@ void init_state() {
   state.registers = registers;
 }
 
-void return_state(FILE* fp) {
-  print_state(fp);
+void free_state() {
   free(state.memory);
   free(state.registers);
 }
