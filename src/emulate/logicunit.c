@@ -29,32 +29,45 @@ static void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
 static void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
 
 
+typedef void ( *alu_array_ptr ) ( word_t, word_t, bool *, word_t *);
+
+typedef void ( *shifter_array_ptr ) ( byte_t, word_t, bool *, word_t *);
+
+typedef void ( *flag_setter_ptr ) (flag_t flag);
 
 /* Array of pointer to ALU functions */
-void (*alu_selector[7]) (word_t op1, word_t op2, bool *cout, word_t *res) = 
-  { and, eor, sub, rsb, add, orr, mov }; 
+alu_array_ptr alu_selector[] = { and, eor, sub, rsb, add, orr, mov };
 
 /* Array of pointer to Barrel shifter functions */
-void (*barrel_shifter[4]) (byte_t op1, word_t op2, bool *cout, word_t *res) =
-  { lsl, lsr, asr, ror };
+shifter_array_ptr barrel_shifter[] = { lsl, lsr, asr, ror };
+
+/* Array of pointer to set flags function */
+flag_setter_ptr flag_setter[] = { clear_flag, set_flag };
 
 /* A helper function to set the flags of the top 3 bits in CPSR*/
-static void set_alu_flags(word_t res, bool cout) {
-    if (res >> 31) set_flag(N_FLAG);
-    if (res == 0) set_flag(Z_FLAG);
-    if (cout) set_flag(C_FLAG);
+static void set_alu_flags(word_t res, bool cout, bool arithm_op) {
+    flag_setter[(res >> 31) & 1] (N_FLAG);
+    flag_setter[res == 0] (Z_FLAG);
+    if (arithm_op) flag_setter[cout] (C_FLAG);
 }
 
 
-/* A function visible to the 'outside world' defined in the header file */
+/* 
+ *  A function visible to the 'outside world' defined in the header file 
+ *
+ *  NOTE:
+ *      - Only arithmetic operations will set the C-flag
+ *
+ */
 int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
   if ((opcode >= 5 && opcode <= 7) || opcode == 11 || opcode > 13) {
     return UNKNOWN_OPCODE;
   }
   bool cout;
   int index = opcode % 8 + (opcode > 10 ? 1 : 0);
-  (*alu_selector[index]) (op1, op2, &cout, result);
-  if (set) set_alu_flags(*result, cout); 
+  alu_selector[index](op1, op2, &cout, result);
+  bool arithm_op = (opcode >= 2 && opcode <= 4) || opcode == 10;
+  if (set) set_alu_flags(*result, cout, arithm_op); 
   return 0;
 }
 
@@ -62,8 +75,8 @@ int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
 int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set) {
   if (shift_type > 4) return UNKNOWN_OPCODE;
   bool cout;
-  (*barrel_shifter[shift_type])(op1, op2, &cout, result);
-  if (set) set_alu_flags(*result, cout); 
+  barrel_shifter[shift_type](op1, op2, &cout, result);
+  if (set) set_alu_flags(*result, cout, true); 
   return 0;
 }
 
@@ -86,7 +99,7 @@ static void sub(word_t op1, word_t op2, bool *cout, word_t *res){
   int sign_op1 = op1 >> 31;
   int sign_op2 = op2 >> 31;
   int sign_diff = *res >> 31;
-  *cout = (sign_op1 ^ sign_op2) && !(sign_diff & sign_op2);    
+  *cout = !((sign_op1 ^ sign_op2) && (sign_diff & sign_op2));    
 }
 
 
@@ -136,7 +149,7 @@ static void lsr(byte_t shamt, word_t n, bool *cout, word_t *res){
 }
 
 static void asr(byte_t shamt, word_t n, bool *cout, word_t *res){
-  *cout = shamt > 0 && (n >> (shamt - 1));
+  *cout = shamt > 0 && (n >> (shamt - 1) & 1);
   n >>= shamt;
   word_t mask = 1 << (31 - shamt);
   word_t trailing_ones = (n & mask) - 1;
@@ -144,6 +157,6 @@ static void asr(byte_t shamt, word_t n, bool *cout, word_t *res){
 }
 
 static void ror(byte_t shamt, word_t n, bool *cout, word_t *res){
+  *cout = shamt > 0 && (n >> (shamt - 1) & 1);
   *res = (n >> shamt) | (n << (-shamt & 31));
-  *cout = (*res >> 31) & 1;
 }
