@@ -32,7 +32,8 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
-
+/* Unknown Opcode for ALU */
+#define UNKNOWN_OPCODE 404
 
 
 /* Type Aliases */

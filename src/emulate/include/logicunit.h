@@ -12,8 +12,6 @@
 #include "global.h"
 #include "state.h"
 
-#define UNKNOWN_OPCODE 404 
-
 
 /*
  *  The following functions define require ALU operations
