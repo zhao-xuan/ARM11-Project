@@ -1,5 +1,6 @@
 #include "global.h"
 #include "state.h"
+#include "testutils.h"
 
 static void test_reg_operations() {
     /*
@@ -11,11 +12,11 @@ static void test_reg_operations() {
 
     for (word_t i = 0; i < REG_NUM; i++) {
         /* Testing register initialization */
-        name = "Testing if registers initialized to 0"
-        testword(i, 0, name);
+        name = "Testing if registers initialized to 0";
+        testword(get_reg(i), 0, name);
         set_reg(i, i);
         /* Testing register set */
-        name = "Testing if registers can be set properly"
+        name = "Testing if registers can be set properly";
         testword(get_reg(i), i, name);
     }
 }
@@ -28,21 +29,21 @@ static void test_flag_operations() {
     char *name;
 
     /* Testing flag initialization */
-    name = "Testing if flags are initialized to 0"
+    name = "Testing if flags are initialized to 0";
     testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG)
             || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
     set_flag(C_FLAG);
     set_flag(N_FLAG);
     set_flag(V_FLAG);
     set_flag(Z_FLAG);
-    name = "Testing if flags can be set properly"
+    name = "Testing if flags can be set properly";
     testbool(get_flag(C_FLAG) && get_flag(N_FLAG)
             && get_flag(V_FLAG) && get_flag(Z_FLAG), name);
     clear_flag(C_FLAG);
     clear_flag(N_FLAG);
     clear_flag(V_FLAG);
     clear_flag(Z_FLAG);
-    name = "Testing if flags can be cleared properly"
+    name = "Testing if flags can be cleared properly";
     testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG)
             || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
 }
@@ -55,9 +56,10 @@ static void test_memory_operations() {
      */
 
     char *name;
-    const address_T STEP = 2048;
+    const address_t STEP = 2048;
 
-    for (address_t addr = 0; addr < MEM_ADDR; addr += STEP) {
+    for (address_t addr = 1; addr < MEM_ADDR - STEP; addr += STEP) {
+        printf("Address: %d\n", addr);
         /* Testing memory initialization */
         name = "Testing if memory is initialized to 0";
         testword(get_word(addr), 0, name);
@@ -92,15 +94,14 @@ static void test_load_program() {
      * with address 0 and 4 bytes for each instruction
      */
 
-    /* Creating an example file to load into memory */
-    FILE *fp = fopen("memory_load_program_test.txt", "w+");
-    fprintf(fp, "^A^P ã^B <81>â");
+    /* an example file to load into memory */
+    FILE *fp = fopen("factorial", "r");
 
     char *name;
     uint32_t *buffer = NULL;
     size_t size;
 
-    if (read_binary_file(fp, &buffer, &size) == 0) {
+    if (read_binary_file("factorial", &buffer, &size) == 0) {
         swap_endian(buffer, size);
         load_program(buffer, size);
     } else {
@@ -116,7 +117,6 @@ static void test_load_program() {
 
     free(buffer);
     fclose(fp);
-    system("rm -f memory_load_program_test.txt");
 }
 
 static void test_return_state() {
@@ -147,7 +147,7 @@ int main(void) {
     /* testing cases */
     test_reg_operations();
     test_flag_operations();
-    test_memory_operations;
+    test_memory_operations();
     test_load_program();
     /* the state will be deconstructed in test_return_state() */
     test_return_state();
