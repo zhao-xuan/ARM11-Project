@@ -95,6 +95,9 @@ static void test_return_state() {
 }
 
 int main(int argc, char **argv) {
+    /* command line argument needed: the file path/name of the binary ARM11 instructions 
+     * This is needed in order to test if load_program(word_t *buffer, size_t size) works correctly
+     */
     test_reg_operations();
     test_flag_operations();
     test_memory_operations;
