@@ -82,24 +82,19 @@ int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set)
 
 /*  BITWISE AND */
 static void and(word_t op1, word_t op2, bool *cout, word_t *res){
-  *cout = false;
   *res = op1 & op2;
 }
 
 /*  BITWISE EXCLUSTIVE OR */
 static void eor(word_t op1, word_t op2, bool *cout, word_t *res){
-  *cout = false;
   *res = op1 ^ op2;
 }
 
 
 /*  SUBTRACTION */
 static void sub(word_t op1, word_t op2, bool *cout, word_t *res){
-  *res = op1 - op2;  
-  int sign_op1 = op1 >> 31;
-  int sign_op2 = op2 >> 31;
-  int sign_diff = *res >> 31;
-  *cout = !((sign_op1 ^ sign_op2) && (sign_diff & sign_op2));    
+  *res = op1 - op2; 
+  *cout =  op1 >= op2; 
 }
 
 
@@ -122,15 +117,13 @@ static void add(word_t op1, word_t op2, bool *cout, word_t *res){
 /*  BITWISE */
 static void orr(word_t op1, word_t op2, bool *cout, word_t *res){
   *res = op1 | op2;
-  *cout = false;  
 }
 
 
 
 /*  MOVE */
 static void mov(word_t op1, word_t op2, bool *cout, word_t *res){
- *res = op2;
- *cout = false;
+  *res = op2;
 }
 
 
