@@ -105,6 +105,7 @@ int main(void) {
   word_t expected;
   int expected_flags, shamt;
 
+  clear_flag(C_FLAG);
   /* Test bitwise and */
   expected = 0;
   expected_flags = 0b0100;
@@ -154,6 +155,7 @@ int main(void) {
   test_alu(num3, num5, ADD_OPCODE, expected, expected_flags);
   printf("\n");
 
+  clear_flag(C_FLAG);
   /* Test bitwise or */
   expected = num_max;
   expected_flags = 0b1000;
