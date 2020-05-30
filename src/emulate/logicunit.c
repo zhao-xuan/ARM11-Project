@@ -12,7 +12,7 @@
  *  
  *    
  *  NOTICE that this Carryout is ONLY responsible for the C-bit
- *  of the instruction currently being executed
+ *  and logical operations do not set the C-Bit  
  */
 static void and(word_t op1, word_t op2, bool *cout, word_t *res);
 static void eor(word_t op1, word_t op2, bool *cout, word_t *res);
@@ -44,7 +44,10 @@ shifter_array_ptr barrel_shifter[] = { lsl, lsr, asr, ror };
 /* Array of pointer to set flags function */
 flag_setter_ptr flag_setter[] = { clear_flag, set_flag };
 
-/* A helper function to set the flags of the top 3 bits in CPSR*/
+/*
+ *  A helper function to set the flags of the top 3 bits in CPSR only for 
+ *  Only arithmetic operations should set C_FLAG
+ */
 static void set_alu_flags(word_t res, bool cout, bool arithm_op) {
     flag_setter[(res >> 31) & 1] (N_FLAG);
     flag_setter[res == 0] (Z_FLAG);
@@ -54,13 +57,11 @@ static void set_alu_flags(word_t res, bool cout, bool arithm_op) {
 
 /* 
  *  A function visible to the 'outside world' defined in the header file 
- *
- *  NOTE:
- *      - Only arithmetic operations will set the C-flag
- *
  */
 int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
-  if ((opcode >= 5 && opcode <= 7) || opcode == 11 || opcode > 13) {
+  if ((opcode >= 5 && opcode <= 7) 
+       || opcode == 11 
+       || opcode > 13) {
     return UNKNOWN_OPCODE;
   }
   bool cout;
@@ -68,16 +69,18 @@ int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
   alu_selector[index](op1, op2, &cout, result);
   bool arithm_op = (opcode >= 2 && opcode <= 4) || opcode == 10;
   if (set) set_alu_flags(*result, cout, arithm_op); 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
-/* A function visible to the 'outside world' for the barrel shifter */
+/*
+ * A function visible to the 'outside world' for the barrel shifter 
+ */
 int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set) {
   if (shift_type > 4) return UNKNOWN_OPCODE;
   bool cout;
   barrel_shifter[shift_type](op1, op2, &cout, result);
   if (set) set_alu_flags(*result, cout, true); 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 /*  BITWISE AND */
