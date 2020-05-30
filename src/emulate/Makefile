@@ -19,10 +19,14 @@ $(OBJ_DIR)/%.o: %.c
 $(UTIL_OBJ_DIR)/utils.o: ../utils/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+test: 
+	cd tests; make all;
+	
 clean:
 	rm -f $(wildcard $(OBJ_DIR)/*.o)
 	rm -f $(wildcard $(UTIL_OBJ_DIR)/*.o)
 	rm -f $(BIN_DIR)/emulate
+	cd tests; make clean
 
 .SUFFIXES: .c .o .h
-.PHONY: clean
+.PHONY: clean test

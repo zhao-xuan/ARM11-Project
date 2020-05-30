@@ -10,8 +10,8 @@ void init_state() {
   }
 }
 
-void return_state(FILE* fp) {
-  print_state(fp);
+
+void free_state() {
   free(state);
 }
 
