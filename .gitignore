@@ -71,6 +71,7 @@ bin/*
 *.i*86
 *.x86_64
 *.hex
+*_test
 
 # Debug files
 *.dSYM/
