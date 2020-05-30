@@ -12,8 +12,10 @@ int main(int argc, char **argv) {
   size_t size; 
   read_binary_file(argv[1], &buffer, &size);
   load_program(buffer, size);
+  
   set_flag(N_FLAG);
-  free_state();
+
   print_state(stdout);
+  free_state();
   return EXIT_SUCCESS;
 }

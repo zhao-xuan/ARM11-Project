@@ -17,11 +17,9 @@ void free_state() {
 
 word_t incrementPC(){
   word_t value = get_reg(PC);
-  set_reg(PC, value + 1U);
+  set_reg(PC, value + 4U);
   return value;
 }
-
-
 
 word_t get_reg(int reg_no) {
   out_of_bound_check(reg_no, REG_NUM);
