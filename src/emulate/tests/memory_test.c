@@ -139,8 +139,8 @@ static void test_return_state() {
         fprintf(stderr, "Failed to open the text file!");
         exit(EXIT_FAILURE);
     }
-
-    return_state(f);
+    free_state();
+    print_state(f);
     /* print to the standard output for convenience*/
     while(!feof(f)) {
         fprintf(stdout, "%c", fgetc(f));
