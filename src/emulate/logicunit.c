@@ -75,10 +75,11 @@ int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set) {
 /*
  * A function visible to the 'outside world' for the barrel shifter 
  */
-int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set) {
+int shifter(byte_t shamt, word_t operand, word_t *result, 
+              byte_t shift_type, bool set) {
   if (shift_type > 4) return UNKNOWN_OPCODE;
   bool cout;
-  barrel_shifter[shift_type](op1, op2, &cout, result);
+  barrel_shifter[shift_type](shamt % 32, operand, &cout, result);
   if (set) set_alu_flags(*result, cout, true); 
   return EXIT_SUCCESS;
 }

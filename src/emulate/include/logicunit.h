@@ -27,6 +27,6 @@
 int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set);
 
 /* Similar to the ALU */
-int shifter(word_t op1, word_t op2, word_t *result, byte_t shift_type, bool set);
+int shifter(byte_t shamt, word_t operand, word_t *result, byte_t shift_type, bool set);
 
 #endif
