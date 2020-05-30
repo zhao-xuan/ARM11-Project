@@ -34,10 +34,80 @@
 /* Overflow Flag */
 #define V_FLAG 28
 
+/* Instruction decoding definitions. All in BIG ENDIAN encoding */
 
-/* Opcodes */
+/* DATA_PROCESSING & DATA_TRANSFER */
+/* Location of Cond field for ALL types of instructions*/
+#define COND_LOCATION 28
+/* Location of OpCode for DATA_PROCESSING*/
+#define OPCODE_LOCATION 21
+/* Location of operand2 immediate field for DATA_PROCESSING with I = 1 */
+#define OPERAND2_IMM_LOCATION 0
+/* Location of operand2 rotate field for DATA_PROCESSING with I = 1 */
+#define OPERAND2_ROTATE_LOCATION 8
+/* Location of operand2 Rm field for DATA_PROCESSING with I = 0 */
+#define OPERAND2_RM_LOCATION 0
+/* Location of operand2 integer shift field for DATA_PROCESSING with I = 0 */
+#define OPERAND2_INTEGER_SHIFT_LOCATION 7
+/* Location of operand2 shift register field for DATA_PROCESSING with I = 0 */
+#define OPERAND2_REGISTER_SHIFT_LOCATION 8
+/* Location of operand2 shift type field for DATA_PROCESSING with I = 0 */
+#define OPERAND2_SHIFT_TYPE_LOCATION 5
+/* Location of operand2 shift specify field for DATA_PROCESSING with I = 0 */
+#define OPERAND2_SHIFT_SPEC_LOCATION 4
+/* Location of Set Cond field for DATA_PROCESSING and MULTIPLY*/
+#define SET_COND_LOCATION 20
+/* Location of Immediate Operand/Offset field for DATA_PROCESSING and DATA_TRANSFER*/
+#define IMM_LOCATION 25
+/* Location of Rn field for DATA_PROCESSING and DATA_TRANSFER */
+#define DP_DT_RN_LOCATION 16
+/* Location of Rd field for DATA_PROCESSING and DATA_TRANSFER */
+#define DP_DT_RD_LOCATION 12
+/* Location of Load/Store field for DATA_TRANSFER*/
+#define LOAD_STORE_LOCATION 20
+/* Location of Pre/Post Indexing field for DATA_TRANSFER*/
+#define P_INDEX_LOCATION 24
+/* Location of Up-bit field for DATA_TRANSFER*/
+#define UP_BIT_LOCATION 23
+/* Location of Offset field for DATA_TRANSFER */
+#define DT_OFFSET_LOCATION 0
 
-/* Unknown Opcode for ALU */
+/* MULTIPLY & BRANCH */
+/* Location of Rn field for MULTIPLY */
+#define MUL_RN_LOCATION 12
+/* Location of Rd field for MULTIPLY */
+#define MUL_RD_LOCATION 16
+/* Location of Rs field for MULTIPLY */
+#define MUL_RS_LOCATION 8
+/* Location of Rm field for MULTIPLY */
+#define MUL_RM_LOCATION 0
+/* Location of Accumulate field for MULTIPLY*/
+#define ACCUMULATE_LOCATION 21
+/* Location of Offset field for BRANCH */
+#define BRANCH_OFFSET_LOCATION 0
+
+/* Field size matching definition */
+/* Field size of 1 bit */
+#define ONE_BIT_FIELD 0x1
+/* Field size of 2 btis */
+#define TWO_BIT_FIELD 0x3
+/* Field size of 4 bits */
+#define FOUR_BIT_FIELD 0xf
+/* Field size of 5 bits */
+#define FIVE_BIT_FIELD 0x1f
+/* Field size of 8 bits */
+#define EIGHT_BIT_FIELD 0xff
+/* Field size of 12 bits */
+#define TWELVE_BIT_FIELD 0xfff
+/* Field size of 24 bits */
+#define TWENTY_FOUR_BIT_FIELD 0xffffff
+
+
+
+
+/* OpCodes */
+
+/* Unknown OpCode for ALU */
 #define UNKNOWN_OPCODE 404
 /* Bitwise And */
 #define AND_OPCODE 0

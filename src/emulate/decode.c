@@ -14,6 +14,7 @@ instruction_t *decode(const word_t binary) {
     instruction_t *instr_struct = malloc(sizeof(instruction_t));
 
     instr_struct -> type = instr_type;
+    instr_struct -> cond = (binary >> COND_LOCATION) & FOUR_BIT_FIELD;
 
     switch (instr_type) {
         case DATA_PROCESSING: {
@@ -37,7 +38,6 @@ instruction_t *decode(const word_t binary) {
             break;
         }
         case HALT:
-            fprintf(stderr, "Halted! Do something!");
             break;
         default:
             fprintf(stderr, "Instruction type doesn't match!");
@@ -75,42 +75,52 @@ enum InstructionType check_instruction_type(const word_t binary) {
     return HALT;
 }
 
-static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p) {
-    instr_p -> cond = (binary >> 28) & 0xf;
-    instr_p -> rn = (binary >> 16) & 0xf;
-    instr_p -> rd = (binary >> 12) & 0xf;
-    instr_p -> opcode = (binary >> 21) & 0xf;
-    instr_p -> operand2 = binary & 0xfff;
-    instr_p -> imm_const = (binary >> 25) & 1;
-    instr_p -> set = (binary >> 20) & 1;
-    (struct_p -> instructions).data_processing = *instr_p;
+static void data_processing_helper(const word_t binary, instruction_t *struct_p, data_processing_t *instr_p) {
+    instr_p -> rn = (binary >> DP_DT_RN_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> rd = (binary >> DP_DT_RD_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> opcode = (binary >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> imm_const = (binary >> IMM_LOCATION) & ONE_BIT_FIELD;
+    instr_p -> set = (binary >> SET_COND_LOCATION) & ONE_BIT_FIELD;
+
+    /* Setting the operand2 field for DATA_PROCESSING instructions */
+    if (instr_p -> imm_const) {
+        (instr_p -> operand2).imm_value.imm = (binary >> OPERAND2_IMM_LOCATION) & EIGHT_BIT_FIELD;
+        (instr_p -> operand2).imm_value.rotate = (binary >> OPERAND2_ROTATE_LOCATION) & FOUR_BIT_FIELD;
+    } else {
+        (instr_p -> operand2).reg_value.shift_type = (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
+        (instr_p -> operand2).reg_value.rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;
+        if ((binary >> OPERAND2_SHIFT_SPEC_LOCATION) & ONE_BIT_FIELD) {
+            (instr_p -> operand2).reg_value.shift.shift_reg = (binary >> OPERAND2_REGISTER_SHIFT_LOCATION) & FOUR_BIT_FIELD;
+        } else {
+            (instr_p -> operand2).reg_value.shift.integer_shift = (binary >> OPERAND2_INTEGER_SHIFT_LOCATION) & FIVE_BIT_FIELD;
+        }
+    }
+
+    (struct_p -> instructions).data_processing = instr_p;
 }
 
-static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p) {
-    instr_p -> cond = (binary >> 28) & 0xf;
-    instr_p -> rm = binary & 0xf;
-    instr_p -> rd = (binary >> 16) & 0xf;
-    instr_p -> rs = (binary >> 8) & 0xf;
-    instr_p -> rn = (binary >> 12) & 0xf;
-    instr_p -> accumulate = (binary >> 21) & 1;
-    instr_p -> set = (binary >> 20) & 1;
-    (struct_p -> instructions).multiply = *instr_p;
+static void multiply_helper(const word_t binary, instruction_t *struct_p, multiply_t *instr_p) {
+    instr_p -> rm = binary & FOUR_BIT_FIELD;
+    instr_p -> rd = (binary >> MUL_RD_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> rs = (binary >> MUL_RS_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> rn = (binary >> MUL_RN_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> accumulate = (binary >> ACCUMULATE_LOCATION) & ONE_BIT_FIELD;
+    instr_p -> set = (binary >> SET_COND_LOCATION) & ONE_BIT_FIELD;
+    (struct_p -> instructions).multiply = instr_p;
 }
 
-static void data_transfer_helper(word_t binary, instruction_t *struct_p, data_transfer_t *instr_p) {
-    instr_p -> offset = binary & 0xfff;
-    instr_p -> cond = (binary >> 28) & 0xf;
-    instr_p -> rd = (binary >> 12) & 0xf;
-    instr_p -> rn = (binary >> 16) & 0xf;
-    instr_p -> imm_offset = (binary >> 25) & 1;
-    instr_p -> pre_index = (binary >> 24) & 1;
-    instr_p -> up_bit = (binary >> 23) & 1;
-    instr_p -> load = (binary >> 20) & 1;
-    (struct_p -> instructions).data_transfer = *instr_p;
+static void data_transfer_helper(const word_t binary, instruction_t *struct_p, data_transfer_t *instr_p) {
+    instr_p -> offset = binary & TWELVE_BIT_FIELD;
+    instr_p -> rd = (binary >> DP_DT_RD_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> rn = (binary >> DP_DT_RN_LOCATION) & FOUR_BIT_FIELD;
+    instr_p -> imm_offset = (binary >> IMM_LOCATION) & ONE_BIT_FIELD;
+    instr_p -> pre_index = (binary >> P_INDEX_LOCATION) & ONE_BIT_FIELD;
+    instr_p -> up_bit = (binary >> UP_BIT_LOCATION) & ONE_BIT_FIELD;
+    instr_p -> load = (binary >> LOAD_STORE_LOCATION) & ONE_BIT_FIELD;
+    (struct_p -> instructions).data_transfer = instr_p;
 }
 
-static void branch_helper(word_t binary, instruction_t *struct_p, branch_t *instr_p) {
-    instr_p -> cond = (binary >> 28) & 0xf;
-    instr_p -> offset = binary & 0xffffff;
-    (struct_p -> instructions).branch = *instr_p;
+static void branch_helper(const word_t binary, instruction_t *struct_p, branch_t *instr_p) {
+    instr_p -> offset = binary & TWENTY_FOUR_BIT_FIELD;
+    (struct_p -> instructions).branch = instr_p;
 }
