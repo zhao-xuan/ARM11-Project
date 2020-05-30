@@ -14,10 +14,10 @@
 
 /* Structure for Memory, Registers and the Pipeline */
 typedef struct {
-  /* Memory[MEM_ADDR] */
-  byte_t *memory;
-  /* Registers[REG_NUM] */
-  word_t *registers;
+  /* Memory*/
+  byte_t memory[MEM_ADDR];
+  /* Registers*/
+  word_t registers[REG_NUM];
   /* Instruction that has already been fetched in the pipeline */
   word_t fetched_instruction;
   /* Instruction that has already been decoded in the pipeline */
@@ -99,4 +99,31 @@ void set_memory(address_t addr, byte_t value);
  * @brief: Loads program in buffer into the memory.
  */
 void load_program(word_t *buffer, size_t size);
+
+/*
+ * @param: fetched_instruction   : the value to set fetched_instruction
+ * @brief: sets fetched_instruction to the param specified. 
+ */
+void set_fetched(word_t fetched_instruction);
+
+
+/*
+ * @returns: the value of fetched_instruction in the current state. 
+ */
+word_t get_fetched();
+
+/*
+ * @param: decoded_instruction   : the value to set decoded_instruction
+ * @brief: sets decoded_instruction to the param specified. 
+ */
+void set_decoded(instruction_t decoded_instruction);
+
+
+
+/*
+ * @returns: the value of decoded_instruction in the current state. 
+ */
+instruction_t get_decoded();
+
+
 #endif

@@ -31,6 +31,7 @@ testutils:
 
 clean:
 	rm -f $(BUILD) *.o core
+	rm -f memory_test.txt
 	cd testutils; make clean 
 
 .PHONY: clean, testutils
