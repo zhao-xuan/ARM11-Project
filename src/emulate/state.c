@@ -15,13 +15,21 @@ void free_state() {
   free(state);
 }
 
+word_t incrementPC(){
+  word_t value = get_reg(PC);
+  set_reg(PC, value + 1U);
+  return value;
+}
+
+
+
 word_t get_reg(int reg_no) {
   out_of_bound_check(reg_no, REG_NUM);
   word_t value = state->registers[reg_no];
   return value;
 }
 
-void set_reg(word_t reg_no, word_t value) {
+void set_reg(int reg_no, word_t value) {
   out_of_bound_check(reg_no, REG_NUM);
   state->registers[reg_no] = value;
 }

@@ -36,6 +36,11 @@ void init_state();
 void free_state();
 
 /*
+ * Return the current value of the Program counter, then increments it. 
+ */
+word_t incrementPC();
+
+/*
  * @param reg_no : number of the required register. 
  * @returns: value of the register. (In big endian)
  */
@@ -46,7 +51,7 @@ word_t get_reg(int reg_no);
  * @param: value  : Value to be set. (In big endian)
  * @brief: sets the value of the register to value specified.
  */
-void set_reg(word_t reg_no, word_t value);
+void set_reg(int reg_no, word_t value);
 
 /*
  * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
