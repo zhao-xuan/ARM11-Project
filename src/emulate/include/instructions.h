@@ -44,8 +44,8 @@ typedef struct {
     bool imm_const;
     bool set;
     union {
-        imm_value_t imm_value;
-        register_form_t reg_value;
+        imm_value_t *imm_value;
+        register_form_t *reg_value;
     } operand2;
 } data_processing_t;
 
@@ -71,7 +71,7 @@ typedef struct {
     bool load;
     union {
         word_t imm_value;
-        register_form_t reg_value;
+        register_form_t *reg_value;
     } offset;
 } data_transfer_t;
 
