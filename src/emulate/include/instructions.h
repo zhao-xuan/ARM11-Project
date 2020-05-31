@@ -20,21 +20,38 @@
  */
 
 
+/* Two subtypes of operand2 field of DATA_PROCESSING */
+typedef struct {
+    byte_t imm;
+    byte_t rotate;
+} imm_value_t;
+
+typedef struct {
+    byte_t shift_type;
+    byte_t rm;
+    bool shift_spec;
+    union {
+        byte_t integer_shift;
+        byte_t shift_reg;
+    } shift;
+} register_form_t;
+
 /* DATA PROCESSING */
 typedef struct {
-    byte_t cond;
     byte_t rn;
     byte_t rd;
     byte_t opcode;
-    word_t operand2;
     bool imm_const;
     bool set;
+    union {
+        imm_value_t imm_value;
+        register_form_t reg_value;
+    } operand2;
 } data_processing_t;
 
 
 /* MULTIPLY */
 typedef struct {
-    byte_t cond;
     byte_t rm;
     byte_t rd;
     byte_t rs;
@@ -44,11 +61,9 @@ typedef struct {
 } multiply_t;
 
 
-
 /* DATA TRANSFER */
 typedef struct {
     address_t offset;
-    byte_t cond;
     byte_t rn;
     byte_t rd;
     bool imm_offset;
@@ -62,7 +77,6 @@ typedef struct {
 /* BRANCH */
 typedef struct {
     address_t offset;
-    byte_t cond;
 } branch_t;
 
 
@@ -82,11 +96,12 @@ enum InstructionType {DATA_PROCESSING, MULTIPLY, BRANCH, DATA_TRANSFER, HALT};
 
 typedef struct {
     enum InstructionType type;
+    byte_t cond;
     union {
-        data_processing_t data_processing;
-        multiply_t multiply;
-        data_transfer_t data_transfer;
-        branch_t branch;
+        data_processing_t *data_processing;
+        multiply_t *multiply;
+        data_transfer_t *data_transfer;
+        branch_t *branch;
     } instructions;
 } instruction_t;
 
