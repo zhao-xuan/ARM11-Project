@@ -4,6 +4,7 @@ static int data_processing_execute(data_processing_t *dp_instr);
 static int multiply_execute(multiply_t *mul_instr);
 static int data_transfer_execute(data_transfer_t *dt_instr);
 static int branch_execute(branch_t *b_instr);
+static bool cond_check(byte_t cond);
 
 int execute(instruction_t instr_to_exec) {
   if (cond_check(instr_to_exec.cond)) {
@@ -92,7 +93,8 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
  */
 static int branch_execute(branch_t *b_instr) {
   /* Branch instructions should be executed here */
-  word_t curr = get_reg(PC);
-  set_reg(PC, b_instr->offset << 2 + curr);
+  word_t val = get_reg(PC);
+  val += b_instr->offset << 2;
+  set_reg(PC, val);
   return 0;
 }
