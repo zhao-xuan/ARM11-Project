@@ -96,5 +96,8 @@ static int branch_execute(branch_t *b_instr) {
   word_t val = get_reg(PC);
   val += b_instr->offset << 2;
   set_reg(PC, val);
+
+  /* branch clears all pipeline stages , to uncomment once pipeline is merged*/
+  // empty_pipeline(); 
   return 0;
 }
