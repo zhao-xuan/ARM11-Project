@@ -89,7 +89,8 @@ static void data_processing_helper(const word_t binary, instruction_t *struct_p,
     } else {
         (instr_p -> operand2).reg_value.shift_type = (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
         (instr_p -> operand2).reg_value.rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;
-        if ((binary >> OPERAND2_SHIFT_SPEC_LOCATION) & ONE_BIT_FIELD) {
+        (instr_p -> operand2).reg_value.shift_spec = (binary >> OPERAND2_SHIFT_SPEC_LOCATION) & ONE_BIT_FIELD;
+        if ((instr_p -> operand2).reg_value.shift_spec) {
             (instr_p -> operand2).reg_value.shift.shift_reg = (binary >> OPERAND2_REGISTER_SHIFT_LOCATION) & FOUR_BIT_FIELD;
         } else {
             (instr_p -> operand2).reg_value.shift.integer_shift = (binary >> OPERAND2_INTEGER_SHIFT_LOCATION) & FIVE_BIT_FIELD;

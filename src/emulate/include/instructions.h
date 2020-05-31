@@ -29,6 +29,7 @@ typedef struct {
 typedef struct {
     byte_t shift_type;
     byte_t rm;
+    bool shift_spec;
     union {
         byte_t integer_shift;
         byte_t shift_reg;
