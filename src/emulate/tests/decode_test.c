@@ -7,12 +7,19 @@
 
 static bool compare_imm_value(imm_value_t *expected, imm_value_t *output) {
 	return expected->imm == output->imm
-		  	 && expected->rotate == output->rotate;
+		   && expected->rotate == output->rotate;
 }
 
 static bool compare_register_form(register_form_t *expected, register_form_t *output) {
-	return expected->shift_type == output->shift_type
-		 	   && expected->rm == output->rm;
+	if (expected->shift_spec != output->shift_spec) return false;
+
+    bool shift_val_match = expected->shift_spec
+                           ? expected->shift.shift_reg == output->shift.shift_reg
+                           : expected->shift.integer_shift == output->shift.integer_shift;
+
+    return shift_val_match
+           && expected->shift_type == output->shift_type 
+		   && expected->rm == output->rm;
 }
 
 static bool compare_data_processing(data_processing_t *expected, data_processing_t *output) {
@@ -22,29 +29,36 @@ static bool compare_data_processing(data_processing_t *expected, data_processing
 					? compare_imm_value(&expected->operand2.imm_value, &output->operand2.imm_value)
 					: compare_register_form(&expected->operand2.reg_value, &output->operand2.reg_value);
 	return operand2_decoded_correctly
-					&& expected->rn        == output->rn  
-					&& expected->rd        == output->rd 
-					&& expected->opcode    == output->opcode
-					&& expected->set       == output->set; 
+		   && expected->rn        == output->rn  
+		   && expected->rd        == output->rd 
+		   && expected->opcode    == output->opcode
+		   && expected->set       == output->set; 
 }
 static bool compare_multiply(multiply_t *expected, multiply_t *output) {
 	return expected->rm           == output->rm  
-				&& expected->rd         == output->rd 
-				&& expected->rs         == output->rs
-				&& expected->accumulate == output->accumulate 
-				&& expected->set        == output->set; 
+		   && expected->rd         == output->rd 
+		   && expected->rs         == output->rs
+		   && expected->accumulate == output->accumulate 
+		   && expected->set        == output->set; 
 }
 static bool compare_data_transfer(data_transfer_t *expected, data_transfer_t *output) {
-	return expected->rn           == output->rn  
-				&& expected->rd         == output->rd 
-				&& expected->imm_offset == output->imm_offset
-				&& expected->pre_index  == output->pre_index 
-				&& expected->up_bit     == output->up_bit 
-				&& expected->load       == output->load
-				&& expected->offset     == output->offset;
+	if (expected->imm_offset ^ output->imm_offset) return false;  
+	bool offset_decoded_correctly = 
+					expected->imm_offset
+					? compare_register_form(&expected->offset.reg_value, &output->offset.reg_value)
+					: expected->offset.imm_value == output->offset.imm_value; 
+	
+
+    return offset_decoded_correctly
+           && expected->rn         == output->rn  
+		   && expected->rd         == output->rd 
+		   && expected->imm_offset == output->imm_offset
+		   && expected->pre_index  == output->pre_index 
+		   && expected->up_bit     == output->up_bit 
+		   && expected->load       == output->load;
 }
 static bool compare_branch(branch_t *expected, branch_t *output) {
-	return  expected->offset == output->offset;  
+	return expected->offset == output->offset;  
 }
 
 
@@ -84,8 +98,16 @@ char *generate_test_name(instruction_t *expected) {
 		case MULTIPLY:
 			 return "Multiply instruction decoded correctly";
 		case DATA_TRANSFER:
-			 return "Data Transfer instuction decoded correctly";
-		case BRANCH:
+        {
+		   data_transfer_t *dt_ptr = expected->instructions.data_transfer;
+		   if (dt_ptr->imm_offset) {
+			  return "Data Transfer instruction with register form, decoded correctly";
+		   }
+		   else {
+			   return "Data Transfer instruction with immediate constant, decoded correctly";
+		   }
+		}
+        case BRANCH:
 			 return "Branch instruction decoded correctly";
 		default:
 			 return "Halt instruction decoded correctly";
@@ -105,17 +127,35 @@ static void print_data_processing(data_processing_t *instr) {
 	} else {
 		printf("shifttype: %d\n", instr->operand2.reg_value.shift_type);
 		printf("rm       : %d\n", instr->operand2.reg_value.rm);
+        printf("shiftspec: %d\n", instr->operand2.reg_value.shift_spec);
+        if (instr->operand2.reg_value.shift_spec) {
+            printf("int shift : %d\n", instr->operand2.reg_value.shift.integer_shift);
+        } else {
+            printf("shift reg : %d\n", instr->operand2.reg_value.shift.shift_reg);
+        }
 	}
 }
 
 static void print_data_transfer(data_transfer_t *instr) {
-	printf("offset    : %d\n", instr -> offset);
+	printf("imm_offset: %d\n", instr -> imm_offset);
 	printf("rn        : %d\n", instr -> rn);
 	printf("rd        : %d\n", instr -> rd);
-	printf("imm_offset: %d\n", instr -> imm_offset);
 	printf("pre_index : %d\n", instr -> pre_index);
 	printf("up_bit    : %d\n", instr -> up_bit);
 	printf("load      : %d\n", instr -> load);
+
+    if (instr->imm_offset) {
+		printf("shifttype : %d\n", instr->offset.reg_value.shift_type);
+		printf("rm        : %d\n", instr->offset.reg_value.rm);
+        printf("shiftspec : %d\n", instr->offset.reg_value.shift_spec);
+        if (instr->offset.reg_value.shift_spec) {
+            printf("int shift : %d\n", instr->offset.reg_value.shift.integer_shift);
+        } else {
+            printf("shift reg : %d\n", instr->offset.reg_value.shift.shift_reg);
+        }
+    } else {
+        printf("offset imm : %d\n", instr -> offset.imm_value);
+    }
 }
 
 static void print_branch(branch_t *instr) {
@@ -170,7 +210,7 @@ void test_instruction(instruction_t *expected, const word_t binary) {
 }
 
 int main() {
-	word_t input;
+	word_t input, imm;
 	data_processing_t dp;
 	imm_value_t imm_value;
 	register_form_t reg_value;
@@ -203,6 +243,7 @@ int main() {
 	expected.cond = 14;
 	reg_value = (register_form_t) {0, 2};
 	reg_value.shift.integer_shift = 0;
+    reg_value.shift_spec = 0;
 	dp = (data_processing_t) {1, 3, 4, 0, 0};
 	dp.operand2.reg_value = reg_value;
 	expected.instructions.data_processing = &dp; 
@@ -233,17 +274,33 @@ int main() {
 	expected.instructions.multiply = &mul;
 	test_instruction(&expected, input);
 
-	/* Data transfer  
-	 *  ldr01 
-	 *  11100101 10010000 00100000 00000000 
+    /* Data transfer with immediate constant  
+	 *  ldr04  
+	 *  11100101 10010000 00100000 00000000  
 	 */
 	input = 3851427840;
 	expected.cond = 14;
 	expected.type = DATA_TRANSFER;
-	dt = (data_transfer_t) {0, 0, 2, 0, 1, 1, 1};
+	imm = 0;
+	dt = (data_transfer_t) {0, 2, 0, 1, 1, 1};
+	dt.offset.imm_value = imm;
 	expected.instructions.data_transfer = &dt;
 	test_instruction(&expected, input);
 
+    /* Data transfer with register form 
+	 *  str02  
+	 *  11100110 10000010 00010000 00000100     
+	 */
+	input = 3867283460;
+	expected.cond = 14;
+	expected.type = DATA_TRANSFER;
+	reg_value.shift_type = 0;
+    reg_value.rm = 4;
+    reg_value.shift_spec = 0;
+	dt = (data_transfer_t) {2, 1, 1, 0, 1, 0};
+	dt.offset.reg_value = reg_value;
+	expected.instructions.data_transfer = &dt;
+	test_instruction(&expected, input);
 	/* Branch 
 	 *  b01
 	 *  11101010 00000000 00000000 00000000
