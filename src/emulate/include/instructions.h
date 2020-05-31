@@ -86,7 +86,7 @@ typedef struct {
  *       - To help with the while loop for the pipeline
  *       
  */
-enum InstructionType {DATA_PROCESSING, MULTIPLY, BRANCH, DATA_TRANSFER, HALT};
+enum InstructionType {DATA_PROCESSING, MULTIPLY, BRANCH, DATA_TRANSFER, HALT, EMPTY};
 
 
 /*

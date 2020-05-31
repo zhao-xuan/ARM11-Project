@@ -8,6 +8,9 @@ void init_state() {
     fprintf(stderr, "Memory error!\n");
     exit(EXIT_FAILURE);
   }
+  instruction_t empty_instruction = {EMPTY};
+  set_fetched(EMPTY_INSTR);
+  set_decoded(empty_instruction);
 }
 
 
