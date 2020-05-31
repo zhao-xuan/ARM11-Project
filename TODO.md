@@ -81,6 +81,10 @@ I agree. We should define core functions with its argument like in the java test
 	* Finally, create the emulator loop to execute the pipeline and the execution of the four types of instructions, and terminate when executing all-0 instructions.
 	* Testing using test suite and additional test cases
 
+
+### Things to do after we finish:
+* Delete functions used for debugging in src/emulate/tests/decode\_test.c
+
 ## Part 2
 ### A list of point-to-notice:
 * Each line of assmebler file is either an instruction or a directive, optionally preceded by a lavel.

@@ -40,7 +40,7 @@ instruction_t *decode(const word_t binary) {
         case HALT:
             break;
         default:
-            fprintf(stderr, "Instruction type doesn't match!");
+            fprintf(stderr, "Instruction type doesn't match!\n");
             break;
     }
 
@@ -49,7 +49,7 @@ instruction_t *decode(const word_t binary) {
 
 enum InstructionType check_instruction_type(const word_t binary) {
     /* check if it is the all-0 halt instruction */
-    if ((binary | 0) == 0) {
+    if (binary == 0) {
         return HALT;
     }
 

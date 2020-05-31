@@ -5,6 +5,13 @@
  * https://www.doc.ic.ac.uk/~dcw/c-tools-2020/lecture2/
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
+
 extern void testbool( bool condition, char * testname );
 extern void testint( int got, int expected, char * testname );
 extern void testlong( long got, long expected, char * testname );
