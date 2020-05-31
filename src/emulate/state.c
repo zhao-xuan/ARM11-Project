@@ -8,9 +8,7 @@ void init_state() {
     fprintf(stderr, "Memory error!\n");
     exit(EXIT_FAILURE);
   }
-  instruction_t empty_instruction = {EMPTY};
-  set_fetched(EMPTY_INSTR);
-  set_decoded(empty_instruction);
+  empty_pipeline();
 }
 
 
@@ -102,5 +100,11 @@ instruction_t get_decoded() {
 
 void set_decoded(instruction_t decoded_instruction) {
   state->decoded_instruction = decoded_instruction; 
+}
+
+void empty_pipeline(){
+  instruction_t empty_instruction = {EMPTY};
+  set_fetched(EMPTY_INSTR);
+  set_decoded(empty_instruction);
 }
 

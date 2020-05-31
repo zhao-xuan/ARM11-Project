@@ -130,5 +130,10 @@ void set_decoded(instruction_t decoded_instruction);
  */
 instruction_t get_decoded();
 
+/*
+ * sets fetched and decoded both to empty. 
+ */
+void empty_pipeline();
+
 
 #endif
