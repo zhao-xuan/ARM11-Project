@@ -55,6 +55,12 @@ void set_reg(int reg_no, word_t value);
 
 /*
  * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
+ * @param: x     : Boolean to set the flag to
+ */
+void set_flag_to(flag_t flag, bool x);
+
+/*
+ * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
  * @return: whether the flag in question is set or not. 
  */
 bool get_flag(flag_t flag);

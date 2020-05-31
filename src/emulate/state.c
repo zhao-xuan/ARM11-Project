@@ -37,6 +37,12 @@ bool get_flag(flag_t flag) {
   return (curr >> flag) & 1U;
 }
 
+void set_flag_to(flag_t flag, bool x) {
+  word_t reg_val = get_reg(CPSR);
+  reg_val ^= (-x ^ reg_val) & (1U << flag);
+  set_reg(CPSR, reg_val);
+}
+
 void set_flag(flag_t flag) {
   word_t reg_val = get_reg(CPSR);
   reg_val |= 1U << flag;
