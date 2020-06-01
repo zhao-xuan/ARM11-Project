@@ -21,7 +21,7 @@ typedef struct {
   /* Instruction that has already been fetched in the pipeline */
   word_t fetched_instruction;
   /* Instruction that has already been decoded in the pipeline */
-  instruction_t decoded_instruction;
+  instruction_t *decoded_instruction;
 } state_t;
 
 /*
@@ -38,7 +38,7 @@ void free_state();
 /*
  * Return the current value of the Program counter, then increments it. 
  */
-word_t incrementPC();
+word_t get_and_incrementPC();
 
 /*
  * @param reg_no : number of the required register. 
@@ -52,6 +52,12 @@ word_t get_reg(int reg_no);
  * @brief: sets the value of the register to value specified.
  */
 void set_reg(int reg_no, word_t value);
+
+/*
+ * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
+ * @param: x     : Boolean to set the flag to
+ */
+void set_flag_to(flag_t flag, bool x);
 
 /*
  * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
@@ -121,14 +127,19 @@ word_t get_fetched();
  * @param: decoded_instruction   : the value to set decoded_instruction
  * @brief: sets decoded_instruction to the param specified. 
  */
-void set_decoded(instruction_t decoded_instruction);
+void set_decoded(instruction_t *decoded_instruction);
 
 
 
 /*
  * @returns: the value of decoded_instruction in the current state. 
  */
-instruction_t get_decoded();
+instruction_t *get_decoded();
+
+/*
+ * sets fetched and decoded both to empty. 
+ */
+void empty_pipeline();
 
 
 #endif

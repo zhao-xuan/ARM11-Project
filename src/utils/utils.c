@@ -67,3 +67,9 @@ void out_of_bound_check(uint32_t addr, size_t size) {
     exit(EXIT_FAILURE);
   }
 }
+
+uint32_t sign_extend(uint32_t x, int bits) {
+    uint32_t m = 1u << (bits - 1);
+    return (x ^ m) - m;
+}
+
