@@ -71,6 +71,8 @@ word_t get_word(address_t addr) {
 }
 
 void set_word(address_t addr, word_t word) {
+  // addr = addr >> 2;
+  // addr = addr << 2;
   if (out_of_bound_check(addr, MEM_ADDR) == 0) {
     for (int i = 0; i < 4; i++) {
       byte_t current_byte = ((byte_t *)&word)[i];
