@@ -1,7 +1,7 @@
 #include "print.h"
 
 void print_state(FILE* fp) {
-  fprintf(fp, "Registers: \n");
+  fprintf(fp, "Registers:\n");
   for (int i = 0; i < 13; i++) {
     fprintf(fp, "$%-3u:%11d (0x%08x)\n", i, get_reg(i), get_reg(i));
   }
