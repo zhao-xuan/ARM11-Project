@@ -68,7 +68,7 @@ static int multiply_execute(multiply_t *mul_instr) {
   word_t rm_val = get_reg(mul_instr->rm);
   word_t rs_val = get_reg(mul_instr->rs);
   word_t result = rm_val * rs_val;
-  
+
   if(mul_instr->accumulate){
     result += get_reg(mul_instr->rn);
   }
@@ -96,8 +96,8 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
  */
 static int branch_execute(branch_t *b_instr) {
   /* Branch instructions should be executed here */
-  word_t val = get_reg(PC);
-  val += b_instr->offset << 2;
+  word_t val = get_reg(PC); 
+  val += sign_extend(b_instr->offset << 2, 24);
   set_reg(PC, val);
 
   /* branch clears all pipeline stages , to uncomment once pipeline is merged*/

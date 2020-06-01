@@ -7,6 +7,7 @@
 
 #include "state.h"
 #include "instructions.h"
+#include "utils.h"
 #include "global.h"
 
 /*
