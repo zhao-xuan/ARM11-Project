@@ -109,11 +109,11 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
     byte_t base_reg = dt_instr -> rn;
     word_t offset, address;
 
-    bool add_or_sub = dt_instr -> up_bit;
+    bool up_bit = dt_instr -> up_bit;
 
     if (dt_instr -> imm_offset) {
         /* offset is a shift register as shown in operand2 in DATA_PROCESSING */
-        offset = compute_shift_register(*dt_instr -> offset.reg_value, false);
+        offset = compute_shift_register(*dt_instr -> offset.reg_value, true);
     } else {
         /* offset is an immediate */
         offset = dt_instr -> offset.imm_value;
@@ -121,10 +121,20 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
 
     if (dt_instr -> pre_index) {
         /* Pre-indexing mode without setting base register */
-        address = get_reg(base_reg) + add_or_sub ? offset : -offset;
+        address = get_reg(base_reg);
+        if (up_bit) {
+            address += offset;
+        } else {
+            address -= offset;
+        }   
     } else {
         address = get_reg(base_reg);
-        set_reg(base_reg, address + add_or_sub ? offset : -offset); 
+        if (up_bit) {
+            address += offset;
+        } else {
+            address -= offset;
+        }
+        set_reg(base_reg, address); 
     }
 
     /* Load or store operations, assume that all 32-bit long(a word) */
