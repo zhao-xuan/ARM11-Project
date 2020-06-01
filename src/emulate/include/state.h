@@ -38,7 +38,7 @@ void free_state();
 /*
  * Return the current value of the Program counter, then increments it. 
  */
-word_t incrementPC();
+word_t get_and_incrementPC();
 
 /*
  * @param reg_no : number of the required register. 

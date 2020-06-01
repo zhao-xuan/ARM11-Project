@@ -34,7 +34,7 @@ void pipeline() {
       set_decoded(*decoded_addr);
     }
 
-    word_t program_counter = incrementPC();
+    word_t program_counter = get_and_incrementPC();
     set_fetched(get_word(program_counter));
   }
 }

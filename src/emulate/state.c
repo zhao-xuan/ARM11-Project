@@ -16,7 +16,7 @@ void free_state() {
   free(state);
 }
 
-word_t incrementPC(){
+word_t get_and_incrementPC(){
   word_t value = get_reg(PC);
   set_reg(PC, value + 4U);
   return value;
