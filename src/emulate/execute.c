@@ -5,7 +5,7 @@ static int data_processing_execute(data_processing_t *dp_instr);
 static int multiply_execute(multiply_t *mul_instr);
 static int data_transfer_execute(data_transfer_t *dt_instr);
 static int branch_execute(branch_t *b_instr);
-static byte_t compute_shift_register(register_form_t reg_value);
+static word_t compute_shift_register(register_form_t reg_value, bool set);
 
 static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
@@ -114,43 +114,37 @@ static int multiply_execute(multiply_t *mul_instr) {
 static int data_transfer_execute(data_transfer_t *dt_instr) {
     /* Data transfer instructions should be executed here */
     /* We are assuming that PC cannot be Rm or Rd, so the code below does not check this */
-    byte_t offset;
     byte_t base_reg = dt_instr -> rn;
-    /* Check if the base_reg is PC: if it is PC then add 8 */
-    base_reg += base_reg == PC ? 8 : 0;
+    word_t offset, address;
 
     bool add_or_sub = dt_instr -> up_bit;
 
     if (dt_instr -> imm_offset) {
         /* offset is a shift register as shown in operand2 in DATA_PROCESSING */
-        offset = compute_shift_register(dt_instr -> reg_value);
+        offset = compute_shift_register(*dt_instr -> offset.reg_value, false);
     } else {
         /* offset is an immediate */
-        offset = dt_instr -> offset;
+        offset = dt_instr -> offset.imm_value;
     }
 
     if (dt_instr -> pre_index) {
         /* Pre-indexing mode without setting base register */
-        offset += add_or_sub ? offset : -offset;
-    }
-
-    /* Load or store operations, assume that all 32-bit long(a word) */
-    if (dt_instr -> load) {
-        set_reg(dt_instr -> rd, get_word(offset));
+        address = get_reg(base_reg) + add_or_sub ? offset : -offset;
     } else {
-        set_word(offset, dt_instr -> rd);
-    }
-
-    if (!(dt_instr -> pre_index)) {
+        address = get_reg(base_reg);
         /* In post-indexing, Rm cannot be the same as Rn */
         byte_t rm = (dt_instr -> offset).reg_value -> rm;
         if (rm == dt_instr -> rn) {
             return -1;
         }
-        /* Post-indexing mode AND setting base register */
-        address_t result = get_reg(base_reg);
-        result += add_or_sub ? offset : -offset;
-        set_reg(base_reg, result);
+        set_reg(base_reg, address + add_or_sub ? offset : -offset); 
+    }
+
+    /* Load or store operations, assume that all 32-bit long(a word) */
+    if (dt_instr -> load) {
+        set_reg(dt_instr -> rd, get_word(address));
+    } else {
+        set_word(address, get_reg(dt_instr -> rd));
     }
 
     return 0;
@@ -180,9 +174,10 @@ static bool write_result(byte_t opcode) {
  * @param: register_form_t reg_value: the shift register representation
  * @return the amount to be shifted
  */
-static byte_t compute_shift_register(register_form_t reg_value) {
+static word_t compute_shift_register(register_form_t reg_value, bool set) {
     byte_t shamt;
-
+    word_t result;
+    word_t operand = get_reg(reg_value.rm);
     /* Shift specified by a register */
     if (reg_value.shift_spec) {
         /* Cast word_t to byte_t, assuming shift amount doesn't exceed MAX_BYTE */
@@ -191,6 +186,10 @@ static byte_t compute_shift_register(register_form_t reg_value) {
         /* Use immediate value as shift amount */
         shamt = reg_value.shift.integer_shift;
     }
+    
+    shifter(shamt, operand, &result, reg_value.shift_type, set);
+
+    return result;
 }
 
 
