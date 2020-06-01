@@ -5,9 +5,12 @@ static int data_processing_execute(data_processing_t *dp_instr);
 static int multiply_execute(multiply_t *mul_instr);
 static int data_transfer_execute(data_transfer_t *dt_instr);
 static int branch_execute(branch_t *b_instr);
+
+static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
 
-int execute(instruction_t* instr_to_exec) {
+int execute(instruction_t instr_to_exec) {
+  if (cond_check(instr_to_exec->cond)) {
     switch (instr_to_exec->type) {
         case DATA_PROCESSING:
             return data_processing_execute(instr_to_exec->instructions.data_processing);
@@ -21,6 +24,28 @@ int execute(instruction_t* instr_to_exec) {
             fprintf(stderr, "Instruction Type Error!");
             exit(EXIT_FAILURE);
     }
+  } else {
+    return 0;
+  }
+}
+
+static bool cond_check(byte_t cond) {
+  switch (cond) {
+    /* eq */
+    case 0b0000:
+      return get_flag(Z_FLAG);
+    /* ge */
+    case 0b1010:
+      return get_flag(N_FLAG) == get_flag(V_FLAG);
+    /* gt */
+    case 0b1100:
+      return !get_flag(Z_FLAG) && cond_check(0b1010);
+    /* al */
+    case 0b1110:
+      return true;
+    default:
+      return !cond_check(cond - 1);
+  }
 }
 
 
@@ -64,19 +89,30 @@ static int data_processing_execute(data_processing_t *dp_instr) {
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int multiply_execute(multiply_t *mul_instr) {
-    /* Multiply instructions should be executed here */
+  /* Multiply instructions should be executed here */
+  word_t rm_val = get_reg(mul_instr->rm);
+  word_t rs_val = get_reg(mul_instr->rs);
+  word_t result = rm_val * rs_val;
 
-    return 0;
+  if(mul_instr->accumulate){
+    result += get_reg(mul_instr->rn);
+  }
+  if(mul_instr->set){
+    set_flag_to(N_FLAG, (result >> 31) & 1U);
+    set_flag_to(Z_FLAG, result == 0);
+  }
+  set_reg(mul_instr->rd, result);
+  return 0;
 }
 
 /*
- * @param: data_transfer dt_instr: the representation of a data transfer instruction
+ * @param: data_transfer dt_instr: the representation of a data transfer
+ * instruction
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int data_transfer_execute(data_transfer_t *dt_instr) {
-    /* Data transfer instructions should be executed here */
-
-    return 0;
+  /* Data transfer instructions should be executed here */
+  return 0;
 }
 
 /*
@@ -84,9 +120,14 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int branch_execute(branch_t *b_instr) {
-    /* Branch instructions should be executed here */
+  /* Branch instructions should be executed here */
+  word_t val = get_reg(PC); 
+  val += b_instr->offset;
+  set_reg(PC, val);
 
-    return 0;
+  /* branch clears all pipeline stages , to uncomment once pipeline is merged*/
+  // empty_pipeline(); 
+  return 0;
 }
 
 static bool write_result(byte_t opcode) {

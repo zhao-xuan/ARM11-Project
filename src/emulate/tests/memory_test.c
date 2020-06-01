@@ -32,19 +32,19 @@ static void test_flag_operations() {
     name = "Testing if flags are initialized to 0";
     testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG)
             || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
-    set_flag(C_FLAG);
-    set_flag(N_FLAG);
-    set_flag(V_FLAG);
-    set_flag(Z_FLAG);
+    set_flag_to(C_FLAG, 1);
+    set_flag_to(N_FLAG, 1);
+    set_flag_to(V_FLAG, 1);
+    set_flag_to(Z_FLAG, 1);
 
     /* Test flag set */
     name = "Testing if flags can be set properly";
     testbool(get_flag(C_FLAG) && get_flag(N_FLAG)
             && get_flag(V_FLAG) && get_flag(Z_FLAG), name);
-    clear_flag(C_FLAG);
-    clear_flag(N_FLAG);
-    clear_flag(V_FLAG);
-    clear_flag(Z_FLAG);
+    set_flag_to(C_FLAG, 0);
+    set_flag_to(N_FLAG, 0);
+    set_flag_to(V_FLAG, 0);
+    set_flag_to(Z_FLAG, 0);
 
     /* Test flag clear */
     name = "Testing if flags can be cleared properly";
