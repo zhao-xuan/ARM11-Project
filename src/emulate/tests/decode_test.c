@@ -315,7 +315,19 @@ int main() {
 	expected.instructions.branch = &branch;
 	test_instruction(&expected, input);       
 
-	/* Halt */
+	/*  Branch with negative sign extend 
+     *  Modified b01
+     *  11101010 10000000 11111111 00000000
+     */
+	input = 3934322432;
+	expected.cond = 14;
+	expected.type = BRANCH;
+	branch = (branch_t) {4261673984};
+	expected.instructions.branch = &branch;
+	test_instruction(&expected, input);       
+
+
+    /* Halt */
 	input = 0;
 	expected.cond = 0;
 	expected.type = HALT;
