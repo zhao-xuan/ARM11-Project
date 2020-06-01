@@ -72,3 +72,4 @@ uint32_t sign_extend(uint32_t x, int bits) {
     uint32_t m = 1u << (bits - 1);
     return (x ^ m) - m;
 }
+

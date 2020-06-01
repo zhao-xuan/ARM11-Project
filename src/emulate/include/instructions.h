@@ -44,8 +44,8 @@ typedef struct {
     bool imm_const;
     bool set;
     union {
-        imm_value_t imm_value;
-        register_form_t reg_value;
+        imm_value_t *imm_value;
+        register_form_t *reg_value;
     } operand2;
 } data_processing_t;
 
@@ -63,13 +63,16 @@ typedef struct {
 
 /* DATA TRANSFER */
 typedef struct {
-    address_t offset;
     byte_t rn;
     byte_t rd;
     bool imm_offset;
     bool pre_index;
     bool up_bit;
     bool load;
+    union {
+        word_t imm_value;
+        register_form_t *reg_value;
+    } offset;
 } data_transfer_t;
 
 
