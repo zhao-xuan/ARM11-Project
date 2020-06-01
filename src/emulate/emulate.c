@@ -7,7 +7,6 @@
 void pipeline();
 
 int main(int argc, char **argv) {
-  /* Example of how to integrate memory functions, not final*/
   init_state();
   word_t *buffer = NULL;
   size_t size;
@@ -22,7 +21,6 @@ int main(int argc, char **argv) {
 }
 
 void pipeline() {
-  empty_pipeline();
   while (get_decoded()->type != HALT) {
     instruction_t *decoded_instr = get_decoded();
     if(decoded_instr->type != EMPTY){

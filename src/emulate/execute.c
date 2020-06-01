@@ -21,7 +21,7 @@ int execute(instruction_t* instr_to_exec) {
         case BRANCH:
             return branch_execute(instr_to_exec->instructions.branch);
         default:
-            fprintf(stderr, "Instruction Type Error!");
+            fprintf(stderr, "Instruction Type Error! %p", &(instr_to_exec->type));
             exit(EXIT_FAILURE);
     }
   } else {
