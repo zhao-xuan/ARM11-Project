@@ -62,15 +62,10 @@ word_t get_word(address_t addr) {
   for (int i = 0; i < 4; i++) {
     ((byte_t *)&word)[i] = get_memory(addr + i);
   }
-  /* swaps little endian to big endian */
-  swap_endian(&word, 1);
   return word;
 }
 
 void set_word(address_t addr, word_t word) {
-  
-  /* swaps big endian to little endian */
-  swap_endian(&word, 1);
   for (int i = 0; i < 4; i++) {
     byte_t current_byte = ((byte_t *)&word)[i];
     set_memory(addr + i, current_byte);
