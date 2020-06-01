@@ -9,7 +9,7 @@ static int branch_execute(branch_t *b_instr);
 static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
 
-int execute(instruction_t instr_to_exec) {
+int execute(instruction_t* instr_to_exec) {
   if (cond_check(instr_to_exec->cond)) {
     switch (instr_to_exec->type) {
         case DATA_PROCESSING:

@@ -22,16 +22,16 @@ int main(int argc, char **argv) {
 }
 
 void pipeline() {
-  while (get_decoded().type != HALT) {
-    instruction_t decoded_instr = get_decoded();
-    if(decoded_instr.type != EMPTY){
+  while (get_decoded()->type != HALT) {
+    instruction_t *decoded_instr = get_decoded();
+    if(decoded_instr->type != EMPTY){
       execute(decoded_instr);
     }
 
     word_t fetched_instr = get_fetched();
     if(fetched_instr != EMPTY_INSTR){
       instruction_t *decoded_addr = decode(fetched_instr);
-      set_decoded(*decoded_addr);
+      set_decoded(decoded_addr);
     }
 
     word_t program_counter = get_and_incrementPC();

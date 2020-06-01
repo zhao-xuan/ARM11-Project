@@ -100,17 +100,17 @@ void set_fetched(word_t fetched_instruction) {
   state->fetched_instruction = fetched_instruction; 
 }
 
-instruction_t get_decoded() {
+instruction_t *get_decoded() {
   return state->decoded_instruction;
 }
 
-void set_decoded(instruction_t decoded_instruction) {
+void set_decoded(instruction_t *decoded_instruction) {
   state->decoded_instruction = decoded_instruction; 
 }
 
 void empty_pipeline(){
   instruction_t empty_instruction = {EMPTY};
   set_fetched(EMPTY_INSTR);
-  set_decoded(empty_instruction);
+  set_decoded(&empty_instruction);
 }
 
