@@ -38,7 +38,7 @@ void free_state();
 /*
  * Return the current value of the Program counter, then increments it. 
  */
-word_t incrementPC();
+word_t get_and_incrementPC();
 
 /*
  * @param reg_no : number of the required register. 
@@ -135,6 +135,11 @@ void set_decoded(instruction_t decoded_instruction);
  * @returns: the value of decoded_instruction in the current state. 
  */
 instruction_t get_decoded();
+
+/*
+ * sets fetched and decoded both to empty. 
+ */
+void empty_pipeline();
 
 
 #endif

@@ -14,7 +14,8 @@
 
 /* Macro definitions for the state of the machine */
 
-
+/* empty instruction values for when pipeline is empty */
+#define EMPTY_INSTR 0xffffffff
 /* Word length for this architecture */
 #define WORD_LENGTH 32
 /* Number of addresses for memory */
@@ -33,6 +34,7 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
+
 
 /* Instruction decoding definitions. All in BIG ENDIAN encoding */
 
