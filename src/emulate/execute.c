@@ -115,7 +115,7 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
 
   if (dt_instr->imm_offset) {
     /* offset is a shift register as shown in operand2 in DATA_PROCESSING */
-    offset = compute_shift_register(*dt_instr->offset.reg_value, true);
+    offset = compute_shift_register(*dt_instr->offset.reg_value, false);
   } else {
     /* offset is an immediate */
     offset = dt_instr->offset.imm_value;
