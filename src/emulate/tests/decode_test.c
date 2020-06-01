@@ -26,8 +26,8 @@ static bool compare_data_processing(data_processing_t *expected, data_processing
 	if (expected->imm_const ^ output->imm_const) return false;  
 	bool operand2_decoded_correctly = 
 					expected->imm_const 
-					? compare_imm_value(&expected->operand2.imm_value, &output->operand2.imm_value)
-					: compare_register_form(&expected->operand2.reg_value, &output->operand2.reg_value);
+					? compare_imm_value(expected->operand2.imm_value, output->operand2.imm_value)
+					: compare_register_form(expected->operand2.reg_value, output->operand2.reg_value);
 	return operand2_decoded_correctly
 		   && expected->rn        == output->rn  
 		   && expected->rd        == output->rd 
@@ -45,7 +45,7 @@ static bool compare_data_transfer(data_transfer_t *expected, data_transfer_t *ou
 	if (expected->imm_offset ^ output->imm_offset) return false;  
 	bool offset_decoded_correctly = 
 					expected->imm_offset
-					? compare_register_form(&expected->offset.reg_value, &output->offset.reg_value)
+					? compare_register_form(expected->offset.reg_value, output->offset.reg_value)
 					: expected->offset.imm_value == output->offset.imm_value; 
 	
 
@@ -122,17 +122,19 @@ static void print_data_processing(data_processing_t *instr) {
 	printf("set      : %d\n", instr -> set);
 
 	if (instr->imm_const) {
-		printf("imm_value: %d\n", instr->operand2.imm_value.imm);
-		printf("shamt    : %d\n", instr->operand2.imm_value.rotate);
+                imm_value_t *imm_p = instr->operand2.imm_value;
+		printf("imm_value: %d\n", imm_p->imm);
+		printf("shamt    : %d\n", imm_p->rotate);
 	} else {
-		printf("shifttype: %d\n", instr->operand2.reg_value.shift_type);
-		printf("rm       : %d\n", instr->operand2.reg_value.rm);
-        printf("shiftspec: %d\n", instr->operand2.reg_value.shift_spec);
-        if (instr->operand2.reg_value.shift_spec) {
-            printf("int shift : %d\n", instr->operand2.reg_value.shift.integer_shift);
-        } else {
-            printf("shift reg : %d\n", instr->operand2.reg_value.shift.shift_reg);
-        }
+                register_form_t *reg_p = instr->operand2.reg_value;
+		printf("shifttype: %d\n", reg_p->shift_type);
+		printf("rm       : %d\n", reg_p->rm);
+                printf("shiftspec: %d\n", reg_p->shift_spec);
+                if (reg_p->shift_spec) {
+                    printf("int shift : %d\n", reg_p->shift.integer_shift);
+                } else {
+                    printf("shift reg : %d\n", reg_p->shift.shift_reg);
+                }
 	}
 }
 
@@ -145,13 +147,14 @@ static void print_data_transfer(data_transfer_t *instr) {
 	printf("load      : %d\n", instr -> load);
 
     if (instr->imm_offset) {
-		printf("shifttype : %d\n", instr->offset.reg_value.shift_type);
-		printf("rm        : %d\n", instr->offset.reg_value.rm);
-        printf("shiftspec : %d\n", instr->offset.reg_value.shift_spec);
-        if (instr->offset.reg_value.shift_spec) {
-            printf("int shift : %d\n", instr->offset.reg_value.shift.integer_shift);
+		register_form_t *reg_p = instr->offset.reg_value;
+		printf("shifttype : %d\n", reg_p->shift_type);
+		printf("rm        : %d\n", reg_p->rm);
+        printf("shiftspec : %d\n", reg_p->shift_spec);
+        if (reg_p->shift_spec) {
+            printf("int shift : %d\n", reg_p->shift.integer_shift);
         } else {
-            printf("shift reg : %d\n", instr->offset.reg_value.shift.shift_reg);
+            printf("shift reg : %d\n", reg_p->shift.shift_reg);
         }
     } else {
         printf("offset imm : %d\n", instr -> offset.imm_value);
@@ -229,7 +232,7 @@ int main() {
 	expected.cond = 14;
 	imm_value = (imm_value_t) {1, 0};
 	dp = (data_processing_t) {0, 1, 13, 1, 0};
-	dp.operand2.imm_value = imm_value;
+	dp.operand2.imm_value = &imm_value;
 	expected.instructions.data_processing = &dp; 
 	test_instruction(&expected, input); 
 
@@ -245,7 +248,7 @@ int main() {
 	reg_value.shift.integer_shift = 0;
     reg_value.shift_spec = 0;
 	dp = (data_processing_t) {1, 3, 4, 0, 0};
-	dp.operand2.reg_value = reg_value;
+	dp.operand2.reg_value = &reg_value;
 	expected.instructions.data_processing = &dp; 
 	test_instruction(&expected, input); 
 
@@ -259,7 +262,7 @@ int main() {
 	expected.cond = 14;
 	imm_value = (imm_value_t) {0xff, 0};
 	dp = (data_processing_t) {0, 2, 13, 1, 0};
-	dp.operand2.imm_value = imm_value;
+	dp.operand2.imm_value = &imm_value;
 	expected.instructions.data_processing = &dp; 
 	test_instruction(&expected, input); 
 
@@ -298,7 +301,7 @@ int main() {
     reg_value.rm = 4;
     reg_value.shift_spec = 0;
 	dt = (data_transfer_t) {2, 1, 1, 0, 1, 0};
-	dt.offset.reg_value = reg_value;
+	dt.offset.reg_value = &reg_value;
 	expected.instructions.data_transfer = &dt;
 	test_instruction(&expected, input);
 	/* Branch 
