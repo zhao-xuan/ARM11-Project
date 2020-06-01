@@ -61,7 +61,7 @@ static int data_processing_execute(data_processing_t *dp_instr) {
   /* Rotate Right (Operand2 as Immediate Value) */
   if (dp_instr->imm_const) {
     imm_value_t imm = *dp_instr->operand2.imm_value;
-    shifter(imm.rotate * 2, imm.rotate, &op2, ROR_OPCODE, dp_instr->set);
+    shifter(imm.rotate * 2, imm.imm, &op2, ROR_OPCODE, dp_instr->set);
   } else { /* Operand2 as a Register */
     byte_t shamt;
     register_form_t reg = *dp_instr->operand2.reg_value;

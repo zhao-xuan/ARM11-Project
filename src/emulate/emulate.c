@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 }
 
 void pipeline() {
+  empty_pipeline();
   while (get_decoded()->type != HALT) {
     instruction_t *decoded_instr = get_decoded();
     if(decoded_instr->type != EMPTY){
