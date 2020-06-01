@@ -63,7 +63,7 @@ void swap_endian(uint32_t *buffer, size_t size) {
 
 void out_of_bound_check(uint32_t addr, size_t size) {
   if (addr < 0 || addr >= size) {
-    fprintf(stderr, "Index out of bound. ");
+    fprintf(stdout, "Error: Out of bounds memory access at address (0x%08x)\n", addr);
     exit(EXIT_FAILURE);
   }
 }
