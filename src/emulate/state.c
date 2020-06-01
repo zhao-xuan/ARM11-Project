@@ -12,7 +12,7 @@ void init_state() {
 }
 
 void free_state() {
-  free(get_decoded());
+  free_instruction(state->decoded_instruction);
   free(state);
 }
 
@@ -71,8 +71,6 @@ word_t get_word(address_t addr) {
 }
 
 void set_word(address_t addr, word_t word) {
-  // addr = addr >> 2;
-  // addr = addr << 2;
   if (out_of_bound_check(addr, MEM_ADDR) == 0) {
     for (int i = 0; i < 4; i++) {
       byte_t current_byte = ((byte_t *)&word)[i];
@@ -107,7 +105,7 @@ void set_fetched(word_t fetched_instruction) {
 instruction_t *get_decoded() { return state->decoded_instruction; }
 
 void set_decoded(instruction_t *decoded_instruction) {
-  free(state->decoded_instruction);
+  free_instruction(state->decoded_instruction);
   state->decoded_instruction = decoded_instruction;
 }
 
@@ -116,4 +114,36 @@ void empty_pipeline() {
   empty_instruction->type = EMPTY;
   set_fetched(EMPTY_INSTR);
   set_decoded(empty_instruction);
+}
+
+void free_instruction(instruction_t *prev) {
+  if (prev != NULL) {
+    switch (prev->type) {
+      case DATA_PROCESSING: {
+        data_processing_t *data_process = prev->instructions.data_processing;
+        if (data_process->imm_const) {
+          free(data_process->operand2.imm_value);
+        } else {
+          free(data_process->operand2.reg_value);
+        }
+        free(data_process);
+        break;
+      }
+      case MULTIPLY: {
+        free(prev->instructions.multiply);
+        break;
+      }
+      case DATA_TRANSFER: {
+        free(prev->instructions.data_transfer);
+        break;
+      }
+      case BRANCH: {
+        free(prev->instructions.branch);
+        break;
+      }
+      default:
+        break;
+    }
+    free(prev);
+  }
 }

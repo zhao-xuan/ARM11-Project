@@ -141,5 +141,9 @@ instruction_t *get_decoded();
  */
 void empty_pipeline();
 
+/*
+ * frees the instruction pointed to by prev.
+ */
+void free_instruction(instruction_t *prev);
 
 #endif

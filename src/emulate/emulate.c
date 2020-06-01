@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
 
   pipeline();
 
+  free(buffer);
   print_state(stdout);
   free_state();
   return EXIT_SUCCESS;
@@ -34,6 +35,6 @@ void pipeline() {
     }
 
     word_t program_counter = get_and_incrementPC();
-    set_fetched(get_word(program_counter));
+    set_fetched(get_word(program_counter)); 
   }
 }
