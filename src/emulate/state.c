@@ -112,6 +112,7 @@ void set_decoded(instruction_t *decoded_instruction) {
 
 void empty_pipeline(){
   instruction_t *empty_instruction = malloc(sizeof(instruction_t));
+  empty_instruction->type = EMPTY;
   set_fetched(EMPTY_INSTR);
   set_decoded(empty_instruction);
 }
