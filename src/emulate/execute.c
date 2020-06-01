@@ -64,16 +64,8 @@ static int data_processing_execute(data_processing_t *dp_instr) {
     imm_value_t imm = *dp_instr->operand2.imm_value;
     shifter(imm.rotate * 2, imm.imm, &op2, ROR_OPCODE, dp_instr->set);
   } else { /* Operand2 as a Register */
-    byte_t shamt;
     register_form_t reg = *dp_instr->operand2.reg_value;
-    /* Shift specified by a register */
-    if (reg.shift_spec) {
-      /* Cast word_t to byte_t, assuming shift amount doesn't exceed MAX_BYTE */
-      shamt = get_reg(reg.shift.shift_reg);
-    } else { /* Use immediate value as shift amount */
-      shamt = reg.shift.integer_shift;
-    }
-    shifter(shamt, get_reg(reg.rm), &op2, reg.shift_type, dp_instr->set);
+    op2 = compute_shift_register(reg, dp_instr->set);
   }
 
   alu(get_reg(dp_instr->rn), op2, &result, dp_instr->opcode, dp_instr->set);
@@ -132,11 +124,6 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
         address = get_reg(base_reg) + add_or_sub ? offset : -offset;
     } else {
         address = get_reg(base_reg);
-        /* In post-indexing, Rm cannot be the same as Rn */
-        byte_t rm = (dt_instr -> offset).reg_value -> rm;
-        if (rm == dt_instr -> rn) {
-            return -1;
-        }
         set_reg(base_reg, address + add_or_sub ? offset : -offset); 
     }
 
@@ -169,11 +156,7 @@ static bool write_result(byte_t opcode) {
   }
   return true;
 }
-/*
- * @brief: compute the shift register and return the shift amount
- * @param: register_form_t reg_value: the shift register representation
- * @return the amount to be shifted
- */
+
 static word_t compute_shift_register(register_form_t reg_value, bool set) {
     byte_t shamt;
     word_t result;
