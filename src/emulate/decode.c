@@ -84,11 +84,12 @@ static void data_processing_helper(const word_t binary, instruction_t *struct_p,
 
     /* Setting the operand2 field for DATA_PROCESSING instructions */
     if (instr_p -> imm_const) {
-        imm_value_t *imm_p = (instr_p -> operand2).imm_value;
+        imm_value_t *imm_p = malloc(sizeof(imm_value_t));
         imm_p -> imm = (binary >> OPERAND2_IMM_LOCATION) & EIGHT_BIT_FIELD;
         imm_p -> rotate = (binary >> OPERAND2_ROTATE_LOCATION) & FOUR_BIT_FIELD;
+        (instr_p -> operand2).imm_value = imm_p;
     } else {
-        register_form_t *reg_p = (instr_p -> operand2).reg_value;
+        register_form_t *reg_p = malloc(sizeof(register_form_t));
         reg_p -> shift_type = (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
         reg_p -> rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;
         reg_p -> shift_spec = (binary >> OPERAND2_SHIFT_SPEC_LOCATION) & ONE_BIT_FIELD;
@@ -97,6 +98,7 @@ static void data_processing_helper(const word_t binary, instruction_t *struct_p,
         } else {
             (reg_p -> shift).integer_shift = (binary >> OPERAND2_INTEGER_SHIFT_LOCATION) & FIVE_BIT_FIELD;
         }
+        (instr_p -> operand2).reg_value = reg_p;
     }
 
     (struct_p -> instructions).data_processing = instr_p;
@@ -122,7 +124,7 @@ static void data_transfer_helper(const word_t binary, instruction_t *struct_p, d
     
     /* Setting the offset field for DATA_TRANSFER instructions */
     if (instr_p -> imm_offset) {
-        register_form_t *reg_p = (instr_p -> offset).reg_value;
+        register_form_t *reg_p = malloc(sizeof(register_form_t));
         reg_p -> shift_type = (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
         reg_p -> rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;
         reg_p -> shift_spec = (binary >> OPERAND2_SHIFT_SPEC_LOCATION) & ONE_BIT_FIELD;
@@ -131,6 +133,7 @@ static void data_transfer_helper(const word_t binary, instruction_t *struct_p, d
         } else {
             (reg_p -> shift).integer_shift = (binary >> OPERAND2_INTEGER_SHIFT_LOCATION) & FIVE_BIT_FIELD;
         }
+        (instr_p -> offset).reg_value = reg_p;
     } else {
         (instr_p -> offset).imm_value = binary & TWELVE_BIT_FIELD;
     }
