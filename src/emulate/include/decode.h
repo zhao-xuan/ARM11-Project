@@ -9,6 +9,7 @@
 #include "state.h"
 #include "instructions.h"
 #include "global.h"
+#include "utils.h"
 
 /* Spec from Hoang
  * @brief: Take a 32-bit instruction and decode it into instruction_t representation that can be executed in execute.c

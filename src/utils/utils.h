@@ -71,4 +71,12 @@ void swap_endian(uint32_t *buffer, size_t size);
  */
 void out_of_bound_check(uint32_t addr, size_t size);
 
+/*
+ *  @brief: Sign extend a number to 32 bits. 
+ *  @param:
+ *    x: The number to sign extend. 
+ *    bits: the number of bits in x. 
+ */
+uint32_t sign_extend(uint32_t x, int bits);
+
 #endif

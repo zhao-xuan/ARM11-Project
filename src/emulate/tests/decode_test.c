@@ -115,67 +115,67 @@ char *generate_test_name(instruction_t *expected) {
 }
 
 static void print_data_processing(data_processing_t *instr) {
-	printf("rn       : %d\n", instr -> rn);
-	printf("rd       : %d\n", instr -> rd);
-	printf("opcode   : %d\n", instr -> opcode);
-	printf("imm_const: %d\n", instr -> imm_const);
-	printf("set      : %d\n", instr -> set);
+	printf("rn       : %u\n", instr -> rn);
+	printf("rd       : %u\n", instr -> rd);
+	printf("opcode   : %u\n", instr -> opcode);
+	printf("imm_const: %u\n", instr -> imm_const);
+	printf("set      : %u\n", instr -> set);
 
 	if (instr->imm_const) {
                 imm_value_t *imm_p = instr->operand2.imm_value;
-		printf("imm_value: %d\n", imm_p->imm);
-		printf("shamt    : %d\n", imm_p->rotate);
+		printf("imm_value: %u\n", imm_p->imm);
+		printf("shamt    : %u\n", imm_p->rotate);
 	} else {
                 register_form_t *reg_p = instr->operand2.reg_value;
-		printf("shifttype: %d\n", reg_p->shift_type);
-		printf("rm       : %d\n", reg_p->rm);
-                printf("shiftspec: %d\n", reg_p->shift_spec);
+		printf("shifttype: %u\n", reg_p->shift_type);
+		printf("rm       : %u\n", reg_p->rm);
+                printf("shiftspec: %u\n", reg_p->shift_spec);
                 if (reg_p->shift_spec) {
-                    printf("int shift : %d\n", reg_p->shift.integer_shift);
+                    printf("int shift : %u\n", reg_p->shift.integer_shift);
                 } else {
-                    printf("shift reg : %d\n", reg_p->shift.shift_reg);
+                    printf("shift reg : %u\n", reg_p->shift.shift_reg);
                 }
 	}
 }
 
 static void print_data_transfer(data_transfer_t *instr) {
-	printf("imm_offset: %d\n", instr -> imm_offset);
-	printf("rn        : %d\n", instr -> rn);
-	printf("rd        : %d\n", instr -> rd);
-	printf("pre_index : %d\n", instr -> pre_index);
-	printf("up_bit    : %d\n", instr -> up_bit);
-	printf("load      : %d\n", instr -> load);
+	printf("imm_offset: %u\n", instr -> imm_offset);
+	printf("rn        : %u\n", instr -> rn);
+	printf("rd        : %u\n", instr -> rd);
+	printf("pre_index : %u\n", instr -> pre_index);
+	printf("up_bit    : %u\n", instr -> up_bit);
+	printf("load      : %u\n", instr -> load);
 
     if (instr->imm_offset) {
 		register_form_t *reg_p = instr->offset.reg_value;
-		printf("shifttype : %d\n", reg_p->shift_type);
-		printf("rm        : %d\n", reg_p->rm);
-        printf("shiftspec : %d\n", reg_p->shift_spec);
+		printf("shifttype : %u\n", reg_p->shift_type);
+		printf("rm        : %u\n", reg_p->rm);
+        printf("shiftspec : %u\n", reg_p->shift_spec);
         if (reg_p->shift_spec) {
-            printf("int shift : %d\n", reg_p->shift.integer_shift);
+            printf("int shift : %u\n", reg_p->shift.integer_shift);
         } else {
-            printf("shift reg : %d\n", reg_p->shift.shift_reg);
+            printf("shift reg : %u\n", reg_p->shift.shift_reg);
         }
     } else {
-        printf("offset imm : %d\n", instr -> offset.imm_value);
+        printf("offset imm : %u\n", instr -> offset.imm_value);
     }
 }
 
 static void print_branch(branch_t *instr) {
-	printf("offset: %d\n", instr -> offset);
+	printf("offset: %u\n", instr -> offset);
 }
 
 static void print_multiply(multiply_t *instr) {
-	printf("rm        : %d\n", instr -> rm);
-	printf("rd        : %d\n", instr -> rd);
-	printf("rs        : %d\n", instr -> rs);
-	printf("rn        : %d\n", instr -> rn);
-	printf("accumulate: %d\n", instr -> accumulate);
-	printf("set       : %d\n", instr -> set);
+	printf("rm        : %u\n", instr -> rm);
+	printf("rd        : %u\n", instr -> rd);
+	printf("rs        : %u\n", instr -> rs);
+	printf("rn        : %u\n", instr -> rn);
+	printf("accumulate: %u\n", instr -> accumulate);
+	printf("set       : %u\n", instr -> set);
 }
 
 static void print_decoded(instruction_t *instr) {
-	printf("cond: %d\n", instr->cond);
+	printf("cond: %u\n", instr->cond);
 	switch (instr->type) {
 		case DATA_PROCESSING:
 			print_data_processing(instr->instructions.data_processing);
@@ -315,7 +315,19 @@ int main() {
 	expected.instructions.branch = &branch;
 	test_instruction(&expected, input);       
 
-	/* Halt */
+	/*  Branch with negative sign extend 
+     *  Modified b01
+     *  11101010 10000000 11111111 00000000
+     */
+	input = 3934322432;
+	expected.cond = 14;
+	expected.type = BRANCH;
+	branch = (branch_t) {4261673984};
+	expected.instructions.branch = &branch;
+	test_instruction(&expected, input);       
+
+
+    /* Halt */
 	input = 0;
 	expected.cond = 0;
 	expected.type = HALT;
