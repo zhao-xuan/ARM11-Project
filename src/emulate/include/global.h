@@ -140,6 +140,22 @@
 
 
 
+/* Condition Codes */
+/* Equals */
+#define EQUAL 0
+/* Not equals */
+#define NOT_EQUAL 1
+/* Greater than or equals to */
+#define GREATER_EQUAL 10
+/* Strictly less than */
+#define LESS_THAN 11
+/* Strictly greater than */
+#define GREATER_THAN 12
+/* Less than or equals to */
+#define LESS_EQUAL 13
+/* Always execute */
+#define ALWAYS 14
+
 /* Type Aliases */
 
 /* Define bytes */
