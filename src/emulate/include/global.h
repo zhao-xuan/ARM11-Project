@@ -14,7 +14,8 @@
 
 /* Macro definitions for the state of the machine */
 
-
+/* empty instruction values for when pipeline is empty */
+#define EMPTY_INSTR 0xffffffff
 /* Word length for this architecture */
 #define WORD_LENGTH 32
 /* Number of addresses for memory */
@@ -33,6 +34,7 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
+
 
 /* Instruction decoding definitions. All in BIG ENDIAN encoding */
 
@@ -139,6 +141,22 @@
 #define ROR_OPCODE 3
 
 
+
+/* Condition Codes */
+/* Equals */
+#define EQUAL 0
+/* Not equals */
+#define NOT_EQUAL 1
+/* Greater than or equals to */
+#define GREATER_EQUAL 10
+/* Strictly less than */
+#define LESS_THAN 11
+/* Strictly greater than */
+#define GREATER_THAN 12
+/* Less than or equals to */
+#define LESS_EQUAL 13
+/* Always execute */
+#define ALWAYS 14
 
 /* Type Aliases */
 

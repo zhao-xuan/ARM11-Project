@@ -1,36 +1,87 @@
 #include "execute.h"
+#include "logicunit.h"
 
 static int data_processing_execute(data_processing_t *dp_instr);
 static int multiply_execute(multiply_t *mul_instr);
 static int data_transfer_execute(data_transfer_t *dt_instr);
 static int branch_execute(branch_t *b_instr);
 
+static bool cond_check(byte_t cond);
+static bool write_result(byte_t opcode);
+
 int execute(instruction_t instr_to_exec) {
-    switch (instr_to_exec.type) {
+  if (cond_check(instr_to_exec->cond)) {
+    switch (instr_to_exec->type) {
         case DATA_PROCESSING:
-            return data_processing_execute(instr_to_exec.instructions.data_processing);
+            return data_processing_execute(instr_to_exec->instructions.data_processing);
         case MULTIPLY:
-            return multiply_execute(instr_to_exec.instructions.multiply);
+            return multiply_execute(instr_to_exec->instructions.multiply);
         case DATA_TRANSFER:
-            return data_transfer_execute(instr_to_exec.instructions.data_transfer);
+            return data_transfer_execute(instr_to_exec->instructions.data_transfer);
         case BRANCH:
-            return branch_execute(instr_to_exec.instructions.branch);
+            return branch_execute(instr_to_exec->instructions.branch);
         default:
             fprintf(stderr, "Instruction Type Error!");
             exit(EXIT_FAILURE);
     }
+  } else {
+    return 0;
+  }
 }
 
-/* Below are helper functions of executing different types of instructions.*/
+static bool cond_check(byte_t cond) {
+  switch (cond) {
+    /* eq */
+    case 0b0000:
+      return get_flag(Z_FLAG);
+    /* ge */
+    case 0b1010:
+      return get_flag(N_FLAG) == get_flag(V_FLAG);
+    /* gt */
+    case 0b1100:
+      return !get_flag(Z_FLAG) && cond_check(0b1010);
+    /* al */
+    case 0b1110:
+      return true;
+    default:
+      return !cond_check(cond - 1);
+  }
+}
+
 
 /*
+ * Data processing instructions
  * @param: data_processing_t dp_instr: the representation of a data processing instruction
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int data_processing_execute(data_processing_t *dp_instr) {
-    /* Data processing instructions should be executed here */
+  
+  word_t op2, result;
 
-    return 0;
+  /* Rotate Right (Operand2 as Immediate Value) */
+  if (dp_instr->imm_const) {
+    imm_value_t imm = dp_instr->operand2.imm_value;
+    shifter(imm.rotate * 2, imm.rotate, &op2, ROR_OPCODE, dp_instr->set);
+  } else { /* Operand2 as a Register */
+    byte_t shamt;
+    register_form_t reg = dp_instr->operand2.reg_value;
+    /* Shift specified by a register */
+    if (reg.shift_spec) {
+      /* Cast word_t to byte_t, assuming shift amount doesn't exceed MAX_BYTE */
+      shamt = get_reg(reg.shift.shift_reg);
+    } else { /* Use immediate value as shift amount */
+      shamt = reg.shift.integer_shift;
+    }
+    shifter(shamt, get_reg(reg.rm), &op2, reg.shift_type, dp_instr->set);
+  }
+
+  alu(get_reg(dp_instr->rn), op2, &result, dp_instr->opcode, dp_instr->set);
+  /* Check if the result is written */
+  if (write_result(dp_instr->opcode)) {
+    set_reg(dp_instr, result);
+  }
+  
+  return 0;
 }
 
 /*
@@ -38,19 +89,30 @@ static int data_processing_execute(data_processing_t *dp_instr) {
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int multiply_execute(multiply_t *mul_instr) {
-    /* Multiply instructions should be executed here */
+  /* Multiply instructions should be executed here */
+  word_t rm_val = get_reg(mul_instr->rm);
+  word_t rs_val = get_reg(mul_instr->rs);
+  word_t result = rm_val * rs_val;
 
-    return 0;
+  if(mul_instr->accumulate){
+    result += get_reg(mul_instr->rn);
+  }
+  if(mul_instr->set){
+    set_flag_to(N_FLAG, (result >> 31) & 1U);
+    set_flag_to(Z_FLAG, result == 0);
+  }
+  set_reg(mul_instr->rd, result);
+  return 0;
 }
 
 /*
- * @param: data_transfer dt_instr: the representation of a data transfer instruction
+ * @param: data_transfer dt_instr: the representation of a data transfer
+ * instruction
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int data_transfer_execute(data_transfer_t *dt_instr) {
-    /* Data transfer instructions should be executed here */
-
-    return 0;
+  /* Data transfer instructions should be executed here */
+  return 0;
 }
 
 /*
@@ -58,7 +120,19 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
  * @return: 0 if succeeded, -1 if error has occurred
  */
 static int branch_execute(branch_t *b_instr) {
-    /* Branch instructions should be executed here */
+  /* Branch instructions should be executed here */
+  word_t val = get_reg(PC); 
+  val += b_instr->offset;
+  set_reg(PC, val);
 
-    return 0;
+  /* branch clears all pipeline stages , to uncomment once pipeline is merged*/
+  // empty_pipeline(); 
+  return 0;
+}
+
+static bool write_result(byte_t opcode) {
+  if ((opcode >= 0b1000) && (opcode <= 0b1010)) {
+    return false;
+  }
+  return true;
 }

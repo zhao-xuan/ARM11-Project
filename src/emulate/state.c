@@ -8,6 +8,7 @@ void init_state() {
     fprintf(stderr, "Memory error!\n");
     exit(EXIT_FAILURE);
   }
+  empty_pipeline();
 }
 
 
@@ -15,7 +16,7 @@ void free_state() {
   free(state);
 }
 
-word_t incrementPC(){
+word_t get_and_incrementPC(){
   word_t value = get_reg(PC);
   set_reg(PC, value + 4U);
   return value;
@@ -35,6 +36,12 @@ void set_reg(int reg_no, word_t value) {
 bool get_flag(flag_t flag) {
   word_t curr = get_reg(CPSR);
   return (curr >> flag) & 1U;
+}
+
+void set_flag_to(flag_t flag, bool x) {
+  word_t reg_val = get_reg(CPSR);
+  reg_val ^= (-x ^ reg_val) & (1U << flag);
+  set_reg(CPSR, reg_val);
 }
 
 void set_flag(flag_t flag) {
@@ -99,5 +106,11 @@ instruction_t get_decoded() {
 
 void set_decoded(instruction_t decoded_instruction) {
   state->decoded_instruction = decoded_instruction; 
+}
+
+void empty_pipeline(){
+  instruction_t empty_instruction = {EMPTY};
+  set_fetched(EMPTY_INSTR);
+  set_decoded(empty_instruction);
 }
 

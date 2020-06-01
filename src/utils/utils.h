@@ -78,5 +78,4 @@ void out_of_bound_check(uint32_t addr, size_t size);
  *    bits: the number of bits in x. 
  */
 uint32_t sign_extend(uint32_t x, int bits);
-
 #endif
