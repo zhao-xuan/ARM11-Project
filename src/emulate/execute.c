@@ -65,13 +65,16 @@ static int data_processing_execute(data_processing_t *dp_instr) {
  */
 static int multiply_execute(multiply_t *mul_instr) {
   /* Multiply instructions should be executed here */
-  word_t result = mul_instr->rm * mul_instr->rs;
+  word_t rm_val = get_reg(mul_instr->rm);
+  word_t rs_val = get_reg(mul_instr->rs);
+  word_t result = rm_val * rs_val;
+  
   if(mul_instr->accumulate){
-    result += mul_instr->rn;
+    result += get_reg(mul_instr->rn);
   }
   if(mul_instr->set){
     set_flag_to(N_FLAG, (result >> 31) & 1U);
-    set_flag_to(Z_FLAG, (result >> 31) & 1U);
+    set_flag_to(Z_FLAG, result == 0);
   }
   set_reg(mul_instr->rd, result);
   return 0;
