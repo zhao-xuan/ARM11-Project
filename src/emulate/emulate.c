@@ -7,7 +7,6 @@
 void pipeline();
 
 int main(int argc, char **argv) {
-  /* Example of how to integrate memory functions, not final*/
   init_state();
   word_t *buffer = NULL;
   size_t size;

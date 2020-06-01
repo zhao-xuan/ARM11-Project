@@ -13,6 +13,7 @@ void init_state() {
 
 
 void free_state() {
+  free(get_decoded());
   free(state);
 }
 
@@ -105,12 +106,14 @@ instruction_t *get_decoded() {
 }
 
 void set_decoded(instruction_t *decoded_instruction) {
+  free(state->decoded_instruction);
   state->decoded_instruction = decoded_instruction; 
 }
 
 void empty_pipeline(){
-  instruction_t empty_instruction = {EMPTY};
+  instruction_t *empty_instruction = malloc(sizeof(instruction_t));
+  empty_instruction->type = EMPTY;
   set_fetched(EMPTY_INSTR);
-  set_decoded(&empty_instruction);
+  set_decoded(empty_instruction);
 }
 
