@@ -79,7 +79,7 @@ typedef struct {
 
 /* BRANCH */
 typedef struct {
-    address_t offset;
+    word_t offset;
 } branch_t;
 
 

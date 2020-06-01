@@ -142,6 +142,8 @@ static void data_transfer_helper(const word_t binary, instruction_t *struct_p, d
 }
 
 static void branch_helper(const word_t binary, instruction_t *struct_p, branch_t *instr_p) {
-    instr_p -> offset = binary & TWENTY_FOUR_BIT_FIELD;
+    word_t raw_offset = binary & TWENTY_FOUR_BIT_FIELD;
+    word_t offset = sign_extend(raw_offset << 2, 26);
+    instr_p -> offset = offset;
     (struct_p -> instructions).branch = instr_p;
 }
