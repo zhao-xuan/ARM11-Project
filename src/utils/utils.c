@@ -55,12 +55,6 @@ void dump_hex(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
-void swap_endian(uint32_t *buffer, size_t size) {
-  for (int i = 0; i < size; i++) {
-    buffer[i] = __builtin_bswap32(buffer[i]);
-  }
-}
-
 int out_of_bound_check(uint32_t addr, size_t size) {
   if (addr >= size) {
     fprintf(stdout, "Error: Out of bounds memory access at address 0x%08x\n", addr);

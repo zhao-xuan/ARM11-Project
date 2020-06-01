@@ -51,14 +51,6 @@ int main(void) {
   status = read_binary_file(PATH_TO_NONE, &buffer, &size);
   testint(status, -1, test_name);
 
-  /* Check that swap_endian works correctly */
-  test_name = "swap_endian: swaps endian correctly";
-  uint32_t buf[2] = {buf0, buf1};
-  uint32_t swapped_buf0 = 0x61626162;
-  uint32_t swapped_buf1 = 0x31323334;
-  swap_endian(buf, 2);
-  testint(buf[0], swapped_buf0, test_name);
-  testint(buf[1], swapped_buf1, test_name);
 
   return 0;
 }

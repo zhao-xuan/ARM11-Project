@@ -11,7 +11,6 @@ void print_state(FILE* fp) {
   for (int i = 0; i < MEM_ADDR >> 2; i++) {
     word_t value = get_word(i << 2);
     /* swaps back to little endian */
-    swap_endian(&value, 1);
-    if (value) fprintf(fp, "0x%08x: 0x%08x\n", i << 2, value); 
+    if (value) fprintf(fp, "0x%08x: 0x%08x\n", i << 2, __builtin_bswap32(value)); 
   }
 }
