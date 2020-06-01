@@ -61,11 +61,12 @@ void swap_endian(uint32_t *buffer, size_t size) {
   }
 }
 
-void out_of_bound_check(uint32_t addr, size_t size) {
-  if (addr < 0 || addr >= size) {
-    fprintf(stdout, "Error: Out of bounds memory access at address (0x%08x)\n", addr);
-    exit(EXIT_FAILURE);
+int out_of_bound_check(uint32_t addr, size_t size) {
+  if (addr >= size) {
+    fprintf(stdout, "Error: Out of bounds memory access at address 0x%08x\n", addr);
+    return -1;
   }
+  return 0;
 }
 
 uint32_t sign_extend(uint32_t x, int bits) {

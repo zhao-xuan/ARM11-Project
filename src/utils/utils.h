@@ -69,7 +69,7 @@ void swap_endian(uint32_t *buffer, size_t size);
  *    addr: the position to be verified. 
  *    size: the size of the total array. 
  */
-void out_of_bound_check(uint32_t addr, size_t size);
+int out_of_bound_check(uint32_t addr, size_t size);
 
 /*
  *  @brief: Sign extend a number to 32 bits. 
