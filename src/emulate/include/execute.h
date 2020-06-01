@@ -15,6 +15,6 @@
  * @return: 0 if succeeded, -1 if error has occurred
  */
 
-int execute(instruction_t instr);
+int execute(instruction_t *instr);
 
 #endif
