@@ -1,5 +1,5 @@
-/* 
- * Output the current state of the machine. 
+/*
+ * Output the current state of the machine.
  */
 
 #ifndef PRINT_H
@@ -7,8 +7,8 @@
 
 #include "state.h"
 
-/* 
- * @brief: prints out the current state of the machine. 
+/*
+ * @brief: prints out the current state of the machine.
  */
 void print_state();
 

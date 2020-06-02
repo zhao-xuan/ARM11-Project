@@ -1,24 +1,23 @@
 /*
  * Describes the data structure for decoded instructions.
- * This includes the structures for 4 different types of instructions respectively
- * and a wrapper structure.
+ * This includes the structures for 4 different types of instructions
+ * respectively and a wrapper structure.
  */
 
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
 #include <stdbool.h>
+
 #include "global.h"
 
 /* Two subtypes of operand2 field of DATA PROCESSING and DATA TRANSFER */
-typedef struct
-{
+typedef struct {
   byte_t imm;
   byte_t rotate;
 } imm_value_t;
 
-typedef struct
-{
+typedef struct {
   byte_t shift_type;
   byte_t rm;
   bool shift_spec;
@@ -29,8 +28,7 @@ typedef struct
 } register_form_t;
 
 /* DATA PROCESSING */
-typedef struct
-{
+typedef struct {
   byte_t rn;
   byte_t rd;
   byte_t opcode;
@@ -43,8 +41,7 @@ typedef struct
 } data_processing_t;
 
 /* MULTIPLY */
-typedef struct
-{
+typedef struct {
   byte_t rm;
   byte_t rd;
   byte_t rs;
@@ -54,8 +51,7 @@ typedef struct
 } multiply_t;
 
 /* DATA TRANSFER */
-typedef struct
-{
+typedef struct {
   byte_t rn;
   byte_t rd;
   bool imm_offset;
@@ -69,16 +65,14 @@ typedef struct
 } data_transfer_t;
 
 /* BRANCH */
-typedef struct
-{
+typedef struct {
   word_t offset;
 } branch_t;
 
 /*
  * Enum of instruction types
  */
-enum InstructionType
-{
+enum InstructionType {
   DATA_PROCESSING,
   MULTIPLY,
   BRANCH,
@@ -89,11 +83,11 @@ enum InstructionType
 
 /*
  * A wrapper for all instructions.
- * The execute function can infer the type of the instruction from "type" enum field..
+ * The execute function can infer the type of the instruction from "type" enum
+ * field..
  */
 
-typedef struct
-{
+typedef struct {
   enum InstructionType type;
   byte_t cond;
   union {

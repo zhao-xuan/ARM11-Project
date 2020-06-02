@@ -1,5 +1,5 @@
-/* 
- * Executes the instruction and modify machine state accordingly.  
+/*
+ * Executes the instruction and modify machine state accordingly.
  */
 
 #ifndef EXECUTE_H

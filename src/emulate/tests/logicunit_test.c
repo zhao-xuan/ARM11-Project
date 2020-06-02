@@ -3,67 +3,64 @@
  * Run ./logicunit_test
  */
 
-#include <string.h>
-#include <limits.h>
-
 #include "logicunit.h"
+
+#include <limits.h>
+#include <string.h>
+
 #include "global.h"
-#include "testutils.h"
 #include "state.h"
+#include "testutils.h"
 
 /* Give the name of the test from the opcode */
-char *test_name(int opcode)
-{
-  switch (opcode)
-  {
-  case AND_OPCODE:
-    return "bitwise and ";
-  case EOR_OPCODE:
-    return "bitwise exclusive or ";
-  case SUB_OPCODE:
-    return "arithmetic subtraction ";
-  case RSB_OPCODE:
-    return "reversed arithmetic subtraction ";
-  case ADD_OPCODE:
-    return "arithmetic addition ";
-  case ORR_OPCODE:
-    return "bitwise or ";
-  case MOV_OPCODE:
-    return "move ";
-  default:
-    return "Unknown test ";
+char *test_name(int opcode) {
+  switch (opcode) {
+    case AND_OPCODE:
+      return "bitwise and ";
+    case EOR_OPCODE:
+      return "bitwise exclusive or ";
+    case SUB_OPCODE:
+      return "arithmetic subtraction ";
+    case RSB_OPCODE:
+      return "reversed arithmetic subtraction ";
+    case ADD_OPCODE:
+      return "arithmetic addition ";
+    case ORR_OPCODE:
+      return "bitwise or ";
+    case MOV_OPCODE:
+      return "move ";
+    default:
+      return "Unknown test ";
   }
 }
 
 /* Given the name of the test from the shift_type */
-char *shift_name(int shift_type)
-{
-  switch (shift_type)
-  {
-  case LSL_OPCODE:
-    return "logical shift left ";
-  case LSR_OPCODE:
-    return "logical shift right ";
-  case ASR_OPCODE:
-    return "arithmetic shift right ";
-  case ROR_OPCODE:
-    return "rotate right ";
-  default:
-    return "Unknown test ";
+char *shift_name(int shift_type) {
+  switch (shift_type) {
+    case LSL_OPCODE:
+      return "logical shift left ";
+    case LSR_OPCODE:
+      return "logical shift right ";
+    case ASR_OPCODE:
+      return "arithmetic shift right ";
+    case ROR_OPCODE:
+      return "rotate right ";
+    default:
+      return "Unknown test ";
   }
 }
 
-/* 
+/*
  * Return the current flag status. Encoded in binary
  * 0b1010 refers to NC flags being set and ZV flags not
  */
-int get_flags()
-{
-  return (get_flag(N_FLAG) << 3) + (get_flag(Z_FLAG) << 2) + (get_flag(C_FLAG) << 1) + get_flag(V_FLAG);
+int get_flags() {
+  return (get_flag(N_FLAG) << 3) + (get_flag(Z_FLAG) << 2) +
+         (get_flag(C_FLAG) << 1) + get_flag(V_FLAG);
 }
 
-void test_alu(word_t op1, word_t op2, int opcode, word_t expected, int expected_flags)
-{
+void test_alu(word_t op1, word_t op2, int opcode, word_t expected,
+              int expected_flags) {
   char name[100];
   sprintf(name, "ALU: %scan be computed correctly", test_name(opcode));
   word_t result;
@@ -74,8 +71,7 @@ void test_alu(word_t op1, word_t op2, int opcode, word_t expected, int expected_
   testint(get_flags(), expected_flags, name);
 }
 
-void test_shifter(word_t op1, word_t op2, int shift_type, word_t expected)
-{
+void test_shifter(word_t op1, word_t op2, int shift_type, word_t expected) {
   char name[100];
   sprintf(name, "Shifter: %scan be computed correctly", shift_name(shift_type));
   word_t result;
@@ -83,8 +79,8 @@ void test_shifter(word_t op1, word_t op2, int shift_type, word_t expected)
   testword(result, expected, name);
 }
 
-void test_combined(word_t op1, word_t op2, word_t shamt, int shift_type, int opcode, word_t expected, int expected_flags)
-{
+void test_combined(word_t op1, word_t op2, word_t shamt, int shift_type,
+                   int opcode, word_t expected, int expected_flags) {
   char name[150];
   sprintf(name, "Combined: %s-> %scan be computed correctly",
           shift_name(shift_type), test_name(opcode));
@@ -98,8 +94,7 @@ void test_combined(word_t op1, word_t op2, word_t shamt, int shift_type, int opc
   testint(get_flags(), expected_flags, name);
 }
 
-int main(void)
-{
+int main(void) {
   init_state();
 
   word_t num_max = UINT_MAX;
@@ -248,7 +243,8 @@ int main(void)
   expected = 4278255615;
   /* 0b1010 */
   expected_flags = 10;
-  test_combined(num1, num2, shamt, LSL_OPCODE, ORR_OPCODE, expected, expected_flags);
+  test_combined(num1, num2, shamt, LSL_OPCODE, ORR_OPCODE, expected,
+                expected_flags);
 
   /* Test logical shift right -> arithmetic addition */
   shamt = 8;
@@ -256,7 +252,8 @@ int main(void)
   expected = 3872409;
   /* 0b0000 */
   expected_flags = 0;
-  test_combined(num0, num4, shamt, LSR_OPCODE, ADD_OPCODE, expected, expected_flags);
+  test_combined(num0, num4, shamt, LSR_OPCODE, ADD_OPCODE, expected,
+                expected_flags);
 
   /* Test arithmetic shift right -> bitwise and */
   shamt = 16;
@@ -264,7 +261,8 @@ int main(void)
   expected = 4294938044;
   /* 0b1000 */
   expected_flags = 8;
-  test_combined(num_max, num3, shamt, ASR_OPCODE, AND_OPCODE, expected, expected_flags);
+  test_combined(num_max, num3, shamt, ASR_OPCODE, AND_OPCODE, expected,
+                expected_flags);
 
   /* Test rotate right -> exclusive or */
   shamt = 8;
@@ -272,7 +270,8 @@ int main(void)
   expected = 1711286162;
   /* 0b0010 */
   expected_flags = 2;
-  test_combined(num5, num4, shamt, ROR_OPCODE, EOR_OPCODE, expected, expected_flags);
+  test_combined(num5, num4, shamt, ROR_OPCODE, EOR_OPCODE, expected,
+                expected_flags);
 
   free_state();
   return 0;

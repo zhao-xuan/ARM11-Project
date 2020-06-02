@@ -31,23 +31,25 @@ void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
 void print_bits(uint32_t x);
 
 /*
- * @brief: takes in an array of 32 bit numbers, and print out its bits to stdout.
+ * @brief: takes in an array of 32 bit numbers, and print out its bits to
+ * stdout.
  * @param *buffer: a pointer to the buffer to be dumped.
  * @param size: the size of the buffer.
  */
 void dump_buffer(uint32_t *buffer, size_t size);
 
 /*
- * @brief: takes in an array of 32 bit numbers, and print out its hex form to stdout.
+ * @brief: takes in an array of 32 bit numbers, and print out its hex form to
+ * stdout.
  * @param *buffer: a pointer to the buffer to be dumped.
  * @param size: the size of the buffer.
  */
 void dump_hex(uint32_t *buffer, size_t size);
 
 /*
- * @brief: Sign extend a number to 32 bits. 
- * @param x: The number to sign extend. 
- * @param bits: the number of bits in x. 
+ * @brief: Sign extend a number to 32 bits.
+ * @param x: The number to sign extend.
+ * @param bits: the number of bits in x.
  */
 uint32_t sign_extend(uint32_t x, int bits);
 #endif

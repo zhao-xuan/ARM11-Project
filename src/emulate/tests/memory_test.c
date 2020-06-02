@@ -4,14 +4,14 @@
  */
 
 #include <stdio.h>
+
 #include "global.h"
-#include "utils.h"
+#include "print.h"
 #include "state.h"
 #include "testutils.h"
-#include "print.h"
+#include "utils.h"
 
-static void test_reg_operations()
-{
+static void test_reg_operations() {
   /*
    * Testing get_reg(word_t reg_no) and set_reg(word_t reg_no, word_t value):
    * Test if the register can be set and accessed properly, and if they are
@@ -19,8 +19,7 @@ static void test_reg_operations()
    */
   char *name;
 
-  for (word_t i = 0; i < REG_NUM; i++)
-  {
+  for (word_t i = 0; i < REG_NUM; i++) {
     /* Testing register initialization */
     name = "Testing if registers initialized to 0";
     testword(get_reg(i), 0, name);
@@ -31,17 +30,18 @@ static void test_reg_operations()
   }
 }
 
-static void test_flag_operations()
-{
+static void test_flag_operations() {
   /*
-   * Testing get_flag(flag_t flag), set_flag(flag_t flag), and clear_flag(flag_t flag):
-   * Test if the flags can be set and accessed properly
+   * Testing get_flag(flag_t flag), set_flag(flag_t flag), and clear_flag(flag_t
+   * flag): Test if the flags can be set and accessed properly
    */
   char *name;
 
   /* Testing flag initialization */
   name = "Testing if flags are initialized to 0";
-  testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG) || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
+  testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG) || get_flag(V_FLAG) ||
+             get_flag(Z_FLAG)),
+           name);
   set_flag_to(C_FLAG, 1);
   set_flag_to(N_FLAG, 1);
   set_flag_to(V_FLAG, 1);
@@ -49,7 +49,9 @@ static void test_flag_operations()
 
   /* Test flag set */
   name = "Testing if flags can be set properly";
-  testbool(get_flag(C_FLAG) && get_flag(N_FLAG) && get_flag(V_FLAG) && get_flag(Z_FLAG), name);
+  testbool(get_flag(C_FLAG) && get_flag(N_FLAG) && get_flag(V_FLAG) &&
+               get_flag(Z_FLAG),
+           name);
   set_flag_to(C_FLAG, 0);
   set_flag_to(N_FLAG, 0);
   set_flag_to(V_FLAG, 0);
@@ -57,11 +59,12 @@ static void test_flag_operations()
 
   /* Test flag clear */
   name = "Testing if flags can be cleared properly";
-  testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG) || get_flag(V_FLAG) || get_flag(Z_FLAG)), name);
+  testbool(!(get_flag(C_FLAG) || get_flag(N_FLAG) || get_flag(V_FLAG) ||
+             get_flag(Z_FLAG)),
+           name);
 }
 
-static void test_memory_operations()
-{
+static void test_memory_operations() {
   /*
    * Test get_word(address_t addr), set_word(address_t, word_t instruction),
    * get_memory(address_t addr), and set_memory(address_t addr, byte_t value):
@@ -71,8 +74,7 @@ static void test_memory_operations()
   char *name;
   const address_t STEP = 8192;
 
-  for (address_t addr = 0; addr < MEM_ADDR - STEP; addr += STEP)
-  {
+  for (address_t addr = 0; addr < MEM_ADDR - STEP; addr += STEP) {
     printf("Address: %d\n", addr);
     /* Testing memory initialization */
     name = "Testing if memory is initialized to 0";
@@ -92,8 +94,7 @@ static void test_memory_operations()
   }
 }
 
-static void test_load_program()
-{
+static void test_load_program() {
   /*
    * Test load_program(word_t *buffer, size_t size):
    * Check if the program is loaded into the memory properly starting
@@ -112,8 +113,7 @@ static void test_load_program()
 
   /* Testing if the program is correctly loaded in memory */
   name = "Testing if the program is loaded into the memory";
-  for (int i = 0; i < size; i++)
-  {
+  for (int i = 0; i < size; i++) {
     testword(get_word(i << 2), buffer[i], name);
   }
 
@@ -121,31 +121,28 @@ static void test_load_program()
   fclose(fp);
 }
 
-static void test_return_state()
-{
+static void test_return_state() {
   /*
    * Test return_state(FILE *fp):
-   * Check if the state is printed correctly after executing the testing functions above
+   * Check if the state is printed correctly after executing the testing
+   * functions above
    */
   FILE *f = fopen("memory_test.txt", "w+");
-  if (f == NULL)
-  {
+  if (f == NULL) {
     fprintf(stderr, "Failed to open the text file!");
     exit(EXIT_FAILURE);
   }
   free_state();
   print_state(f);
   /* print to the standard output for convenience*/
-  while (!feof(f))
-  {
+  while (!feof(f)) {
     fprintf(stdout, "%c", fgetc(f));
   }
 
   fclose(f);
 }
 
-int main(void)
-{
+int main(void) {
   /* construct state using init_state() */
   init_state();
 

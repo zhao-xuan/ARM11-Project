@@ -1,5 +1,5 @@
-/* 
- * Decode the instruction and modify the pipeline status accordingly. 
+/*
+ * Decode the instruction and modify the pipeline status accordingly.
  */
 
 #ifndef DECODE_H
@@ -8,7 +8,8 @@
 #include "state.h"
 
 /*
- * @brief: Takes a 32-bit binary instruction and decode it into instruction_t representation 
+ * @brief: Takes a 32-bit binary instruction and decode it into instruction_t
+ * representation
  * @param binary: a 32-bit unsigned integer representing the binary instruction
  * @returns *instruction: pointer to the decoded instruction
  */

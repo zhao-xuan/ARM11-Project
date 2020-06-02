@@ -5,15 +5,15 @@
 
 #define PATH_TO_FILE "testinput"
 
+#include "utils.h"
+
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-#include "utils.h"
 #include "testutils.h"
 
-int main(void)
-{
+int main(void) {
   uint32_t *buffer;
   size_t size;
   char *test_name;

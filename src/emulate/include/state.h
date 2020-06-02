@@ -1,13 +1,14 @@
 /*
  * Defines the interfaces for modifying the state of the machine
- * It is required to call the constructor init_state() before modifying the state
- * and call the destructor free_state() before exitting the program.
+ * It is required to call the constructor init_state() before modifying the
+ * state and call the destructor free_state() before exitting the program.
  */
 
 #ifndef STATE_H
 #define STATE_H
 
 #include <stdlib.h>
+
 #include "instructions.h"
 
 /*
@@ -18,7 +19,7 @@ void init_state();
 
 /*
  * @brief: Destructor for the state.
- * Free the memory spaces used by the state structure. 
+ * Free the memory spaces used by the state structure.
  */
 void free_state();
 
@@ -30,7 +31,7 @@ word_t get_and_incrementPC();
 
 /*
  * Get the value stored in the register.
- * @param reg_no : number of the required register. 
+ * @param reg_no : number of the required register.
  * @returns: value stored in the register.
  */
 word_t get_reg(byte_t reg_no);
@@ -52,7 +53,7 @@ void set_flag_to(flag_t flag, bool x);
 /*
  * Gets the value of a flag in CPSR register.
  * @param flag : a flag in CPSR register.
- * @returns : whether the flag is set or not. 
+ * @returns : whether the flag is set or not.
  */
 bool get_flag(flag_t flag);
 
@@ -97,7 +98,7 @@ void set_fetched(word_t fetched_instruction);
 
 /*
  * Gets the fetched binary instruction in the pipeline.
- * @returns: the value of binary instruction in the current pipeline. 
+ * @returns: the value of binary instruction in the current pipeline.
  */
 word_t get_fetched();
 
@@ -109,12 +110,12 @@ void set_decoded(instruction_t *decoded_instruction);
 
 /*
  * Gets the decoded instruction in the pipeline.
- * @returns: a pointer to the decoded instruction in the current pipeline. 
+ * @returns: a pointer to the decoded instruction in the current pipeline.
  */
 instruction_t *get_decoded();
 
 /*
- * Empties the pipeline. 
+ * Empties the pipeline.
  */
 void empty_pipeline();
 

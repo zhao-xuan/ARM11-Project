@@ -1,4 +1,4 @@
-/* 
+/*
  * Global Declarations
  */
 
@@ -53,7 +53,8 @@
 #define OPERAND2_SHIFT_SPEC_LOCATION 4
 /* Location of Set Cond field for DATA_PROCESSING and MULTIPLY*/
 #define SET_COND_LOCATION 20
-/* Location of Immediate Operand/Offset field for DATA_PROCESSING and DATA_TRANSFER*/
+/* Location of Immediate Operand/Offset field for DATA_PROCESSING and
+ * DATA_TRANSFER*/
 #define IMM_LOCATION 25
 /* Location of Rn field for DATA_PROCESSING and DATA_TRANSFER */
 #define DP_DT_RN_LOCATION 16
