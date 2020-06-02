@@ -23,15 +23,14 @@ word_t get_and_incrementPC() {
 }
 
 word_t get_reg(int reg_no) {
-  if (out_of_bound_check(reg_no, REG_NUM) == 0) {
-    word_t value = state->registers[reg_no];
-    return value;
+  if (!out_of_bound_check(reg_no, REG_NUM)) {
+    return state->registers[reg_no];
   }
   return 0;
 }
 
 void set_reg(int reg_no, word_t value) {
-  if (out_of_bound_check(reg_no, REG_NUM) == 0) {
+  if (!out_of_bound_check(reg_no, REG_NUM)) {
     state->registers[reg_no] = value;
   }
 }
@@ -60,10 +59,11 @@ void clear_flag(flag_t flag) {
 }
 
 word_t get_word(address_t addr) {
-  if (out_of_bound_check(addr, MEM_ADDR) == 0) {
+  if (!out_of_bound_check(addr, MEM_ADDR) &&
+      !out_of_bound_check(addr, MEM_ADDR + 3)) {
     word_t word;
     for (int i = 0; i < 4; i++) {
-      ((byte_t *)&word)[i] = get_memory(addr + i);
+      ((byte_t *)&word)[i] = state->memory[addr + i];
     }
     return word;
   }
@@ -71,23 +71,13 @@ word_t get_word(address_t addr) {
 }
 
 void set_word(address_t addr, word_t word) {
-  if (out_of_bound_check(addr, MEM_ADDR) == 0) {
+  if (!out_of_bound_check(addr, MEM_ADDR) &&
+      !out_of_bound_check(addr, MEM_ADDR + 3)) {
     for (int i = 0; i < 4; i++) {
       byte_t current_byte = ((byte_t *)&word)[i];
-      set_memory(addr + i, current_byte);
+      state->memory[addr + i] = current_byte;
     }
   }
-}
-
-byte_t get_memory(address_t addr) {
-  if (out_of_bound_check(addr, MEM_ADDR) == 0) {
-    return state->memory[addr];
-  }
-  return 0;
-}
-
-void set_memory(address_t addr, byte_t value) {
-  if (out_of_bound_check(addr, MEM_ADDR) == 0) state->memory[addr] = value;
 }
 
 void load_program(word_t *buffer, size_t size) {

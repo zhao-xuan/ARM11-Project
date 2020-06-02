@@ -92,19 +92,6 @@ word_t get_word(address_t addr);
 void set_word(address_t addr, word_t instruction);
 
 /*
- * @param: addr : address of the required memory position
- * @brief: gets 8 bits from the memory starting from the specified address. (In big endian)
- */
-byte_t get_memory(address_t addr);
-
-/*
- * @param: addr   : address of the required memory position.
- * @param: value  : Value to be set. (In big endian)
- * @brief: sets 8 bits in the memory starting from the specified address.
- */
-void set_memory(address_t addr, byte_t value);
-
-/*
  * @param: *buffer   : Buffer containing program to load.
  * @param: size      : Number of words of the buffer specified.
  * @brief: Loads program in buffer into the memory.
