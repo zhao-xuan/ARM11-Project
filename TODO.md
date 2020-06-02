@@ -11,15 +11,15 @@
 
 ### Part 1
 
-| Task                         | Name   | Status      | Checked By(Before pushed to master) |
-| ---------------------------- | ------ | ----------- | ----------------------------------- |
-| Binary file loader           | Daniel | In progress |                                     |
-| Headers and includes         | Hoang  | In progress |                                     |
-| Data Processing instructions | Tom    | In progress |                                     |
-| Multiply and Branch          |        | Incomplete  |                                     |
-| Single Data Transfer         |        | Incomplete  |                                     |
-| Pipeline and integration     |        | Incomplete  |                                     |
-| Testing                      |        | Incomplete  |                                     |
+| Task                         | Name   | Status    | Checked By(Before pushed to master) |
+| ---------------------------- | ------ | --------- | ----------------------------------- |
+| Binary file loader           | Daniel | Complete  |         Kaiyan, Hoang, Tom          |
+| Headers and includes         | Hoang  | Complete  |         Kaiyan, Tom, Daniel         |
+| Data Processing instructions | Tom    | Complete  |         Kaiyan, Hoang, Daniel       |
+| Multiply and Branch          | Daniel | Complete  |         Kaiyan, Hoang, Tom          |
+| Single Data Transfer         | Tom    | Complete  |         Kaiyan, Hoang, Daniel       |
+| Pipeline and integration     | Daniel | Complete  |         Kaiyan, Hoang, Tom          |
+| Testing                      | Kaiyan | Complete  |         Hoang, Tom, Kaiyan          |
 
 ### Part 2
 
