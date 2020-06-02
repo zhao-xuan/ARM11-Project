@@ -17,6 +17,7 @@ static void lsl(byte_t shamt, word_t op2, bool *cout, word_t *res);
 static void lsr(byte_t shamt, word_t op2, bool *cout, word_t *res);
 static void asr(byte_t shamt, word_t op2, bool *cout, word_t *res);
 static void ror(byte_t shamt, word_t op2, bool *cout, word_t *res);
+static void set_alu_flags(word_t res, bool cout, bool arithm_op);
 
 typedef void (*alu_array_ptr)(word_t, word_t, bool *, word_t *);
 
