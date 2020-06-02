@@ -6,8 +6,6 @@
 #define UTILS_H
 
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 /*
  *  @brief: pass by value-result. REMEMBER TO FREE buffer when done.

@@ -1,6 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "execute.h"
 
-#include "logicunit.h"
 
 static int data_processing_execute(data_processing_t *dp_instr);
 static int multiply_execute(multiply_t *mul_instr);

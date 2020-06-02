@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "decode.h"
 #include "execute.h"
-#include "global.h"
 #include "print.h"
 #include "utils.h"
 

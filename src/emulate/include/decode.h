@@ -1,17 +1,13 @@
 /* 
-	Decode the instruction and modify the pipeline status accordingly. 
+ * Decode the instruction and modify the pipeline status accordingly. 
  */
 
 #ifndef DECODE_H
 #define DECODE_H
 
-#include <stdint.h>
 #include "state.h"
-#include "instructions.h"
-#include "global.h"
-#include "utils.h"
 
-/* Spec from Hoang
+/*
  * @brief: Take a 32-bit instruction and decode it into instruction_t representation that can be executed in execute.c
  * @param: word_t binary: a 32-bit unsigned integer representing the instruction
  * @return: instruction_t *instr: pointer to the struct, contains an enum field represents instruction type and the actual instruction struct

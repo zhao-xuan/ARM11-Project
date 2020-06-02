@@ -7,9 +7,6 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 
-#include <limits.h>
-
-#include "global.h"
 #include "state.h"
 
 /* 

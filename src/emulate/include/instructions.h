@@ -10,8 +10,8 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
+#include <stdbool.h>
 #include "global.h"
-
 
 /*
  *  4 types of instructions with its components broken down as in the spec
