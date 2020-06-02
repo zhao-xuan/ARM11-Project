@@ -17,7 +17,6 @@
  *    *path: path to the required file.
  *    **buffer: an empty pointer, will point to the content of the file.
  *    *size: an empty pointer, the value will be set to the size of the file.
- *  @returns: -1 if an error occurred, and 0 if OK.
  *  @example:
  *    uint32_t *buffer = NULL;
  *    size_t size;
@@ -27,7 +26,7 @@
  *      free(buffer);
  *    }
  */
-int read_binary_file(const char *path, uint32_t **buffer, size_t *size);
+void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
 
 /*
  *  @brief: takes in an unsigned 32 bit number, and print out its bits.

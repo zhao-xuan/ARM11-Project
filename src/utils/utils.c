@@ -1,13 +1,13 @@
 #include "utils.h"
 
-int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
+void read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
   file = fopen(path, "rb");
   if (!file) {
     fprintf(stderr, "Unable to open file %s\n", path);
-    return -1;
+    exit(EXIT_FAILURE);
   }
 
   fseek(file, 0, SEEK_END);
@@ -21,16 +21,15 @@ int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   if (!*buffer) {
     fprintf(stderr, "Memory error!\n");
     fclose(file);
-    return -1;
+    exit(EXIT_FAILURE);
   }
 
   if (fread(*buffer, file_length, 1, file) != 1 || ferror(file)) {
     fprintf(stderr, "Error reading from file.\n");
     fclose(file);
-    return -1;
+    exit(EXIT_FAILURE);
   }
   fclose(file);
-  return 0;
 }
 
 void print_bits(uint32_t x) {

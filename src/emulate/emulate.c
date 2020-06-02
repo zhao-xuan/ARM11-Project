@@ -7,6 +7,12 @@
 void pipeline();
 
 int main(int argc, char **argv) {
+
+  if (argc != 2) {
+    fprintf(stderr, "Wrong argument number!\n");
+    return EXIT_FAILURE;
+  }
+
   init_state();
   word_t *buffer = NULL;
   size_t size;
