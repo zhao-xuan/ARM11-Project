@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
+CFLAGS = -g -Wall -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 
 libtestutils.a: testutils.o
 	ar rcs $@ $^

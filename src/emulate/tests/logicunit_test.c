@@ -120,67 +120,81 @@ int main(void)
   clear_flag(C_FLAG);
   /* Test bitwise and */
   expected = 0;
-  expected_flags = 0b0100;
+  /* 0b0100 */
+  expected_flags = 4;
   test_alu(num1, num2, AND_OPCODE, expected, expected_flags);
   expected = num3;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num_max, num3, AND_OPCODE, expected, expected_flags);
   printf("\n");
 
   /* Test bitwise exclusive or */
   expected = 0;
-  expected_flags = 0b0100;
+  /* 0b0100 */
+  expected_flags = 4;
   test_alu(num0, num0, EOR_OPCODE, expected, expected_flags);
   /* 0111_0010_0100_0011_0001_1010_0011_0010 */
   expected = 1917000242;
-  expected_flags = 0b0000;
+  /* 0b0000 */
+  expected_flags = 0;
   test_alu(num2, num3, EOR_OPCODE, expected, expected_flags);
   printf("\n");
 
   /* Test arithmetic subtraction */
   expected = 1;
-  expected_flags = 0b0000;
+  /* 0b0000 */
+  expected_flags = 0;
   test_alu(num0, num_max, SUB_OPCODE, expected, expected_flags);
   expected = 0;
-  expected_flags = 0b0110;
+  /* 0b0110 */
+  expected_flags = 6;
   test_alu(num0, num0, SUB_OPCODE, expected, expected_flags);
   expected = 2535757655;
-  expected_flags = 0b1010;
+  /* 0b1010 */
+  expected_flags = 10;
   test_alu(num5, num4, SUB_OPCODE, expected, expected_flags);
   printf("\n");
 
   /* Test reversed arithmetic subtraction */
   expected = -1916986830;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num2, num3, RSB_OPCODE, expected, expected_flags);
   printf("\n");
 
   /* Test arithmetic addition */
   expected = num_max;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num1, num2, ADD_OPCODE, expected, expected_flags);
   expected = 0;
-  expected_flags = 0b0100;
+  /* 0b0100 */
+  expected_flags = 4;
   test_alu(num0, num0, ADD_OPCODE, expected, expected_flags);
   expected = 1610042173;
-  expected_flags = 0b0010;
+  /* 0b0010 */
+  expected_flags = 2;
   test_alu(num3, num5, ADD_OPCODE, expected, expected_flags);
   printf("\n");
 
   clear_flag(C_FLAG);
   /* Test bitwise or */
   expected = num_max;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num1, num2, ORR_OPCODE, expected, expected_flags);
   /* 1011_1111_1011_1110_1001_1011_1011_0110 */
   expected = 3216939958;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num3, num4, ORR_OPCODE, expected, expected_flags);
   printf("\n");
 
   /* Test move */
   expected = num5;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_alu(num0, num5, MOV_OPCODE, expected, expected_flags);
 
   /* Test set flag */
@@ -188,7 +202,8 @@ int main(void)
   set_flag(Z_FLAG);
   set_flag(C_FLAG);
   clear_flag(V_FLAG);
-  expected_flags = 0b0110;
+  /* 0b0110 */
+  expected_flags = 6;
   word_t dummy;
   alu(0, 0, &dummy, ADD_OPCODE, false);
   char *name = "ALU: doesn't update flags with condition codes unset";
@@ -231,30 +246,32 @@ int main(void)
   shamt = 8;
   /* 1111_1111_0000_0000_1111_1111_1111_1111 */
   expected = 4278255615;
-  expected_flags = 0b1010;
+  /* 0b1010 */
+  expected_flags = 10;
   test_combined(num1, num2, shamt, LSL_OPCODE, ORR_OPCODE, expected, expected_flags);
 
   /* Test logical shift right -> arithmetic addition */
   shamt = 8;
   /* 0000_0000_0011_1011_0001_0110_1001_1001 */
   expected = 3872409;
-  expected_flags = 0b0000;
+  /* 0b0000 */
+  expected_flags = 0;
   test_combined(num0, num4, shamt, LSR_OPCODE, ADD_OPCODE, expected, expected_flags);
 
   /* Test arithmetic shift right -> bitwise and */
   shamt = 16;
   /* 1111_1111_1111_1111_1000_1101_1011_1100 */
   expected = 4294938044;
-  expected_flags = 0b1000;
+  /* 0b1000 */
+  expected_flags = 8;
   test_combined(num_max, num3, shamt, ASR_OPCODE, AND_OPCODE, expected, expected_flags);
 
   /* Test rotate right -> exclusive or */
   shamt = 8;
-  /* 1011_0100_0011_1011_0001_0110_1001_1001 */
-  /* 1101_0010_0011_1011_0011_0001_0000_1011 */
   /* 0110_0110_0000_0000_0010_0111_1001_0010 */
   expected = 1711286162;
-  expected_flags = 0b0010;
+  /* 0b0010 */
+  expected_flags = 2;
   test_combined(num5, num4, shamt, ROR_OPCODE, EOR_OPCODE, expected, expected_flags);
 
   free_state();

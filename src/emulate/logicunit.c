@@ -46,7 +46,7 @@ int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set)
   bool arithm_op = (opcode >= 2 && opcode <= 4) || opcode == 10;
   if (set)
     set_alu_flags(*result, cout, arithm_op);
-  return EXIT_SUCCESS;
+  return 0;
 }
 
 int shifter(byte_t shamt, word_t operand, word_t *result,
@@ -58,7 +58,7 @@ int shifter(byte_t shamt, word_t operand, word_t *result,
   barrel_shifter[shift_type](shamt % 32, operand, &cout, result);
   if (set)
     set_alu_flags(*result, cout, true);
-  return EXIT_SUCCESS;
+  return 0;
 }
 
 /*

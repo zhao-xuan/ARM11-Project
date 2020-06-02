@@ -50,16 +50,16 @@ static bool cond_check(byte_t cond)
   switch (cond)
   {
   /* eq */
-  case 0b0000:
+  case EQUAL:
     return get_flag(Z_FLAG);
   /* ge */
-  case 0b1010:
+  case GREATER_EQUAL:
     return get_flag(N_FLAG) == get_flag(V_FLAG);
   /* gt */
-  case 0b1100:
-    return !get_flag(Z_FLAG) && cond_check(0b1010);
+  case GREATER_THAN:
+    return !get_flag(Z_FLAG) && cond_check(GREATER_EQUAL);
   /* al */
-  case 0b1110:
+  case ALWAYS:
     return true;
   default:
     return !cond_check(cond - 1);
@@ -179,12 +179,13 @@ static int data_transfer_execute(data_transfer_t *dt_instr)
 
 /*
  * Determines whether writes the result to the register from alu.
+ * The results are not written if the opcode is TEST, TEST EQUAL, or COMPARE.
  * @param opcode: the opcode of the alu operation.
  * @returns: Whether writes the result or not.
  */
 static bool write_result(byte_t opcode)
 {
-  if ((opcode >= 0b1000) && (opcode <= 0b1010))
+  if ((opcode == TST_OPCODE) || (opcode == TEQ_OPCODE) || (opcode == CMP_OPCODE))
   {
     return false;
   }

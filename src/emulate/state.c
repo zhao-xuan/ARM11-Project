@@ -96,8 +96,7 @@ void clear_flag(flag_t flag)
 
 word_t get_word(address_t addr)
 {
-  if (!out_of_bound_check(addr, MEM_ADDR) &&
-      !out_of_bound_check(addr, MEM_ADDR + 3))
+  if (!out_of_bound_check(addr, MEM_ADDR + 3))
   {
     word_t word;
     for (int i = 0; i < 4; i++)
@@ -111,8 +110,7 @@ word_t get_word(address_t addr)
 
 void set_word(address_t addr, word_t word)
 {
-  if (!out_of_bound_check(addr, MEM_ADDR) &&
-      !out_of_bound_check(addr, MEM_ADDR + 3))
+  if (!out_of_bound_check(addr, MEM_ADDR + 3))
   {
     for (int i = 0; i < 4; i++)
     {

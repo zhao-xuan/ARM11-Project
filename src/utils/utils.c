@@ -14,7 +14,7 @@ void read_binary_file(const char *path, uint32_t **buffer, size_t *size)
   file = fopen(path, "rb");
   if (!file)
   {
-    fprintf(stderr, "Unable to open file %s\n", path);
+    fprintf(stderr, "Unable to open file %s\nUsage: ./emulate <path_to_binary_file>\n", path);
     exit(EXIT_FAILURE);
   }
 
