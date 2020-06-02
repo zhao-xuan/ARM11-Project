@@ -50,7 +50,7 @@ word_t get_and_incrementPC()
   return value;
 }
 
-word_t get_reg(int reg_no)
+word_t get_reg(byte_t reg_no)
 {
   if (!out_of_bound_check(reg_no, REG_NUM))
   {
@@ -59,7 +59,7 @@ word_t get_reg(int reg_no)
   return 0;
 }
 
-void set_reg(int reg_no, word_t value)
+void set_reg(byte_t reg_no, word_t value)
 {
   if (!out_of_bound_check(reg_no, REG_NUM))
   {

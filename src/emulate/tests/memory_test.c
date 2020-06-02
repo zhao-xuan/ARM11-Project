@@ -5,16 +5,18 @@
 
 #include <stdio.h>
 #include "global.h"
+#include "utils.h"
 #include "state.h"
 #include "testutils.h"
+#include "print.h"
 
 static void test_reg_operations()
 {
   /*
-     * Testing get_reg(word_t reg_no) and set_reg(word_t reg_no, word_t value):
-     * Test if the register can be set and accessed properly, and if they are
-     * initialized to 0 and in big endian format
-     */
+   * Testing get_reg(word_t reg_no) and set_reg(word_t reg_no, word_t value):
+   * Test if the register can be set and accessed properly, and if they are
+   * initialized to 0 and in big endian format
+   */
   char *name;
 
   for (word_t i = 0; i < REG_NUM; i++)
@@ -32,9 +34,9 @@ static void test_reg_operations()
 static void test_flag_operations()
 {
   /*
-     * Testing get_flag(flag_t flag), set_flag(flag_t flag), and clear_flag(flag_t flag):
-     * Test if the flags can be set and accessed properly
-     */
+   * Testing get_flag(flag_t flag), set_flag(flag_t flag), and clear_flag(flag_t flag):
+   * Test if the flags can be set and accessed properly
+   */
   char *name;
 
   /* Testing flag initialization */
@@ -61,58 +63,42 @@ static void test_flag_operations()
 static void test_memory_operations()
 {
   /*
-     * Test get_word(address_t addr), set_word(address_t, word_t instruction),
-     * get_memory(address_t addr), and set_memory(address_t addr, byte_t value):
-     * Test if the return value is in big endian format and initialized to 0
-     */
+   * Test get_word(address_t addr), set_word(address_t, word_t instruction),
+   * get_memory(address_t addr), and set_memory(address_t addr, byte_t value):
+   * Test if the return value is in big endian format and initialized to 0
+   */
 
   char *name;
-  const address_t STEP = 2048;
-  const word_t LITTLE_ENDIAN_TEST_NUM = 100;
+  const address_t STEP = 8192;
 
-  for (address_t addr = 1; addr < MEM_ADDR - STEP; addr += STEP)
+  for (address_t addr = 0; addr < MEM_ADDR - STEP; addr += STEP)
   {
     printf("Address: %d\n", addr);
     /* Testing memory initialization */
     name = "Testing if memory is initialized to 0";
     testword(get_word(addr), 0, name);
-    testword(get_memory(addr), 0, name);
-
-    /* Testing set_memory() */
-    name = "Testing if set_memory() works properly";
-    word_t test_instr = addr;
-    byte_t test_value = addr;
-    set_memory(addr, test_value);
-    testbyte(get_memory(addr), test_value, name);
-
-    /* Testing memory size after set_memory()*/
-    name = "Testing if memory has the right size after calling set_memory()";
-    testsize(sizeof(get_memory(addr)), sizeof(byte_t), name);
 
     /* Testing set_word() */
     name = "Testing if set_word() works properly";
+    word_t test_instr = addr;
     set_word(addr, test_instr);
     testword(get_word(addr), test_instr, name);
 
-    /* Testing memory size after set_word() */
-    name = "Testing if memory has the right size after calling set_word()";
-    testsize(sizeof(get_word(addr)), sizeof(word_t), name);
-
-    /* Testing the underlying memory is in little endian format */
-    set_word(addr, 0);
-    name = "Testing if the underlying memory is in little endian format";
-    set_word(addr, LITTLE_ENDIAN_TEST_NUM);
-    testbyte(get_memory(addr + 3), LITTLE_ENDIAN_TEST_NUM, name);
+    /* Testing get_word() at addresses that are not aligned to 4 bytes */
+    name = "Testing get_word() at addresses that are not aligned to 4 bytes";
+    set_word(addr, 0x01234567);
+    set_word(addr + 4, 0x89abcdef);
+    testword(get_word(addr + 2), 0xcdef0123, name);
   }
 }
 
 static void test_load_program()
 {
   /*
-     * Test load_program(word_t *buffer, size_t size):
-     * Check if the program is loaded into the memory properly starting
-     * with address 0 and 4 bytes for each instruction
-     */
+   * Test load_program(word_t *buffer, size_t size):
+   * Check if the program is loaded into the memory properly starting
+   * with address 0 and 4 bytes for each instruction
+   */
 
   /* an example file to load into memory */
   FILE *fp = fopen("factorial", "r");
@@ -121,15 +107,8 @@ static void test_load_program()
   uint32_t *buffer = NULL;
   size_t size;
 
-  if (read_binary_file("factorial", &buffer, &size) == 0)
-  {
-    load_program(buffer, size);
-  }
-  else
-  {
-    fprintf(stdout, "Failed to load binary file into the buffer!");
-    exit(EXIT_FAILURE);
-  }
+  read_binary_file("factorial", &buffer, &size);
+  load_program(buffer, size);
 
   /* Testing if the program is correctly loaded in memory */
   name = "Testing if the program is loaded into the memory";
@@ -145,9 +124,9 @@ static void test_load_program()
 static void test_return_state()
 {
   /*
-     * Test return_state(FILE *fp):
-     * Check if the state is printed correctly after executing the testing functions above
-     */
+   * Test return_state(FILE *fp):
+   * Check if the state is printed correctly after executing the testing functions above
+   */
   FILE *f = fopen("memory_test.txt", "w+");
   if (f == NULL)
   {

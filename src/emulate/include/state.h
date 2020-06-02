@@ -33,14 +33,14 @@ word_t get_and_incrementPC();
  * @param reg_no : number of the required register. 
  * @returns: value stored in the register.
  */
-word_t get_reg(int reg_no);
+word_t get_reg(byte_t reg_no);
 
 /*
  * Sets the value stored in the register.
  * @param reg_no : number of the required register.
  * @param value  : value to be set to.
  */
-void set_reg(int reg_no, word_t value);
+void set_reg(byte_t reg_no, word_t value);
 
 /*
  * Sets or clears the flag (depends on input).

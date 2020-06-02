@@ -11,7 +11,7 @@ static int multiply_execute(multiply_t *mul_instr);
 static int data_transfer_execute(data_transfer_t *dt_instr);
 static int branch_execute(branch_t *b_instr);
 static word_t compute_shift_register(register_form_t reg_value, bool set);
-static void set_or_load(data_transfer_t *dt_instr, word_t address);
+static void set_or_load(data_transfer_t *dt_instr, address_t address);
 static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
 
@@ -131,7 +131,8 @@ static int data_transfer_execute(data_transfer_t *dt_instr)
 {
   /* Assume that PC cannot be Rm or Rd */
   byte_t base_reg = dt_instr->rn;
-  word_t offset, address;
+  word_t offset;
+  address_t address;
 
   bool up_bit = dt_instr->up_bit;
 
@@ -209,7 +210,7 @@ static int branch_execute(branch_t *b_instr)
  * @param *dt_instr: a pointer to the data transfer instruction to be executed
  * @param address: address of the memory to store to/load from.
  */
-static void set_or_load(data_transfer_t *dt_instr, word_t address)
+static void set_or_load(data_transfer_t *dt_instr, address_t address)
 {
   if (dt_instr->load)
   {
