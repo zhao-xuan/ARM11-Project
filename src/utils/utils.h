@@ -45,14 +45,6 @@ void dump_buffer(uint32_t *buffer, size_t size);
 void dump_hex(uint32_t *buffer, size_t size);
 
 /*
- * @brief: checks whether a given value is out of bounds. 
- * @param addr: the position to be verified. 
- * @param size: the total size of the array. 
- * @returns: 0 if no out of bound. Error code if out of bound and prints message to stderr.
- */
-int out_of_bound_check(uint32_t addr, size_t size);
-
-/*
  * @brief: Sign extend a number to 32 bits. 
  * @param x: The number to sign extend. 
  * @param bits: the number of bits in x. 

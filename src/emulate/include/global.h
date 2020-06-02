@@ -100,8 +100,6 @@
 
 /* OpCodes */
 
-/* Unknown OpCode for ALU */
-#define UNKNOWN_OPCODE 404
 /* Bitwise And */
 #define AND_OPCODE 0
 /* Bitwise Exclusive Or */
@@ -157,6 +155,14 @@ typedef uint32_t word_t;
 /* Define memory address */
 typedef uint32_t address_t;
 /* Define flag position */
-typedef int flag_t;
+typedef uint8_t flag_t;
+
+/* Error Codes */
+#define REGISTER_INDEX_OUT_OF_BOUND 50
+#define MEMORY_INDEX_OUT_OF_BOUND 51
+#define UNKNOWN_ALU_OPCODE 60
+#define UNKNOWN_SHIFT_TYPE 61
+#define UNKNOWN_INSTRUCTION_TYPE 70
+#define RUN_TIME_INSTRUCTION_ERROR 71
 
 #endif

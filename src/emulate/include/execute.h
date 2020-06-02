@@ -10,9 +10,8 @@
 /*
  * @brief: executes a single instruction
  * @param instr: pointer to a decoded instruction
- * @returns 0 if succeeded, -1 if error has occurred
  */
 
-int execute(instruction_t *instr);
+void execute(instruction_t *instr);
 
 #endif

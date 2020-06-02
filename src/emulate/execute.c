@@ -5,39 +5,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "execute.h"
+#include "exceptions.h"
 
-static int data_processing_execute(data_processing_t *dp_instr);
-static int multiply_execute(multiply_t *mul_instr);
-static int data_transfer_execute(data_transfer_t *dt_instr);
-static int branch_execute(branch_t *b_instr);
+static void data_processing_execute(data_processing_t *dp_instr);
+static void multiply_execute(multiply_t *mul_instr);
+static void data_transfer_execute(data_transfer_t *dt_instr);
+static void branch_execute(branch_t *b_instr);
 static word_t compute_shift_register(register_form_t reg_value, bool set);
 static void set_or_load(data_transfer_t *dt_instr, address_t address);
 static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
 
-int execute(instruction_t *instr_to_exec)
+void execute(instruction_t *instr_to_exec)
 {
   if (cond_check(instr_to_exec->cond))
   {
     switch (instr_to_exec->type)
     {
     case DATA_PROCESSING:
-      return data_processing_execute(
-          instr_to_exec->instructions.data_processing);
+      data_processing_execute(instr_to_exec->instructions.data_processing);
+      break;
     case MULTIPLY:
-      return multiply_execute(instr_to_exec->instructions.multiply);
+      multiply_execute(instr_to_exec->instructions.multiply);
+      break;
     case DATA_TRANSFER:
-      return data_transfer_execute(instr_to_exec->instructions.data_transfer);
+      data_transfer_execute(instr_to_exec->instructions.data_transfer);
+      break;
     case BRANCH:
-      return branch_execute(instr_to_exec->instructions.branch);
+      branch_execute(instr_to_exec->instructions.branch);
+      break;
     default:
-      fprintf(stderr, "Instruction Type Error! ");
-      exit(EXIT_FAILURE);
+      exceptions(RUN_TIME_INSTRUCTION_ERROR, get_reg(PC));
     }
-  }
-  else
-  {
-    return 0;
   }
 }
 
@@ -69,9 +68,8 @@ static bool cond_check(byte_t cond)
 /*
  * Execute data processing instructions.
  * @param *dp_instr: a pointer to the data processing instruction to be executed.
- * @return: 0 if succeeded, otherwise an error code.
  */
-static int data_processing_execute(data_processing_t *dp_instr)
+static void data_processing_execute(data_processing_t *dp_instr)
 {
   word_t op2, result;
 
@@ -93,16 +91,13 @@ static int data_processing_execute(data_processing_t *dp_instr)
   {
     set_reg(dp_instr->rd, result);
   }
-
-  return 0;
 }
 
 /*
  * Execute multiply instructions.
  * @param *mul_instr: a pointer to the multiply instruction to be executed.
- * @return: 0 if succeeded, otherwise an error code.
  */
-static int multiply_execute(multiply_t *mul_instr)
+static void multiply_execute(multiply_t *mul_instr)
 {
   /* Multiply instructions should be executed here */
   word_t rm_val = get_reg(mul_instr->rm);
@@ -119,15 +114,13 @@ static int multiply_execute(multiply_t *mul_instr)
     set_flag_to(Z_FLAG, result == 0);
   }
   set_reg(mul_instr->rd, result);
-  return 0;
 }
 
 /*
  * Execute data transfer instructions.
  * @param *dt_instr: a pointer to the data transfer instruction to be executed.
- * @return: 0 if succeeded, -1 if error has occurred
  */
-static int data_transfer_execute(data_transfer_t *dt_instr)
+static void data_transfer_execute(data_transfer_t *dt_instr)
 {
   /* Assume that PC cannot be Rm or Rd */
   byte_t base_reg = dt_instr->rn;
@@ -174,7 +167,18 @@ static int data_transfer_execute(data_transfer_t *dt_instr)
     }
     set_reg(base_reg, address);
   }
-  return 0;
+}
+
+/*
+ * Execute a branching instruction.
+ * @param b_instr: a pointer to the branching instruction to be executed.
+ */
+static void branch_execute(branch_t *b_instr)
+{
+  word_t val = get_reg(PC);
+  val += b_instr->offset;
+  set_reg(PC, val);
+  empty_pipeline();
 }
 
 /*
@@ -190,20 +194,6 @@ static bool write_result(byte_t opcode)
     return false;
   }
   return true;
-}
-
-/*
- * Execute a branching instruction.
- * @param b_instr: a pointer to the branching instruction to be executed.
- * @return: 0 if succeeded, otherwise an error code.
- */
-static int branch_execute(branch_t *b_instr)
-{
-  word_t val = get_reg(PC);
-  val += b_instr->offset;
-  set_reg(PC, val);
-  empty_pipeline();
-  return 0;
 }
 
 /* 

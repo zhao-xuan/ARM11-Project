@@ -4,6 +4,7 @@
 
 #include <limits.h>
 #include "logicunit.h"
+#include "exceptions.h"
 
 static void and (word_t op1, word_t op2, bool *cout, word_t *res);
 static void eor(word_t op1, word_t op2, bool *cout, word_t *res);
@@ -34,11 +35,11 @@ shifter_array_ptr barrel_shifter[] = {lsl, lsr, asr, ror};
 /* Array of pointer to set flags function */
 flag_setter_ptr flag_setter[] = {clear_flag, set_flag};
 
-int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set)
+void alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set)
 {
   if ((opcode >= 5 && opcode <= 7) || opcode == 11 || opcode > 13)
   {
-    return UNKNOWN_OPCODE;
+    exceptions(UNKNOWN_ALU_OPCODE, get_reg(PC));
   }
   bool cout;
   int index = opcode % 8 + (opcode > 10 ? 1 : 0);
@@ -46,19 +47,19 @@ int alu(word_t op1, word_t op2, word_t *result, byte_t opcode, bool set)
   bool arithm_op = (opcode >= 2 && opcode <= 4) || opcode == 10;
   if (set)
     set_alu_flags(*result, cout, arithm_op);
-  return 0;
 }
 
-int shifter(byte_t shamt, word_t operand, word_t *result,
-            byte_t shift_type, bool set)
+void shifter(byte_t shamt, word_t operand, word_t *result,
+             byte_t shift_type, bool set)
 {
   if (shift_type > 4)
-    return UNKNOWN_OPCODE;
+  {
+    exceptions(UNKNOWN_SHIFT_TYPE, get_reg(PC));
+  }
   bool cout;
   barrel_shifter[shift_type](shamt % 32, operand, &cout, result);
   if (set)
     set_alu_flags(*result, cout, true);
-  return 0;
 }
 
 /*

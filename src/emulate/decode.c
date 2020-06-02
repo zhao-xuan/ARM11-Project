@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "decode.h"
 #include "utils.h"
+#include "exceptions.h"
 
 static void data_processing_helper(word_t binary, instruction_t *struct_p, data_processing_t *instr_p);
 static void multiply_helper(word_t binary, instruction_t *struct_p, multiply_t *instr_p);
@@ -46,10 +47,7 @@ instruction_t *decode(const word_t binary)
     branch_helper(binary, instr_struct, instr_ptr);
     break;
   }
-  case HALT:
-    break;
   default:
-    fprintf(stderr, "Instruction type doesn't match!\n");
     break;
   }
 
@@ -89,8 +87,8 @@ enum InstructionType check_instruction_type(const word_t binary)
     return DATA_PROCESSING;
   }
 
-  /*Clearly something better can be done here! Maybe another type ERROR in enum?*/
-  return HALT;
+  exceptions(UNKNOWN_INSTRUCTION_TYPE, get_reg(PC));
+  return EMPTY;
 }
 
 static void data_processing_helper(const word_t binary, instruction_t *struct_p, data_processing_t *instr_p)

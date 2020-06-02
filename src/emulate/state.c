@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "state.h"
 #include "utils.h"
+#include "exceptions.h"
 
 /* Structure for Memory, Registers and the Pipeline */
 typedef struct
@@ -31,7 +32,7 @@ void init_state()
   state = (state_t *)calloc(1, sizeof(state_t));
   if (state == NULL)
   {
-    fprintf(stderr, "Memory error!\n");
+    fprintf(stderr, "System memory error!\n");
     exit(EXIT_FAILURE);
   }
   empty_pipeline();
@@ -52,19 +53,22 @@ word_t get_and_incrementPC()
 
 word_t get_reg(byte_t reg_no)
 {
-  if (!out_of_bound_check(reg_no, REG_NUM))
+  if (reg_no < REG_NUM)
   {
     return state->registers[reg_no];
   }
+  exceptions(REGISTER_INDEX_OUT_OF_BOUND, reg_no);
   return 0;
 }
 
 void set_reg(byte_t reg_no, word_t value)
 {
-  if (!out_of_bound_check(reg_no, REG_NUM))
+  if (reg_no < REG_NUM)
   {
     state->registers[reg_no] = value;
+    return;
   }
+  exceptions(REGISTER_INDEX_OUT_OF_BOUND, reg_no);
 }
 
 bool get_flag(flag_t flag)
@@ -96,7 +100,7 @@ void clear_flag(flag_t flag)
 
 word_t get_word(address_t addr)
 {
-  if (!out_of_bound_check(addr, MEM_ADDR + 3))
+  if (addr + 3 < MEM_ADDR)
   {
     word_t word;
     for (int i = 0; i < 4; i++)
@@ -105,19 +109,22 @@ word_t get_word(address_t addr)
     }
     return word;
   }
+  exceptions(MEMORY_INDEX_OUT_OF_BOUND, addr);
   return 0;
 }
 
 void set_word(address_t addr, word_t word)
 {
-  if (!out_of_bound_check(addr, MEM_ADDR + 3))
+  if (addr + 3 < MEM_ADDR)
   {
     for (int i = 0; i < 4; i++)
     {
       byte_t current_byte = ((byte_t *)&word)[i];
       state->memory[addr + i] = current_byte;
     }
+    return;
   }
+  exceptions(MEMORY_INDEX_OUT_OF_BOUND, addr);
 }
 
 void load_program(word_t *buffer, size_t size)

@@ -73,16 +73,6 @@ void dump_hex(uint32_t *buffer, size_t size)
     printf("%08x\n", buffer[i]);
 }
 
-int out_of_bound_check(uint32_t addr, size_t size)
-{
-  if (addr >= size)
-  {
-    fprintf(stdout, "Error: Out of bounds memory access at address 0x%08x\n", addr);
-    return -1;
-  }
-  return 0;
-}
-
 uint32_t sign_extend(uint32_t x, int bits)
 {
   uint32_t m = 1u << (bits - 1);
