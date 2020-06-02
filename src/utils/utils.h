@@ -6,7 +6,7 @@
 #define UTILS_H
 
 #include <stdint.h>
-
+#include <stddef.h>
 /*
  * @brief: Loads a binary file into the buffer.
  * @param *path: path to the binary file.
