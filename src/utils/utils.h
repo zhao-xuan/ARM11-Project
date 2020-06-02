@@ -23,7 +23,6 @@
  *    size_t size;
  *    if (read_binary_file(argv[1], &buffer, &size) == 0) {
  *      printf("%ld\n", size);
- *      swap_endian(buffer, size);
  *      dump_hex(buffer, size);
  *      free(buffer);
  *    }
@@ -56,20 +55,12 @@ void dump_hex(uint32_t *buffer, size_t size);
 
 
 /*
- *  @brief: takes in an array of 32 bit numbers, and swaps endianness of each one. 
- *  @param:
- *    *buffer: buffer to convert. 
- *    size: the size of the buffer.
- */
-void swap_endian(uint32_t *buffer, size_t size);
-
-/*
  *  @brief: checks whether a given value is out of bounds. 
  *  @param:
  *    addr: the position to be verified. 
  *    size: the size of the total array. 
  */
-void out_of_bound_check(uint32_t addr, size_t size);
+int out_of_bound_check(uint32_t addr, size_t size);
 
 /*
  *  @brief: Sign extend a number to 32 bits. 

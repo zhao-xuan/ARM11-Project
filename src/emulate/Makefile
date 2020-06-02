@@ -6,8 +6,8 @@ SRC_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CC      = gcc
-CFLAGS  = -I../../lib -I../utils/ -Iinclude -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
-LDFLAGS = 
+CFLAGS  = -O -I../../lib -I../utils/ -Iinclude -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror #-pg -pedantic
+LDFLAGS = #-pg 
 
 
 $(BIN_DIR)/emulate: $(OBJ_FILES) $(UTIL_OBJ_DIR)/utils.o

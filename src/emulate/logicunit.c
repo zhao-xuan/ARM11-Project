@@ -136,7 +136,7 @@ static void mov(word_t op1, word_t op2, bool *cout, word_t *res){
  *  @return: 32-bit unsigned integer (word_t)
  */
 static void lsl(byte_t shamt, word_t n, bool *cout, word_t *res){
-  *cout = (n >> (32 - shamt)) & 1;
+  *cout = (n >> (31 - shamt)) & 1;
   *res =  n << shamt;
 }
 

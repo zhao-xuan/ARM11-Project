@@ -19,7 +19,7 @@
 /* Word length for this architecture */
 #define WORD_LENGTH 32
 /* Number of addresses for memory */
-#define MEM_ADDR 65536
+#define MEM_ADDR 0x10000
 /* Number of registers */
 #define REG_NUM 17
 /* Program Counter Register */
@@ -165,7 +165,7 @@ typedef uint8_t byte_t;
 /* Define words */
 typedef uint32_t word_t;
 /* Define memory address */
-typedef uint16_t address_t;
+typedef uint32_t address_t;
 /* Define flag position */
 typedef int flag_t;
 
