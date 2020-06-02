@@ -10,6 +10,10 @@
 
 static void memory_out_of_bound(address_t addr);
 
+/*
+ * The address of exception is determined by whether the exception occurs
+ * at decoding or executing.
+ */
 void exceptions(byte_t error_code, address_t addr)
 {
   switch (error_code)
