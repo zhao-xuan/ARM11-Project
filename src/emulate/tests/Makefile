@@ -1,7 +1,7 @@
 # This Makefile is for testing purpose ONLY
 
 CC = gcc
-CFLAGS = -g -Wall -Itestutils -I../include -I../../utils/ -D_DEFAULT_SOURCE -std=c99 #-Werror -pedantic
+CFLAGS = -g -Wall -Itestutils -I../include -I../../utils/ -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
 LDFLAGS =
 LDLIBS = -Ltestutils -ltestutils
 

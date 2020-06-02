@@ -1,5 +1,5 @@
 /*
-  1. Might be useful for I/O operations.
+ * Interfaces for the utility functions
  */
 
 #ifndef UTILS_H
@@ -8,62 +8,54 @@
 #include <stdint.h>
 
 /*
- *  @brief: pass by value-result. REMEMBER TO FREE buffer when done.
- *  Takes in path to a file, returns content of the file, and size of the file.
- *  Remember to swap endianness when loading memory. 
- *  @param:
- *    *path: path to the required file.
- *    **buffer: an empty pointer, will point to the content of the file.
- *    *size: an empty pointer, the value will be set to the size of the file.
- *  @example:
- *    uint32_t *buffer = NULL;
- *    size_t size;
- *    if (read_binary_file(argv[1], &buffer, &size) == 0) {
- *      printf("%ld\n", size);
- *      dump_hex(buffer, size);
- *      free(buffer);
- *    }
+ * @brief: Loads a binary file into the buffer.
+ * @param *path: path to the binary file.
+ * @param **buffer: a pointer to the buffer that will load the binary file.
+ * @param *size: a pointer to the size of the file (length of buffer).
+ * @example:
+ *   uint32_t *buffer = NULL;
+ *   size_t size;
+ *   if (read_binary_file(argv[1], &buffer, &size) == 0)
+ *   {
+ *     printf("%ld\n", size);
+ *     dump_hex(buffer, size);
+ *     free(buffer);
+ *   }
  */
 void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
 
 /*
- *  @brief: takes in an unsigned 32 bit number, and print out its bits.
- *  @param:
- *    x: the number to be printed.
+ * @brief: takes in an unsigned 32 bit number, and print out its bits to stdout.
+ * @param x: the number to be printed.
  */
 void print_bits(uint32_t x);
 
 /*
- *  @brief: takes in an array of 32 bit numbers, and print out its bits.
- *  @param:
- *    buffer: the buffer to be dumped.
- *    size: the size of the buffer.
+ * @brief: takes in an array of 32 bit numbers, and print out its bits to stdout.
+ * @param *buffer: a pointer to the buffer to be dumped.
+ * @param size: the size of the buffer.
  */
 void dump_buffer(uint32_t *buffer, size_t size);
 
-
 /*
- *  @brief: takes in an array of 32 bit numbers, and print out its hex form.
- *  @param:
- *    buffer: the buffer to be dumped.
- *    size: the size of the buffer.
+ * @brief: takes in an array of 32 bit numbers, and print out its hex form to stdout.
+ * @param *buffer: a pointer to the buffer to be dumped.
+ * @param size: the size of the buffer.
  */
 void dump_hex(uint32_t *buffer, size_t size);
 
-
 /*
- *  @brief: checks whether a given value is out of bounds. 
- *  @param:
- *    addr: the position to be verified. 
- *    size: the size of the total array. 
+ * @brief: checks whether a given value is out of bounds. 
+ * @param addr: the position to be verified. 
+ * @param size: the total size of the array. 
+ * @returns: 0 if no out of bound. Error code if out of bound and prints message to stderr.
  */
 int out_of_bound_check(uint32_t addr, size_t size);
 
 /*
- *  @brief: Sign extend a number to 32 bits. 
- *  @param:
- *    x: The number to sign extend. 
- *    bits: the number of bits in x. 
+ * @brief: Sign extend a number to 32 bits. 
+ * @param x: The number to sign extend. 
+ * @param bits: the number of bits in x. 
  */
 uint32_t sign_extend(uint32_t x, int bits);
 #endif

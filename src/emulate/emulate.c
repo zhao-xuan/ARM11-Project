@@ -1,3 +1,8 @@
+/*
+ * Entry point of the emulate module.
+ * Initializes the emulated machine and implements the pipeline.
+ */
+
 #include <stdio.h>
 #include "decode.h"
 #include "execute.h"
@@ -26,6 +31,10 @@ int main(int argc, char **argv) {
   free_state();
   return EXIT_SUCCESS;
 }
+
+/*
+ * Implementation of the three-staged pipeline of an ARM11 processor.
+ */
 
 void pipeline() {
   while (get_decoded()->type != HALT) {

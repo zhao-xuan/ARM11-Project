@@ -1,5 +1,5 @@
 /* 
-  Output the final state of the machine. 
+ * Output the current state of the machine. 
  */
 
 #ifndef PRINT_H
@@ -11,4 +11,5 @@
  * @brief: prints out the current state of the machine. 
  */
 void print_state();
+
 #endif

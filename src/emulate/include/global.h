@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-/* Macro definitions for the state of the machine */
+/* The state of the machine */
 
 /* empty instruction values for when pipeline is empty */
 #define EMPTY_INSTR 0xffffffff
@@ -29,7 +29,6 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
-
 
 /* Instruction decoding definitions. All in BIG ENDIAN encoding */
 
@@ -99,9 +98,6 @@
 /* Field size of 24 bits */
 #define TWENTY_FOUR_BIT_FIELD 0xffffff
 
-
-
-
 /* OpCodes */
 
 /* Unknown OpCode for ALU */
@@ -135,9 +131,8 @@
 /* Rotate Right */
 #define ROR_OPCODE 3
 
-
-
 /* Condition Codes */
+
 /* Equals */
 #define EQUAL 0
 /* Not equals */
@@ -165,4 +160,3 @@ typedef uint32_t address_t;
 typedef int flag_t;
 
 #endif
-

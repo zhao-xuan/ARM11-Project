@@ -1,5 +1,5 @@
 /* 
-	Execute the instruction and modify machine state accordingly.  
+ * Executes the instruction and modify machine state accordingly.  
  */
 
 #ifndef EXECUTE_H
@@ -8,9 +8,9 @@
 #include "logicunit.h"
 
 /*
- * @brief: execute a single instruction
- * @param instruction_t instr: a single instruction structure
- * @return: 0 if succeeded, -1 if error has occurred
+ * @brief: executes a single instruction
+ * @param instr: pointer to a decoded instruction
+ * @returns 0 if succeeded, -1 if error has occurred
  */
 
 int execute(instruction_t *instr);
