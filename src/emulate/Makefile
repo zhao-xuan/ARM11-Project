@@ -1,12 +1,13 @@
 BIN_DIR = ../../bin
 OBJ_DIR = ../../obj/emulate
-UTIL_OBJ_DIR = ../../obj/utils
+UTIL_OBJ_DIR = ../../obj/common
 
 SRC_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CC      = gcc
-CFLAGS  = -O -I../../lib -I../utils/ -Iinclude -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
+IncludePath = -I../../lib -I../common/ -I../common/include -Iinclude
+CFLAGS  = -O $(IncludePath) -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 LDFLAGS =  
 
 
@@ -16,7 +17,7 @@ $(BIN_DIR)/emulate: $(OBJ_FILES) $(UTIL_OBJ_DIR)/utils.o
 $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(UTIL_OBJ_DIR)/utils.o: ../utils/utils.c
+$(UTIL_OBJ_DIR)/utils.o: ../common/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 test: 

@@ -1,7 +1,8 @@
 # This Makefile is for testing purpose ONLY
 
 CC = gcc
-CFLAGS = -g -Wall -Itestutils -I../include -I../../utils/ -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
+IncludePath = -I../../../lib -I../../common/ -I../../common/include -I../include -Itestutils
+CFLAGS = -g -Wall $(IncludePath) -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 LDFLAGS =
 LDLIBS = -Ltestutils -ltestutils
 
@@ -23,7 +24,7 @@ all: testutils $(BUILD)
 %.o: ../%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-utils.o: ../../utils/utils.c
+utils.o: ../../common/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:

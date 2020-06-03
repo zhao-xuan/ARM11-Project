@@ -3,11 +3,11 @@
  */
 
 #include "utils.h"
-
+#include "global.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
+void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
@@ -24,7 +24,7 @@ void read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   fseek(file, 0, SEEK_SET);
 
   size_t size_bytes = file_length + 1;
-  *buffer = (uint32_t *)malloc(size_bytes);
+  *buffer = (word_t *)malloc(size_bytes);
   *size = size_bytes / 4;
 
   if (!*buffer) {
@@ -41,9 +41,9 @@ void read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   fclose(file);
 }
 
-void print_bits(uint32_t x) {
+void print_bits(word_t x) {
   int i;
-  uint32_t mask = 1 << 31;
+  word_t mask = 1 << 31;
   for (i = 0; i < 32; ++i) {
     if ((x & mask) == 0) {
       printf("0");
@@ -55,15 +55,15 @@ void print_bits(uint32_t x) {
   printf("\n");
 }
 
-void dump_buffer(uint32_t *buffer, size_t size) {
+void dump_buffer(word_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) print_bits(buffer[i]);
 }
 
-void dump_hex(uint32_t *buffer, size_t size) {
+void dump_hex(word_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
-uint32_t sign_extend(uint32_t x, int bits) {
-  uint32_t m = 1u << (bits - 1);
+word_t sign_extend(word_t x, int bits) {
+  word_t m = 1u << (bits - 1);
   return (x ^ m) - m;
 }

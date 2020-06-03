@@ -18,7 +18,7 @@
     |    |
     |    |__/assemble (src files for part 2, including submodules and tests)
     |    |
-    |    |__/utils    (utilities used by both part 1 and 2)
+    |    |__/common   (common utilities used by both part 1 and 2)
     |
     |
     |____/obj        (where the generated .o files will be)
