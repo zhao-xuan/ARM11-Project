@@ -88,10 +88,9 @@ char **read_assembly_file(const char *path) {
   char **buffer = calloc(size, sizeof(char *));
   char readbuffer[size];
   for (int i = 0; fgets(readbuffer, size, file); i++) {
-    buffer[i] = calloc(size, 1);
+    buffer[i] = calloc(strlen(readbuffer) + 1, 1);
     strncpy(buffer[i], strtok(readbuffer, "\n"), size);
   }
-
   fclose(file);
   return buffer;
 }
@@ -121,4 +120,14 @@ void dump_hex(word_t *buffer, size_t size) {
 word_t sign_extend(word_t x, int bits) {
   word_t m = 1u << (bits - 1);
   return (x ^ m) - m;
+}
+
+int main(int argc, char **argv) {
+  char **buffer = read_assembly_file(argv[1]);
+  for (int i = 0; buffer[i]; i++) {
+    printf("%s\n", buffer[i]);
+    free(buffer[i]);
+  }
+  free(buffer);
+  return EXIT_SUCCESS;
 }
