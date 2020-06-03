@@ -1,13 +1,22 @@
+/*
+ * Implementation of utility functions
+ */
+
 #include "utils.h"
 
-int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
+#include <stdio.h>
+#include <stdlib.h>
+
+void read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
   file = fopen(path, "rb");
   if (!file) {
-    fprintf(stderr, "Unable to open file %s\n", path);
-    return -1;
+    fprintf(stderr,
+            "Unable to open file %s\nUsage: ./emulate <path_to_binary_file>\n",
+            path);
+    exit(EXIT_FAILURE);
   }
 
   fseek(file, 0, SEEK_END);
@@ -21,16 +30,15 @@ int read_binary_file(const char *path, uint32_t **buffer, size_t *size) {
   if (!*buffer) {
     fprintf(stderr, "Memory error!\n");
     fclose(file);
-    return -1;
+    exit(EXIT_FAILURE);
   }
 
   if (fread(*buffer, file_length, 1, file) != 1 || ferror(file)) {
     fprintf(stderr, "Error reading from file.\n");
     fclose(file);
-    return -1;
+    exit(EXIT_FAILURE);
   }
   fclose(file);
-  return 0;
 }
 
 void print_bits(uint32_t x) {
@@ -55,16 +63,7 @@ void dump_hex(uint32_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
-int out_of_bound_check(uint32_t addr, size_t size) {
-  if (addr >= size) {
-    fprintf(stdout, "Error: Out of bounds memory access at address 0x%08x\n", addr);
-    return -1;
-  }
-  return 0;
-}
-
 uint32_t sign_extend(uint32_t x, int bits) {
-    uint32_t m = 1u << (bits - 1);
-    return (x ^ m) - m;
+  uint32_t m = 1u << (bits - 1);
+  return (x ^ m) - m;
 }
-

@@ -1,18 +1,13 @@
-/* 
+/*
  * Global Declarations
  */
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
 
-
-/* Macro definitions for the state of the machine */
+/* The state of the machine */
 
 /* empty instruction values for when pipeline is empty */
 #define EMPTY_INSTR 0xffffffff
@@ -34,7 +29,6 @@
 #define C_FLAG 29
 /* Overflow Flag */
 #define V_FLAG 28
-
 
 /* Instruction decoding definitions. All in BIG ENDIAN encoding */
 
@@ -59,7 +53,8 @@
 #define OPERAND2_SHIFT_SPEC_LOCATION 4
 /* Location of Set Cond field for DATA_PROCESSING and MULTIPLY*/
 #define SET_COND_LOCATION 20
-/* Location of Immediate Operand/Offset field for DATA_PROCESSING and DATA_TRANSFER*/
+/* Location of Immediate Operand/Offset field for DATA_PROCESSING and
+ * DATA_TRANSFER*/
 #define IMM_LOCATION 25
 /* Location of Rn field for DATA_PROCESSING and DATA_TRANSFER */
 #define DP_DT_RN_LOCATION 16
@@ -104,13 +99,8 @@
 /* Field size of 24 bits */
 #define TWENTY_FOUR_BIT_FIELD 0xffffff
 
-
-
-
 /* OpCodes */
 
-/* Unknown OpCode for ALU */
-#define UNKNOWN_OPCODE 404
 /* Bitwise And */
 #define AND_OPCODE 0
 /* Bitwise Exclusive Or */
@@ -140,9 +130,8 @@
 /* Rotate Right */
 #define ROR_OPCODE 3
 
-
-
 /* Condition Codes */
+
 /* Equals */
 #define EQUAL 0
 /* Not equals */
@@ -167,7 +156,14 @@ typedef uint32_t word_t;
 /* Define memory address */
 typedef uint32_t address_t;
 /* Define flag position */
-typedef int flag_t;
+typedef uint8_t flag_t;
+
+/* Error Codes */
+#define REGISTER_INDEX_OUT_OF_BOUND 50
+#define MEMORY_INDEX_OUT_OF_BOUND 51
+#define UNKNOWN_ALU_OPCODE 60
+#define UNKNOWN_SHIFT_TYPE 61
+#define UNKNOWN_INSTRUCTION_TYPE 70
+#define RUN_TIME_INSTRUCTION_ERROR 71
 
 #endif
-

@@ -1,135 +1,127 @@
 /*
- * Defines the state of the machine
- * The functions defined this file automatically converts to and from little endian. 
- * If conversion fails, please fix the functions here (or create an issue) instead of fixing it later in the code. 
+ * Defines the interfaces for modifying the state of the machine
+ * It is required to call the constructor init_state() before modifying the
+ * state and call the destructor free_state() before exitting the program.
  */
 
 #ifndef STATE_H
 #define STATE_H
 
-#include "global.h"
-#include "instructions.h"
-#include "print.h"
-#include "utils.h"
+#include <stdlib.h>
 
-/* Structure for Memory, Registers and the Pipeline */
-typedef struct {
-  /* Memory*/
-  byte_t memory[MEM_ADDR];
-  /* Registers*/
-  word_t registers[REG_NUM];
-  /* Instruction that has already been fetched in the pipeline */
-  word_t fetched_instruction;
-  /* Instruction that has already been decoded in the pipeline */
-  instruction_t *decoded_instruction;
-} state_t;
+#include "instructions.h"
 
 /*
- * Callocs space in heap for memory and registers
+ * @brief: Constructor for the state.
+ * Allocate memory spaces on the heap for the state.
  */
 void init_state();
 
-
 /*
- * Free the heap storing the structure 
+ * @brief: Destructor for the state.
+ * Free the memory spaces used by the state structure.
  */
 void free_state();
 
 /*
- * Return the current value of the Program counter, then increments it. 
+ * Get the current value of PC and increments it by 4.
+ * @returns: the current value of Program Counter.
  */
 word_t get_and_incrementPC();
 
 /*
- * @param reg_no : number of the required register. 
- * @returns: value of the register. (In big endian)
+ * Get the value stored in the register.
+ * @param reg_no : number of the required register.
+ * @returns: value stored in the register.
  */
-word_t get_reg(int reg_no);
+word_t get_reg(byte_t reg_no);
 
 /*
- * @param: reg_no : number of the required register.
- * @param: value  : Value to be set. (In big endian)
- * @brief: sets the value of the register to value specified.
+ * Sets the value stored in the register.
+ * @param reg_no : number of the required register.
+ * @param value  : value to be set to.
  */
-void set_reg(int reg_no, word_t value);
+void set_reg(byte_t reg_no, word_t value);
 
 /*
- * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
- * @param: x     : Boolean to set the flag to
+ * Sets or clears the flag (depends on input).
+ * @param flag : flag to be set or cleared.
+ * @param x    : value of the flag to be set to.
  */
 void set_flag_to(flag_t flag, bool x);
 
 /*
- * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
- * @return: whether the flag in question is set or not. 
+ * Gets the value of a flag in CPSR register.
+ * @param flag : a flag in CPSR register.
+ * @returns : whether the flag is set or not.
  */
 bool get_flag(flag_t flag);
 
 /*
- * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
- * @brief: sets the flag in question to 1.  
+ * Sets a flag in CPSR register.
+ * @param flag : flag to be set.
  */
 void set_flag(flag_t flag);
 
-
 /*
- * @param: flag  : C_FLAG, N_FLAG, V_FLAG, Z_FLAG
- * @brief: sets the flag in question to 0.  
+ * Clear a flag in CPSR register.
+ * @param flag : flag to be cleared.
  */
 void clear_flag(flag_t flag);
 
 /*
- * @param: addr : address of the required memory position.
- * @returns: gets 32 bits from the memory starting from the specified address. (In big endian)
+ * Fetch a word from the memory
+ * @param addr : address of the required memory position.
+ * @returns: gets 32 bits from the memory starting from the specified address.
  */
 word_t get_word(address_t addr);
 
 /*
- * @param: addr   : address of the required memory position.
- * @param: value  : Value to be set.(In big endian)
- * @brief: sets 32 bits in the memory starting from the specified address. 
+ * Sets the memory content by a word.
+ * @param addr  : address of the required memory position.
+ * @param value : Value to be set.
  */
-void set_word(address_t addr, word_t instruction);
+void set_word(address_t addr, word_t word);
 
 /*
- * @param: *buffer   : Buffer containing program to load.
- * @param: size      : Number of words of the buffer specified.
- * @brief: Loads program in buffer into the memory.
+ * Loads the program in the buffer into the memory.
+ * @param *buffer : pointer to the buffer containing the program to load.
+ * @param size    : the number of words of the buffer specified.
  */
 void load_program(word_t *buffer, size_t size);
 
 /*
- * @param: fetched_instruction   : the value to set fetched_instruction
- * @brief: sets fetched_instruction to the param specified. 
+ * Store a fetched binary instruction to the pipeline.
+ * @param fetched_instruction : the binary instruction fetched.
  */
 void set_fetched(word_t fetched_instruction);
 
-
 /*
- * @returns: the value of fetched_instruction in the current state. 
+ * Gets the fetched binary instruction in the pipeline.
+ * @returns: the value of binary instruction in the current pipeline.
  */
 word_t get_fetched();
 
 /*
- * @param: decoded_instruction   : the value to set decoded_instruction
- * @brief: sets decoded_instruction to the param specified. 
+ * Stores a decoded instruction to the pipeline.
+ * @param decoded_instruction : the instruction decoded.
  */
 void set_decoded(instruction_t *decoded_instruction);
 
-
-
 /*
- * @returns: the value of decoded_instruction in the current state. 
+ * Gets the decoded instruction in the pipeline.
+ * @returns: a pointer to the decoded instruction in the current pipeline.
  */
 instruction_t *get_decoded();
 
 /*
- * sets fetched and decoded both to empty. 
+ * Empties the pipeline.
  */
 void empty_pipeline();
 
 /*
- * frees the instruction pointed to by prev.
+ * Frees the instruction pointed to by prev.
+ * @param *prev: a pointer to the decoded instruction that needs to be freed.
  */
 void free_instruction(instruction_t *prev);
 

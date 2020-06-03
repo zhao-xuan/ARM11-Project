@@ -1,50 +1,61 @@
+/*
+ * Implementation of the execution of the instructions.
+ */
+
 #include "execute.h"
 
-#include "logicunit.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-static int data_processing_execute(data_processing_t *dp_instr);
-static int multiply_execute(multiply_t *mul_instr);
-static int data_transfer_execute(data_transfer_t *dt_instr);
-static int branch_execute(branch_t *b_instr);
+#include "exceptions.h"
+
+static void data_processing_execute(data_processing_t *dp_instr);
+static void multiply_execute(multiply_t *mul_instr);
+static void data_transfer_execute(data_transfer_t *dt_instr);
+static void branch_execute(branch_t *b_instr);
 static word_t compute_shift_register(register_form_t reg_value, bool set);
-static void set_or_load(data_transfer_t *dt_instr, word_t address);
+static void set_or_load(data_transfer_t *dt_instr, address_t address);
 static bool cond_check(byte_t cond);
 static bool write_result(byte_t opcode);
 
-int execute(instruction_t *instr_to_exec) {
+void execute(instruction_t *instr_to_exec) {
   if (cond_check(instr_to_exec->cond)) {
     switch (instr_to_exec->type) {
       case DATA_PROCESSING:
-        return data_processing_execute(
-            instr_to_exec->instructions.data_processing);
+        data_processing_execute(instr_to_exec->instructions.data_processing);
+        break;
       case MULTIPLY:
-        return multiply_execute(instr_to_exec->instructions.multiply);
+        multiply_execute(instr_to_exec->instructions.multiply);
+        break;
       case DATA_TRANSFER:
-        return data_transfer_execute(instr_to_exec->instructions.data_transfer);
+        data_transfer_execute(instr_to_exec->instructions.data_transfer);
+        break;
       case BRANCH:
-        return branch_execute(instr_to_exec->instructions.branch);
+        branch_execute(instr_to_exec->instructions.branch);
+        break;
       default:
-        fprintf(stderr, "Instruction Type Error! ");
-        exit(EXIT_FAILURE);
+        exceptions(RUN_TIME_INSTRUCTION_ERROR, get_reg(PC));
     }
-  } else {
-    return 0;
   }
 }
 
+/*
+ * Check whether the condition code is satisfied.
+ * @param cond: the condition code
+ */
 static bool cond_check(byte_t cond) {
   switch (cond) {
     /* eq */
-    case 0b0000:
+    case EQUAL:
       return get_flag(Z_FLAG);
     /* ge */
-    case 0b1010:
+    case GREATER_EQUAL:
       return get_flag(N_FLAG) == get_flag(V_FLAG);
     /* gt */
-    case 0b1100:
-      return !get_flag(Z_FLAG) && cond_check(0b1010);
+    case GREATER_THAN:
+      return !get_flag(Z_FLAG) && cond_check(GREATER_EQUAL);
     /* al */
-    case 0b1110:
+    case ALWAYS:
       return true;
     default:
       return !cond_check(cond - 1);
@@ -52,12 +63,11 @@ static bool cond_check(byte_t cond) {
 }
 
 /*
- * Data processing instructions
- * @param: data_processing_t dp_instr: the representation of a data processing
- * instruction
- * @return: 0 if succeeded, -1 if error has occurred
+ * Execute data processing instructions.
+ * @param *dp_instr: a pointer to the data processing instruction to be
+ * executed.
  */
-static int data_processing_execute(data_processing_t *dp_instr) {
+static void data_processing_execute(data_processing_t *dp_instr) {
   word_t op2, result;
 
   /* Rotate Right (Operand2 as Immediate Value) */
@@ -74,15 +84,13 @@ static int data_processing_execute(data_processing_t *dp_instr) {
   if (write_result(dp_instr->opcode)) {
     set_reg(dp_instr->rd, result);
   }
-
-  return 0;
 }
 
 /*
- * @param: multiply_t mul_instr: the representation of a multiply instruction
- * @return: 0 if succeeded, -1 if error has occurred
+ * Execute multiply instructions.
+ * @param *mul_instr: a pointer to the multiply instruction to be executed.
  */
-static int multiply_execute(multiply_t *mul_instr) {
+static void multiply_execute(multiply_t *mul_instr) {
   /* Multiply instructions should be executed here */
   word_t rm_val = get_reg(mul_instr->rm);
   word_t rs_val = get_reg(mul_instr->rs);
@@ -96,20 +104,17 @@ static int multiply_execute(multiply_t *mul_instr) {
     set_flag_to(Z_FLAG, result == 0);
   }
   set_reg(mul_instr->rd, result);
-  return 0;
 }
 
 /*
- * @param: data_transfer dt_instr: the representation of a data transfer
- * instruction
- * @return: 0 if succeeded, -1 if error has occurred
+ * Execute data transfer instructions.
+ * @param *dt_instr: a pointer to the data transfer instruction to be executed.
  */
-static int data_transfer_execute(data_transfer_t *dt_instr) {
-  /* Data transfer instructions should be executed here */
-  /* We are assuming that PC cannot be Rm or Rd, so the code below does not
-   * check this */
+static void data_transfer_execute(data_transfer_t *dt_instr) {
+  /* Assume that PC cannot be Rm or Rd */
   byte_t base_reg = dt_instr->rn;
-  word_t offset, address;
+  word_t offset;
+  address_t address;
 
   bool up_bit = dt_instr->up_bit;
 
@@ -139,11 +144,39 @@ static int data_transfer_execute(data_transfer_t *dt_instr) {
     }
     set_reg(base_reg, address);
   }
-  return 0;
 }
 
-/* Load or store operations, assume that all 32-bit long(a word) */
-static void set_or_load(data_transfer_t *dt_instr, word_t address) {
+/*
+ * Execute a branching instruction.
+ * @param b_instr: a pointer to the branching instruction to be executed.
+ */
+static void branch_execute(branch_t *b_instr) {
+  word_t val = get_reg(PC);
+  val += b_instr->offset;
+  set_reg(PC, val);
+  empty_pipeline();
+}
+
+/*
+ * Determines whether writes the result to the register from alu.
+ * The results are not written if the opcode is TEST, TEST EQUAL, or COMPARE.
+ * @param opcode: the opcode of the alu operation.
+ * @returns: Whether writes the result or not.
+ */
+static bool write_result(byte_t opcode) {
+  if ((opcode == TST_OPCODE) || (opcode == TEQ_OPCODE) ||
+      (opcode == CMP_OPCODE)) {
+    return false;
+  }
+  return true;
+}
+
+/*
+ * Load or store the data for executing data transfer instructions.
+ * @param *dt_instr: a pointer to the data transfer instruction to be executed
+ * @param address: address of the memory to store to/load from.
+ */
+static void set_or_load(data_transfer_t *dt_instr, address_t address) {
   if (dt_instr->load) {
     set_reg(dt_instr->rd, get_word(address));
   } else {
@@ -152,25 +185,11 @@ static void set_or_load(data_transfer_t *dt_instr, word_t address) {
 }
 
 /*
- * @param: branch_t b_instr: the representation of a branch instruction
- * @return: 0 if succeeded, -1 if error has occurred
+ * Compute the result from the barrel shifter.
+ * @param reg_value: operand2 of the instruction when interpreted as register.
+ * @param set: flags are set by the barrel shifter if set is true.
+ * @returns the result computed by the barrel shifter.
  */
-static int branch_execute(branch_t *b_instr) {
-  /* Branch instructions should be executed here */
-  word_t val = get_reg(PC);
-  val += b_instr->offset;
-  set_reg(PC, val);
-  empty_pipeline();
-  return 0;
-}
-
-static bool write_result(byte_t opcode) {
-  if ((opcode >= 0b1000) && (opcode <= 0b1010)) {
-    return false;
-  }
-  return true;
-}
-
 static word_t compute_shift_register(register_form_t reg_value, bool set) {
   byte_t shamt;
   word_t result;
@@ -185,6 +204,5 @@ static word_t compute_shift_register(register_form_t reg_value, bool set) {
   }
 
   shifter(shamt, operand, &result, reg_value.shift_type, set);
-
   return result;
 }

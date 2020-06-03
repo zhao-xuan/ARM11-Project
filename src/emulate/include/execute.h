@@ -1,21 +1,17 @@
-/* 
-	Execute the instruction and modify machine state accordingly.  
+/*
+ * Executes the instruction and modify machine state accordingly.
  */
 
 #ifndef EXECUTE_H
 #define EXECUTE_H
 
-#include "state.h"
-#include "instructions.h"
-#include "utils.h"
-#include "global.h"
+#include "logicunit.h"
 
 /*
- * @brief: execute a single instruction
- * @param instruction_t instr: a single instruction structure
- * @return: 0 if succeeded, -1 if error has occurred
+ * @brief: executes a single instruction
+ * @param instr: pointer to a decoded instruction
  */
 
-int execute(instruction_t *instr);
+void execute(instruction_t *instr);
 
 #endif

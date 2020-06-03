@@ -1,43 +1,90 @@
 /*
- * This testutils module is written by Duncan White.
+ * This testutils module is originally written by Duncan White.
+ * It has been adapted to provide extra functionalities.
  * More infomation on this module can be found at:
  * https://www.doc.ic.ac.uk/~dcw/c-tools-2020/lecture2/
  */
- 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 
 #include "testutils.h"
 
-
-void testbool( bool condition, char *testname )
+static void switch_color(bool condition)
 {
-        printf( "T %s: %s\n", testname, condition?"OK":"FAIL" );
+  if (condition)
+  {
+    /* Switch to green */
+    printf("\033[0;32m");
+  }
+  else
+  {
+    /* Switch to red */
+    printf("\033[0;31m");
+  }
 }
 
-void testint( int got, int expected, char *testname )
+static void reset_color()
 {
-        printf( "T %s (expected=%d, got=%d): %s\n",
-		testname, expected, got, expected==got?"OK":"FAIL" );
+  printf("\033[0m");
 }
 
-void testlong( long got, long expected, char *testname )
+void testbool(bool condition, char *testname)
 {
-        printf( "T %s (expected=%ld, got=%ld): %s\n",
-		testname, expected, got, expected==got?"OK":"FAIL" );
+  switch_color(condition);
+  printf("T %s: %s\n", testname, condition ? "OK" : "FAIL");
+  reset_color();
 }
 
-void testdouble( double got, double expected, char *testname )
+void testint(int got, int expected, char *testname)
 {
-        printf( "T %s (expected=%g, got=%g): %s\n",
-		testname, expected, got, expected==got?"OK":"FAIL" );
+  switch_color(got == expected);
+  printf("T %s (expected=%d, got=%d): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
 }
 
-void teststring( char *got, char *expected, char *testname )
+void testlong(long got, long expected, char *testname)
 {
-        printf( "T %s (expected='%s', got='%s'): %s\n",
-		testname, expected, got, strcmp(expected,got)==0?"OK":"FAIL" );
+  switch_color(got == expected);
+  printf("T %s (expected=%ld, got=%ld): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
+}
+
+void testdouble(double got, double expected, char *testname)
+{
+  switch_color(got == expected);
+  printf("T %s (expected=%g, got=%g): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
+}
+
+void teststring(char *got, char *expected, char *testname)
+{
+  switch_color(strcmp(expected, got) == 0);
+  printf("T %s (expected='%s', got='%s'): %s\n",
+         testname, expected, got, strcmp(expected, got) == 0 ? "OK" : "FAIL");
+  reset_color();
+}
+
+void testword(uint32_t got, uint32_t expected, char *testname)
+{
+  switch_color(got == expected);
+  printf("T %s (expected=0x%08x, got=0x%08x): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
+}
+
+void testbyte(uint8_t got, uint8_t expected, char *testname)
+{
+  switch_color(got == expected);
+  printf("T %s (expected=0x%08x, got=0x%08x): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
+}
+
+void testsize(size_t got, size_t expected, char *testname)
+{
+  switch_color(got == expected);
+  printf("T %s (expected=0x%zu, got=0x%zu): %s\n",
+         testname, expected, got, expected == got ? "OK" : "FAIL");
+  reset_color();
 }
