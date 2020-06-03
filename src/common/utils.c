@@ -3,9 +3,12 @@
  */
 
 #include "utils.h"
-#include "global.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "global.h"
 
 void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   FILE *file;
@@ -39,6 +42,58 @@ void read_binary_file(const char *path, word_t **buffer, size_t *size) {
     exit(EXIT_FAILURE);
   }
   fclose(file);
+}
+
+void write_binary_file(const char *path, word_t *buffer, size_t size) {
+  FILE *file;
+
+  file = fopen(path, "wb");
+  if (!file) {
+    fprintf(stderr, "Unable to open file %s\n", path);
+    exit(EXIT_FAILURE);
+  }
+
+  if (!*buffer) {
+    fprintf(stderr, "Memory error!\n");
+    fclose(file);
+    exit(EXIT_FAILURE);
+  }
+
+  if (fwrite(buffer, 4 * size, 1, file) != 1 || ferror(file)) {
+    fprintf(stderr, "Error writing to file.\n");
+    fclose(file);
+    exit(EXIT_FAILURE);
+  }
+  fclose(file);
+}
+
+char **read_assembly_file(const char *path) {
+  FILE *file;
+  size_t file_length;
+
+  file = fopen(path, "r");
+  if (!file) {
+    fprintf(
+        stderr,
+        "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file>\n",
+        path);
+    exit(EXIT_FAILURE);
+  }
+
+  fseek(file, 0, SEEK_END);
+  file_length = ftell(file);
+  fseek(file, 0, SEEK_SET);
+  size_t size = file_length + 1;
+
+  char **buffer = calloc(size, sizeof(char *));
+  char readbuffer[size];
+  for (int i = 0; fgets(readbuffer, size, file); i++) {
+    buffer[i] = calloc(size, 1);
+    strncpy(buffer[i], strtok(readbuffer, "\n"), size);
+  }
+
+  fclose(file);
+  return buffer;
 }
 
 void print_bits(word_t x) {
