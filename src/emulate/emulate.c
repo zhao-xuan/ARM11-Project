@@ -20,10 +20,10 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  init_state();
   word_t *buffer = NULL;
   size_t size;
   read_binary_file(argv[1], &buffer, &size);
+  init_state();
   load_program(buffer, size);
 
   pipeline();
