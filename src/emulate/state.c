@@ -155,6 +155,9 @@ void free_instruction(instruction_t *prev) {
         break;
       }
       case DATA_TRANSFER: {
+        if (prev->instructions.data_transfer->imm_offset) {
+          free(prev->instructions.data_transfer->offset.reg_value);
+        }
         free(prev->instructions.data_transfer);
         break;
       }
