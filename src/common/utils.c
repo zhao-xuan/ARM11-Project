@@ -44,7 +44,7 @@ void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   fclose(file);
 }
 
-void write_binary_file(const char *path, word_t *buffer, size_t size) {
+void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
   FILE *file;
 
   file = fopen(path, "wb");
@@ -84,12 +84,12 @@ char **read_assembly_file(const char *path) {
   file_length = ftell(file);
   fseek(file, 0, SEEK_SET);
   size_t size = file_length + 1;
-
+ 
   char **buffer = calloc(size, sizeof(char *));
   char readbuffer[size];
   for (int i = 0; fgets(readbuffer, size, file); i++) {
-    buffer[i] = calloc(strlen(readbuffer) + 1, 1);
-    strncpy(buffer[i], strtok(readbuffer, "\n"), size);
+    buffer[i] = malloc(strlen(readbuffer));
+    strcpy(buffer[i], strtok(readbuffer, "\n"));
   }
   fclose(file);
   return buffer;
@@ -120,14 +120,4 @@ void dump_hex(word_t *buffer, size_t size) {
 word_t sign_extend(word_t x, int bits) {
   word_t m = 1u << (bits - 1);
   return (x ^ m) - m;
-}
-
-int main(int argc, char **argv) {
-  char **buffer = read_assembly_file(argv[1]);
-  for (int i = 0; buffer[i]; i++) {
-    printf("%s\n", buffer[i]);
-    free(buffer[i]);
-  }
-  free(buffer);
-  return EXIT_SUCCESS;
 }

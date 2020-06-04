@@ -30,7 +30,7 @@ void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
  * @param buffer: a pointer to the buffer that will load the binary file.
  * @param size: a pointer to the size of the file (length of buffer).
  */
-void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
+void write_binary_file(const char *path, uint32_t *buffer, size_t size);
 
 /*
  * @brief: Loads an assembly file into the buffer.
