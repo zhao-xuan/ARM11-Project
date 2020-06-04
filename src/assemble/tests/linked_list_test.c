@@ -12,13 +12,13 @@ char *test_name;
 
 
 #define TEST_INSERT(sign)\
-  testbool(sign insert(list, item, item_size), test_name)
+  testbool(sign push(list, item, item_size), test_name)
   
 #define TEST_FIND(sign)\
   testbool(sign find(list, item, item_size), test_name)
 
 #define TEST_REMOVE(sign)\
-  testbool(sign remove(list, item, item_size), test_name)
+  testbool(sign pop(list, item, item_size), test_name)
 
 
 /* The linkedlist should be ADTs but here I am only testing for

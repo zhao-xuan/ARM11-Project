@@ -24,11 +24,11 @@ bool find_symbol(symbol_table_t *table, symbol_t *symbol) {
 }
 
 bool insert_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return insert(table, (void *) symbol, sizeof(symbol));
+  return push(table, (void *) symbol, sizeof(symbol));
 }
 
 bool remove_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return remove(table, (void *) symbol, sizeof(symbol));
+  return pop(table, (void *) symbol, sizeof(symbol));
 }
 
 

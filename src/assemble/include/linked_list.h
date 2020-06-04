@@ -30,10 +30,10 @@ bool find(linked_list *list, void *item, size_t size);
  *  @param: as above
  *  @return: true iff the list has been modified
  */
-bool insert(linked_list *list, void *item, size_t size);
+bool push(linked_list *list, void *item, size_t size);
 
 /* Remove an item from linked list */
-bool remove(linked_list *list, void *item, size_t size); 
+bool pop(linked_list *list, void *item, size_t size); 
 
 /* Free memory allocated to linked_list */
 void free_list(linked_list *list);
