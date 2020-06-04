@@ -7,13 +7,17 @@
 
 typedef struct linked_list linked_list;
 
+typedef int (comparator) (void *, void*);
+
 /*  
  *  Create a generic linked list 
+ *  @param:
+ *    - cmp: comparator for 2 objects of type of items in the list
  *  @return: 
  *    - pointer to linked list on success
  *    - NULL if anything fails
  */
-linked_list *create_linked_list();
+linked_list *create_linked_list(comparator cmp);
 
 /* 
  *  Find an element in a given linked list 

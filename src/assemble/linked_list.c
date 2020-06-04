@@ -24,7 +24,6 @@
   
 typedef struct list_node list_node; 
 
-typedef int (comparator) (void *, void*);
 
 /* Structure for node of the linked list */
 struct list_node {
