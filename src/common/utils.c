@@ -88,8 +88,8 @@ char **read_assembly_file(const char *path) {
   char **buffer = calloc(size, sizeof(char *));
   char readbuffer[size];
   for (int i = 0; fgets(readbuffer, size, file); i++) {
-    buffer[i] = malloc(strlen(readbuffer));
-    strcpy(buffer[i], strtok(readbuffer, "\n"));
+    buffer[i] = malloc(strlen(readbuffer) + 1);
+    strncpy(buffer[i], strtok(readbuffer, "\n"), strlen(readbuffer));
   }
   fclose(file);
   return buffer;
