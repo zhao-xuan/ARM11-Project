@@ -6,6 +6,22 @@
 
 #include "linked_list.h"
 
+#define INIT_PREV_CURR\
+  list_node **prev = malloc(sizeof(list_node *)), **curr = malloc(sizeof(list_node *));
+
+#define CHECK_MEM_PREV_CURR(func)\
+  if (!prev || !curr) {\
+    fprintf(stderr, "Memory allocation in _func_ failed!");\
+    return false;\
+  }
+
+#define RETURN_IF_ITEM_EXISTS\
+  if (traverse(list, prev, curr, item, size)){\
+    free(prev);\
+    free(curr);\
+    return false;\
+  }
+  
 typedef struct list_node list_node; 
 
 typedef int (comparator) (void *, void*);
@@ -105,13 +121,9 @@ bool traverse(linked_list *list, list_node **prev, list_node **curr, void *item,
 bool find(linked_list *list, void *item, size_t size) {
   if (!item) return false;
 
-  list_node **prev = malloc(sizeof(list_node *));
-  list_node **curr = malloc(sizeof(list_node *));
-  
-  if (!prev || !curr) {
-    fprintf(stderr, "Memory allocation in _find_ failed!");
-    return false;
-  }
+  INIT_PREV_CURR;
+  CHECK_MEM_PREV_CURR(find);
+
   bool found = traverse(list, prev, curr, item, size);
   free(prev);
   free(curr);
@@ -122,19 +134,9 @@ bool find(linked_list *list, void *item, size_t size) {
 bool push(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
 
-  list_node **prev = malloc(sizeof(list_node *));
-  list_node **curr = malloc(sizeof(list_node *));
-  
-  if (!prev || !curr) {
-    fprintf(stderr, "Memory allocation in _push_ failed!");
-    return false;
-  }
-  
-  if (traverse(list, prev, curr, item, size)){
-    free(prev);
-    free(curr);
-    return false; /* Item already exists */
-  }
+  INIT_PREV_CURR;
+  CHECK_MEM_PREV_CURR(push);
+  RETURN_IF_ITEM_EXISTS;
 
   list_node *node = create_node(item, size, NULL);
   (*prev)->next = node;
@@ -147,20 +149,10 @@ bool push(linked_list *list, void *item, size_t size) {
 bool pop(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
   
-  list_node **prev = malloc(sizeof(list_node *));
-  list_node **curr = malloc(sizeof(list_node *));
-  
-  if (!prev || !curr) {
-    fprintf(stderr, "Memory allocation in _pop_ failed!");
-    return false;
-  }
+  INIT_PREV_CURR;
+  CHECK_MEM_PREV_CURR(pop);
+  RETURN_IF_ITEM_EXISTS;
 
-  if (!traverse(list, prev, curr, item, size)) {
-    free(prev);
-    free(curr);
-    return false; /* Item already exists */
-  }
-  
   (*prev)->next = (*curr)->next;
   free(prev);
   free_node(*curr);
@@ -170,14 +162,9 @@ bool pop(linked_list *list, void *item, size_t size) {
 }
 
 void *get(linked_list *list, void *item, size_t size) {
-  list_node **prev = malloc(sizeof(list_node *));
-  list_node **curr = malloc(sizeof(list_node *));
-  
-  if (!prev || !curr) {
-    fprintf(stderr, "Memory allocation in _get_ failed!");
-    return false;
-  }
-  
+  INIT_PREV_CURR;
+  CHECK_MEM_PREV_CURR(get);
+
   bool found = traverse(list, prev, curr, item, size);
   void *item_ptr = found ? (*curr)->item : NULL;
   free(prev);
