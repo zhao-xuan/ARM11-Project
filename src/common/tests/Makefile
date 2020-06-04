@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Itestutils -I.. -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
+CFLAGS = -g -Wall -Itestutils -I../include -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
 LDFLAGS =
 LDLIBS = -Ltestutils -ltestutils
 
