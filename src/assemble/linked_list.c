@@ -7,15 +7,18 @@
 
 typedef struct list_node list_node; 
 
+typedef int (comparator) (void *, void*);
+
 struct list_node {
   void *item;
-  size_t item_size;
+  size_t size;
   list_node *next;
 };
 
 struct linked_list {
   list_node *head;
   list_node *tail;
+  comparator *cmp;
 }; 
 
 void free_node(list_node *node) {
@@ -37,17 +40,18 @@ void free_list(linked_list *list) {
 
 list_node *create_node(void *item, size_t size, list_node *next) {
   list_node *node = calloc(1, sizeof(list_node));
-  node->item_size = size;
   node->next = next;
+  node->size = size;
   node->item = malloc(size);
   memcpy(node->item, item, size);
   return node;
 }
 
-linked_list *create_linked_list() {
+linked_list *create_linked_list(comparator *cmp) {
   linked_list *list = (linked_list *) calloc(1, sizeof(linked_list));
   list->head = create_node(NULL, 0, NULL);
-  list->tail = create_node(NULL, 0, NULL); 
+  list->tail = create_node(NULL, 0, NULL);
+  list->cmp = cmp;
 
   if (!list || !list->head || !list->tail) {
     free_list(list);
@@ -63,8 +67,8 @@ bool traverse(linked_list *list, list_node **prev, list_node **curr, void *item,
   while (!found && (*curr)->next) {
     *prev = *curr;
     *curr = (*curr)->next;
-    found = size == (*curr)->item_size 
-            && memcmp((*curr)->item, item, size) == 0;
+    found = (*curr)->size == size
+            && list->cmp(item, (*curr)->item) == 0;
   }
   return found;
 }

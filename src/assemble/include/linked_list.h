@@ -19,22 +19,22 @@ linked_list *create_linked_list();
  *  Find an element in a given linked list 
  *  @param: 
  *    - list: pointer to linked_list 
- *    - data: pointer to data to find 
- *    - size: size of data
- *  @return: true iff data is found
+ *    - item: pointer to item to find 
+ *    - size: size of item
+ *  @return: true iff item is found
  */
-bool find(linked_list *list, void *data, size_t size);
+bool find(linked_list *list, void *item, size_t size);
 
 /*  
- *  Add an data at the end of the linked list 
+ *  Add an item at the end of the linked list 
  *  @param: as above
  *  @return: true iff the list has been modified
  */
-bool insert(linked_list *list, void *data, size_t size);
+bool insert(linked_list *list, void *item, size_t size);
 
-/* Remove an data from linked list */
-bool remove(linked_list *list, void *data, size_t size); 
+/* Remove an item from linked list */
+bool remove(linked_list *list, void *item, size_t size); 
 
-/* Freee memory allocated to linked_list */
+/* Free memory allocated to linked_list */
 void free_list(linked_list *list);
 #endif

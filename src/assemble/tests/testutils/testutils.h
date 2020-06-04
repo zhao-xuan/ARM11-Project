@@ -4,6 +4,7 @@
  * More infomation on this module can be found at:
  * https://www.doc.ic.ac.uk/~dcw/c-tools-2020/lecture2/
  */
+#include <stdint.h>
 
 extern void testbool( bool condition, char * testname );
 extern void testint( int got, int expected, char * testname );
