@@ -4,6 +4,7 @@
 
     git submodule init
     git submodule update
+use "git submodule update --remote" to sync this repo with overleaf. 
 
 [Dependency Graph & Planning](https://drive.google.com/drive/folders/1grtk0Vnl6vUNuBGqPvI5pR31Esl_z2pb?usp=sharing)
 
