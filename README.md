@@ -2,9 +2,10 @@
 [Report](https://www.overleaf.com/4289975884mvfmsjfdbbyf)\
 /doc is an submodule connected to the link above, to initialise that, run:
 
-    git submodule init
-    git submodule update
-use "git submodule update --remote" to sync this repo with overleaf. 
+    git submodule update --init
+To sync this repo with overleaf, run:
+
+    git submodule update --remote
 
 [Dependency Graph & Planning](https://drive.google.com/drive/folders/1grtk0Vnl6vUNuBGqPvI5pR31Esl_z2pb?usp=sharing)
 

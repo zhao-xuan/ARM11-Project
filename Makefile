@@ -9,8 +9,7 @@ src:
 	cd src; make
 
 doc:
-	git submodule init
-	git submodule update
+	git submodule update --init
 	cd doc; make
 
 .PHONY: src doc clean
