@@ -37,4 +37,7 @@ bool pop(linked_list *list, void *item, size_t size);
 
 /* Free memory allocated to linked_list */
 void free_list(linked_list *list);
+
+/* Returns item if present, NULL otherwise */
+void *get(linked_list *list, void *item, size_t size);
 #endif

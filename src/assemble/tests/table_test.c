@@ -17,6 +17,8 @@
 #define TEST_REMOVE(sign)\
   testbool(sign remove_symbol(table, symbol), test_name)
 
+#define TEST_GET(expected)\
+  testword(get_address(table, symbol->label), expected, test_name)
 
 int main() {
   
@@ -67,6 +69,16 @@ int main() {
   symbol->label = "Nonsense";
   TEST_REMOVE(!);
 
+  /* New symbol should be added correctly */
+  test_name = "Symbol to test for 'get' added correctly";
+  symbol->label = "Label";
+  symbol->address = 123456;
+  TEST_INSERT();
+  
+  /* Get address using label */
+  test_name = "Get address of a label works correctly";
+  symbol->label = "Label";
+  TEST_GET(123456);
 
   free_table(table);
   free(symbol);

@@ -6,14 +6,6 @@
 
 #include "linked_list.h"
 
-#define MALLOC_PREV_CURR(func) \
- do { list_node **prev = malloc(sizeof(list_node *));\
-      list_node **curr = malloc(sizeof(list_node *));\
-    if (!prev || !curr) {\
-      fprintf(stderr, "Memory allocation in _func_ failed!");\
-      return false;\
-   }} while(0)
-
 typedef struct list_node list_node; 
 
 typedef int (comparator) (void *, void*);
@@ -91,6 +83,11 @@ linked_list *create_linked_list(comparator *cmp) {
   return list;
 }
 
+/* 
+ *  Returns true iff item is found 
+ *  If found: *curr points at the node with item
+ *  If Not found: *curr points at tail of the list
+ */
 bool traverse(linked_list *list, list_node **prev, list_node **curr, void *item, size_t size) {
   *curr = list->head;
   bool found = false;
@@ -103,6 +100,7 @@ bool traverse(linked_list *list, list_node **prev, list_node **curr, void *item,
   }
   return found;
 }
+
 
 bool find(linked_list *list, void *item, size_t size) {
   if (!item) return false;
@@ -171,3 +169,18 @@ bool pop(linked_list *list, void *item, size_t size) {
   return true;
 }
 
+void *get(linked_list *list, void *item, size_t size) {
+  list_node **prev = malloc(sizeof(list_node *));
+  list_node **curr = malloc(sizeof(list_node *));
+  
+  if (!prev || !curr) {
+    fprintf(stderr, "Memory allocation in _get_ failed!");
+    return false;
+  }
+  
+  bool found = traverse(list, prev, curr, item, size);
+  void *item_ptr = found ? (*curr)->item : NULL;
+  free(prev);
+  free(curr);
+  return item_ptr;
+}
