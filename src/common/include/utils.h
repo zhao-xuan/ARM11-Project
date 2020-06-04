@@ -5,6 +5,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "global.h"
 #include <stddef.h>
 #include <stdint.h>
 /*
