@@ -1,7 +1,9 @@
+TEST_UTILS_DIR = ../../../lib/testutils
+
 CC = gcc
-CFLAGS = -g -Wall -Itestutils -I../include -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
+CFLAGS = -g -Wall -I$(TEST_UTILS_DIR) -I../include -D_DEFAULT_SOURCE -std=c99 -Werror #-pedantic
 LDFLAGS =
-LDLIBS = -Ltestutils -ltestutils
+LDLIBS = -L$(TEST_UTILS_DIR) -ltestutils
 
 utils_test: testutils utils.o utils_test.o
 	$(CC) utils.o utils_test.o $(LDFLAGS) $(LDLIBS) -o $@
@@ -13,9 +15,9 @@ utils_test.o: utils_test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:
-	cd testutils; make
+	cd $(TEST_UTILS_DIR); make
 
 clean:
-	rm -f utils_test *.o core; cd testutils; make clean
+	rm -f utils_test *.o core; 
 
 .PHONY: clean, testutils
