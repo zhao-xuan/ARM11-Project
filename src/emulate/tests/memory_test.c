@@ -122,24 +122,9 @@ static void test_load_program() {
 }
 
 static void test_return_state() {
-  /*
-   * Test return_state(FILE *fp):
-   * Check if the state is printed correctly after executing the testing
-   * functions above
-   */
-  FILE *f = fopen("memory_test.txt", "w+");
-  if (f == NULL) {
-    fprintf(stderr, "Failed to open the text file!");
-    exit(EXIT_FAILURE);
-  }
   free_state();
-  print_state(f);
+  print_state(stdout);
   /* print to the standard output for convenience*/
-  while (!feof(f)) {
-    fprintf(stdout, "%c", fgetc(f));
-  }
-
-  fclose(f);
 }
 
 int main(void) {
