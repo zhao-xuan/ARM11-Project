@@ -8,8 +8,9 @@
 #include "global.h"
 
 
-int symbol_comparator(symbol_t *this, symbol_t *that) {
-  return strcmp(this->label, that->label);
+int symbol_comparator(void *this, void *that) {
+  return strcmp(((symbol_t *)this)->label, 
+                ((symbol_t *)that)->label);
 }
 
 symbol_table_t *create_table() {

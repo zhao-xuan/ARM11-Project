@@ -38,7 +38,6 @@ struct list_node {
  */ 
 struct linked_list {
   list_node *head;
-  list_node *tail;
   comparator *cmp;
 }; 
 
@@ -50,14 +49,9 @@ void free_node(list_node *node) {
 
 /* Free resources allocated to linked list */
 void free_list(linked_list *list) {
-  list_node **curr = &list->head;
-  
-  while((*curr)->next) {
-    list_node *prev = *curr;
-    *curr =(*curr)->next;
-    free_node(prev);
+  for (list_node *curr = list->head; curr; curr = curr->next) {
+    free_node(curr);
   }
-  free_node(*curr);
   free(list);
 }
 
@@ -73,6 +67,7 @@ void free_list(linked_list *list) {
 list_node *create_node(void *item, size_t size, list_node *next) {
   list_node *node = calloc(1, sizeof(list_node));
   if (!node) return NULL;
+ 
   node->next = next;
   node->size = size;
   node->item = malloc(size);
@@ -88,85 +83,63 @@ list_node *create_node(void *item, size_t size, list_node *next) {
 linked_list *create_linked_list(comparator *cmp) {
   linked_list *list = (linked_list *) calloc(1, sizeof(linked_list));
   list->head = create_node(NULL, 0, NULL);
-  list->tail = create_node(NULL, 0, NULL);
   list->cmp = cmp;
 
-  if (!list || !list->head || !list->tail) {
-    free_list(list);
-  }
-  list->head->next = list->tail;
+  if (!list || !list->head) free_list(list);
+  
   return list;
 }
 
-/* 
- *  Returns true iff item is found 
- *  If found: *curr points at the node with item
- *  If Not found: *curr points at tail of the list
- */
-bool traverse(linked_list *list, list_node **prev, list_node **curr, void *item, size_t size) {
-  *curr = list->head;
-  bool found = false;
-  
-  while (!found && (*curr)->next) {
-    *prev = *curr;
-    *curr = (*curr)->next;
-    found = (*curr)->size == size
-            && list->cmp(item, (*curr)->item) == 0;
-  }
-  return found;
-}
-
-
 bool find(linked_list *list, void *item, size_t size) {
   if (!item) return false;
+  bool found = false;
 
-  INIT_PREV_CURR;
-  CHECK_MEM_PREV_CURR(find);
-
-  bool found = traverse(list, prev, curr, item, size);
-  free(prev);
-  free(curr);
+  for (list_node *curr = list->head; !found && curr; curr = curr->next){
+    found = curr->size == size && list->cmp(curr->item, item) == 0;
+  }
 
   return found;
 }
 
 bool push(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
+  list_node *curr;
 
-  INIT_PREV_CURR;
-  CHECK_MEM_PREV_CURR(push);
-  RETURN_IF_ITEM_EXISTS;
-
+  for (curr = list->head; curr->next; curr = curr->next) {
+    /* Duplicate item found */
+    if (curr->next->size == size && list->cmp(curr->next->item, item) == 0)
+      return false;
+  }
+  
   list_node *node = create_node(item, size, NULL);
-  (*prev)->next = node;
-  node->next = *curr;
-  free(prev);
-  free(curr);
+  curr->next = node;
   return true;
 }
 
 bool pop(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
+  list_node *prev, *curr;
   
-  INIT_PREV_CURR;
-  CHECK_MEM_PREV_CURR(pop);
-  RETURN_IF_ITEM_EXISTS;
-
-  (*prev)->next = (*curr)->next;
-  free(prev);
-  free_node(*curr);
-  free(curr);
-   
-  return true;
+  for (curr = list->head; curr; prev = curr, curr = curr->next) {
+    /* Found item */
+    if (curr->size == size && list->cmp(curr->item, item) == 0){
+      prev->next = curr->next;
+      free_node(curr);
+      return true;
+    }  
+  }
+  return false;
 }
 
 void *get(linked_list *list, void *item, size_t size) {
-  INIT_PREV_CURR;
-  CHECK_MEM_PREV_CURR(get);
-
-  bool found = traverse(list, prev, curr, item, size);
-  void *item_ptr = found ? (*curr)->item : NULL;
-  free(prev);
-  free(curr);
-  return item_ptr;
+  if (!item)  return false;
+  list_node *curr;
+  
+  for (curr = list->head; curr; curr = curr->next) {
+    /* Found item */
+    if (curr->size == size && list->cmp(curr->item, item) == 0){
+      return curr->item;
+    }  
+  }
+  return NULL;
 }

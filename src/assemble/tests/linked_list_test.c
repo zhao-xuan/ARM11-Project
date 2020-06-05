@@ -20,12 +20,17 @@ char *test_name;
 #define TEST_REMOVE(sign)\
   testbool(sign pop(list, item, item_size), test_name)
 
+ 
+int mod_strcmp(void *this, void *that){
+  return strcmp((const char *) this, (const char *) that);
+}
 
 /* The linkedlist should be ADTs but here I am only testing for
  * item as a string at the moment
  */
 int main() {
-  linked_list *list = create_linked_list(&strcmp);
+
+  linked_list *list = create_linked_list(&mod_strcmp);
   
   /* Initialise list correctly */
   test_name = "List initialised correctly";
