@@ -6,22 +6,6 @@
 
 #include "linked_list.h"
 
-#define INIT_PREV_CURR\
-  list_node **prev = malloc(sizeof(list_node *)), **curr = malloc(sizeof(list_node *));
-
-#define CHECK_MEM_PREV_CURR(func)\
-  if (!prev || !curr) {\
-    fprintf(stderr, "Memory allocation in _func_ failed!");\
-    return false;\
-  }
-
-#define RETURN_IF_ITEM_EXISTS\
-  if (traverse(list, prev, curr, item, size)){\
-    free(prev);\
-    free(curr);\
-    return false;\
-  }
-  
 typedef struct list_node list_node; 
 
 
@@ -143,3 +127,4 @@ void *get(linked_list *list, void *item, size_t size) {
   }
   return NULL;
 }
+
