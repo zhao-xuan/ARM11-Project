@@ -1,10 +1,10 @@
 # This Makefile is for testing purpose ONLY
 
 CC = gcc
-IncludePath = -I../../../lib -I../../common/ -I../../common/include -I../include -Itestutils
+IncludePath = -I../../../lib -I../../../lib/include -I../../common/ -I../../common/include -I../include -Itestutils
 CFLAGS = -g -Wall $(IncludePath) -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS =
-LDLIBS = -Ltestutils -ltestutils
+LDFLAGS = 
+LDLIBS = -Ltestutils -ltestutils -L../../../lib -lADT
 
 TEST_FILES = $(wildcard *_test.c)
 BUILD = $(patsubst %_test.c, %_test, $(TEST_FILES))

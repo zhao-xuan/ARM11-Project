@@ -11,12 +11,6 @@
 #define TEST_INSERT(sign)\
   testbool(sign insert_symbol(table, symbol), test_name)
 
-#define TEST_FIND(sign)\
-  testbool(sign find_symbol(table, symbol), test_name)
-
-#define TEST_REMOVE(sign)\
-  testbool(sign remove_symbol(table, symbol), test_name)
-
 #define TEST_GET(expected)\
   testword(get_address(table, symbol->label), expected, test_name)
 
@@ -42,10 +36,6 @@ int main() {
   test_name = "Adding the same symbol should not modify the table";
   TEST_INSERT(!);
 
-
-  /* Find the same symbol */
-  test_name = "Finding the symbol previously added successfully";
-  TEST_FIND();
   
   /* New symbol should be added correctly */
   test_name = "Second symbol with the same address should still be added";
@@ -59,16 +49,6 @@ int main() {
   symbol->address = 0;
   TEST_INSERT(!);
   
-  /* Remove working correctly */
-  test_name = "Removed symbol with label 'Bar' correctly";
-  symbol->label = "Bar";
-  TEST_REMOVE();
-
-  /* Removing the same symbol should return false */
-  test_name = "Trying to remove non-existing symbol should return 'False'";
-  symbol->label = "Nonsense";
-  TEST_REMOVE(!);
-
   /* New symbol should be added correctly */
   test_name = "Symbol to test for 'get' added correctly";
   symbol->label = "Label";

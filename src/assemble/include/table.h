@@ -19,11 +19,7 @@ symbol_table_t *create_table();
 
 void free_table(symbol_table_t *table);
 
-bool find_symbol(symbol_table_t *table, symbol_t *symbol);
-
 bool insert_symbol(symbol_table_t *table, symbol_t *symbol);
-
-bool remove_symbol(symbol_table_t *table, symbol_t *symbol);
 
 word_t get_address(symbol_table_t *table, char *label);
 #endif
