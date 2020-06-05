@@ -4,10 +4,12 @@ UTIL_OBJ_DIR = ../../obj/common
 SRC_FILES = $(wildcard *.c)
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
+ADT_UTIL_DIR = ../../lib/adts
+
 CC      = gcc
 IncludePath = -I../../lib/include -I../common/ -I../common/include -Iinclude
 CFLAGS  = -O $(IncludePath) -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS = -L../../lib -lADT
+LDFLAGS = -L$(ADT_UTIL_DIR) -lADT
 BUILD = libs $(BIN_DIR)/assemble
 
 all: $(BUILD)
@@ -20,9 +22,6 @@ $(OBJ_DIR)/%.o: %.c
 
 $(UTIL_OBJ_DIR)/utils.o: ../common/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
-
-test: 
-	cd tests; make all;
 
 libs:
 	cd ../../lib; make

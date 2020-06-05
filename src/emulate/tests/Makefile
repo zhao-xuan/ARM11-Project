@@ -1,10 +1,12 @@
 # This Makefile is for testing purpose ONLY
 
+TEST_UTILS_DIR = ../../../lib/testutils
+
 CC = gcc
-IncludePath = -I../../../lib -I../../common/ -I../../common/include -I../include -Itestutils
+IncludePath = -I../../../lib -I../../common/ -I../../common/include -I../include -I$(TEST_UTILS_DIR)
 CFLAGS = -g -Wall $(IncludePath) -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
 LDFLAGS =
-LDLIBS = -Ltestutils -ltestutils
+LDLIBS = -L$(TEST_UTILS_DIR) -ltestutils
 
 TEST_FILES = $(wildcard *_test.c)
 BUILD = $(patsubst %_test.c, %_test, $(TEST_FILES))
@@ -28,12 +30,12 @@ utils.o: ../../common/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:
-	cd testutils; make
+	cd $(TEST_UTILS_DIR); make
 
 clean:
 	rm -f $(BUILD) *.o core
 	rm -f memory_test.txt
-	cd testutils; make clean 
+	cd $(TEST_UTILS_DIR); make clean	
 
 .PHONY: clean, testutils
 

@@ -9,8 +9,7 @@
 
 
 static int symbol_comparator(void *this, void *that) {
-  return strcmp(((symbol_t *)this)->label, 
-                ((symbol_t *)that)->label);
+  return strcmp((char *) this, (char *) that);
 }
 
 symbol_table_t *create_table() {
@@ -21,18 +20,15 @@ void free_table(symbol_table_t *table){
   free_list(table);
 }
 
-bool insert_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return insert(table, (void *) symbol, sizeof(*symbol));
+bool insert_literal(symbol_table_t *table, char *label, void *literal) {
+  return insert(table, label, strlen(label) + 1, literal);
 }
 
-address_t get_address(symbol_table_t *table, char *label) {
-  symbol_t partial_symbol = (symbol_t) {label};
-  symbol_t *symbol_p = (symbol_t *) get(table, (void *) &partial_symbol, sizeof(*symbol_p));
-  
-  if (symbol_p) {
-    return symbol_p->address;
-  } else {
-    return -1;
-  }
+bool insert_symbol(symbol_table_t *table, symbol_t *symbol) {
+  return insert_literal(table, symbol->label, symbol->literal);
+}
+
+void *get_literal(symbol_table_t *table, char *label) {
+  return find(table, label); 
 }
 

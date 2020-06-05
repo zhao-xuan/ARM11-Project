@@ -6,19 +6,18 @@
 #include "linked_list.h"
 #include "testutils.h"
 
-size_t item_size;
-char *item;
+size_t key_size;
+char *key;
 char *test_name;
 
-
 #define TEST_INSERT(sign)\
-  testbool(sign insert(list, item, item_size), test_name)
+  testbool(sign insert(list, key, key_size, (void *) value), test_name)
   
 #define TEST_FIND(sign)\
-  testbool(sign find(list, item, item_size), test_name)
+  testbool(sign find(list, key), test_name)
 
 #define TEST_REMOVE(sign)\
-  testbool(sign delete(list, item, item_size), test_name)
+  testbool(sign delete(list, key), test_name)
 
  
 int mod_strcmp(void *this, void *that){
@@ -26,9 +25,10 @@ int mod_strcmp(void *this, void *that){
 }
 
 /* The linkedlist should be ADTs but here I am only testing for
- * item as a string at the moment
+ * key as a string at the moment
  */
 int main() {
+  int *value = malloc(sizeof(int));
 
   linked_list *list = create_linked_list(&mod_strcmp);
   
@@ -38,15 +38,21 @@ int main() {
 
   /* Find an element in empty list*/
   test_name = "Find element in empty list should return 'False'";
-  item_size = strlen(test_name);
+  key_size = strlen(test_name);
   TEST_FIND(!);
 
   /* New inserts */
   test_name = "Inserting 'First' should return 'True'";
-  item = "First";
-  item_size = strlen(item);
+  key = "First";
+  *value = 1;
+  key_size = strlen(key);
   TEST_INSERT();
   
+  /* Test get */
+  test_name = "Get should return correct value";
+  int *res = (int *) find(list, key);
+  testint(*res, 1, test_name);
+
   /* Repeated inserts */
   test_name = "Inserting 'First' again must return 'False'";
   TEST_INSERT(!);

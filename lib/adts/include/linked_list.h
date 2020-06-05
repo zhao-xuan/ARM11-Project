@@ -26,7 +26,7 @@ linked_list *create_linked_list(comparator cmp);
  *    - key: pointer to key to find 
  *  @return: true iff key is found
  */
-bool find(linked_list *list, void *key);
+bool contains(linked_list *list, void *key);
 
 /*  
  *  Add an item at the end of the linked list 
@@ -43,5 +43,5 @@ bool delete(linked_list *list, void *key);
 void free_list(linked_list *list);
 
 /* Returns key if present, NULL otherwise */
-void *get(linked_list *list, void *key);
+void *find(linked_list *list, void *key);
 #endif

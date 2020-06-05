@@ -10,7 +10,7 @@
 
 typedef struct {
   char *label;
-  word_t address;
+  void *literal;
 } symbol_t;
 
 typedef linked_list symbol_table_t;
@@ -21,5 +21,5 @@ void free_table(symbol_table_t *table);
 
 bool insert_symbol(symbol_table_t *table, symbol_t *symbol);
 
-word_t get_address(symbol_table_t *table, char *label);
+void *get_literal(symbol_table_t *table, char *label);
 #endif

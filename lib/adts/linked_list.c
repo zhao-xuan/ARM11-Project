@@ -57,6 +57,7 @@ list_node *create_node(void *key, size_t key_size, void *value, list_node *next)
   if (!node) return NULL;
  
   node->next = next;
+  node->value = value;
   node->key= malloc(key_size);
   memcpy(node->key, key, key_size);
   
@@ -77,7 +78,7 @@ linked_list *create_linked_list(comparator cmp) {
   return list;
 }
 
-bool find(linked_list *list, void *key) {
+bool contains(linked_list *list, void *key) {
   if (!key) return false;
   bool found = false;
 
@@ -118,14 +119,14 @@ bool delete(linked_list *list, void *key) {
   return false;
 }
 
-void *get(linked_list *list, void *key) {
+void *find(linked_list *list, void *key) {
   if (!key)  return false;
   list_node *curr;
   
   for (curr = list->head; curr; curr = curr->next) {
     /* Found key */
     if ((list->cmp)(curr->key, key) == 0){
-      return curr->key;
+      return curr->value;
     }  
   }
   return NULL;
