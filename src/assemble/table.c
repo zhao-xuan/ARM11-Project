@@ -26,11 +26,11 @@ bool find_symbol(symbol_table_t *table, symbol_t *symbol) {
 }
 
 bool insert_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return push(table, (void *) symbol, sizeof(*symbol));
+  return insert(table, (void *) symbol, sizeof(*symbol));
 }
 
 bool remove_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return pop(table, (void *) symbol, sizeof(*symbol));
+  return delete(table, (void *) symbol, sizeof(*symbol));
 }
 
 word_t get_address(symbol_table_t *table, char *label) {

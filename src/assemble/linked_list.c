@@ -58,7 +58,7 @@ void free_list(linked_list *list) {
 /* Create a node for the linked list 
  * 
  *  @param:
- *    - item: item to be pushed to the list
+ *    - item: item to be inserted to the list
  *    - size: size of item in BYTES
  *    - next: pointer to the next node 
  *  
@@ -101,7 +101,7 @@ bool find(linked_list *list, void *item, size_t size) {
   return found;
 }
 
-bool push(linked_list *list, void *item, size_t size) {
+bool insert(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
   list_node *curr;
 
@@ -116,11 +116,11 @@ bool push(linked_list *list, void *item, size_t size) {
   return true;
 }
 
-bool pop(linked_list *list, void *item, size_t size) {
+bool delete(linked_list *list, void *item, size_t size) {
   if (!item)  return false;
-  list_node *prev, *curr;
+  list_node *prev = list->head, *curr = list->head;
   
-  for (curr = list->head; curr; prev = curr, curr = curr->next) {
+  for (; curr; prev = curr, curr = curr->next) {
     /* Found item */
     if (curr->size == size && list->cmp(curr->item, item) == 0){
       prev->next = curr->next;

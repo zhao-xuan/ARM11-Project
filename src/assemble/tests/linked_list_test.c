@@ -12,13 +12,13 @@ char *test_name;
 
 
 #define TEST_INSERT(sign)\
-  testbool(sign push(list, item, item_size), test_name)
+  testbool(sign insert(list, item, item_size), test_name)
   
 #define TEST_FIND(sign)\
   testbool(sign find(list, item, item_size), test_name)
 
 #define TEST_REMOVE(sign)\
-  testbool(sign pop(list, item, item_size), test_name)
+  testbool(sign delete(list, item, item_size), test_name)
 
  
 int mod_strcmp(void *this, void *that){
