@@ -22,7 +22,7 @@ struct list_node {
  */ 
 struct linked_list {
   list_node *head;
-  comparator *cmp;
+  comparator cmp;
 }; 
 
 /* Free resources allocated to each node */
@@ -64,10 +64,10 @@ list_node *create_node(void *item, size_t size, list_node *next) {
   return node;
 }
 
-linked_list *create_linked_list(comparator *cmp) {
+linked_list *create_linked_list(comparator cmp) {
   linked_list *list = (linked_list *) calloc(1, sizeof(linked_list));
   list->head = create_node(NULL, 0, NULL);
-  list->cmp = cmp;
+  (list->cmp) = cmp;
 
   if (!list || !list->head) free_list(list);
   
@@ -79,7 +79,7 @@ bool find(linked_list *list, void *item, size_t size) {
   bool found = false;
 
   for (list_node *curr = list->head; !found && curr; curr = curr->next){
-    found = curr->size == size && list->cmp(curr->item, item) == 0;
+    found = curr->size == size && (list->cmp)(curr->item, item) == 0;
   }
 
   return found;
@@ -91,7 +91,7 @@ bool insert(linked_list *list, void *item, size_t size) {
 
   for (curr = list->head; curr->next; curr = curr->next) {
     /* Duplicate item found */
-    if (curr->next->size == size && list->cmp(curr->next->item, item) == 0)
+    if (curr->next->size == size && (list->cmp)(curr->next->item, item) == 0)
       return false;
   }
   
@@ -106,7 +106,7 @@ bool delete(linked_list *list, void *item, size_t size) {
   
   for (; curr; prev = curr, curr = curr->next) {
     /* Found item */
-    if (curr->size == size && list->cmp(curr->item, item) == 0){
+    if (curr->size == size && (list->cmp)(curr->item, item) == 0){
       prev->next = curr->next;
       free_node(curr);
       return true;
@@ -121,7 +121,7 @@ void *get(linked_list *list, void *item, size_t size) {
   
   for (curr = list->head; curr; curr = curr->next) {
     /* Found item */
-    if (curr->size == size && list->cmp(curr->item, item) == 0){
+    if (curr->size == size && (list->cmp)(curr->item, item) == 0){
       return curr->item;
     }  
   }

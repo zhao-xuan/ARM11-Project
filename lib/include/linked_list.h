@@ -7,7 +7,7 @@
 
 typedef struct linked_list linked_list;
 
-typedef int (comparator) (void *, void*);
+typedef int (*comparator) (void *, void*);
 
 /*  
  *  Create a generic linked list 
