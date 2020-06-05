@@ -12,7 +12,7 @@ typedef int (*comparator) (void *, void*);
 /*  
  *  Create a generic linked list 
  *  @param:
- *    - cmp: comparator for 2 objects of type of items in the list
+ *    - cmp: comparator for 2 objects of type of keys in the list
  *  @return: 
  *    - pointer to linked list on success
  *    - NULL if anything fails
@@ -23,25 +23,25 @@ linked_list *create_linked_list(comparator cmp);
  *  Find an element in a given linked list 
  *  @param: 
  *    - list: pointer to linked_list 
- *    - item: pointer to item to find 
- *    - size: size of item
- *  @return: true iff item is found
+ *    - key: pointer to key to find 
+ *  @return: true iff key is found
  */
-bool find(linked_list *list, void *item, size_t size);
+bool find(linked_list *list, void *key);
 
 /*  
  *  Add an item at the end of the linked list 
  *  @param: as above
+ *      - key_size: size of the key in BYTES 
  *  @return: true iff the list has been modified
  */
-bool insert(linked_list *list, void *item, size_t size);
+bool insert(linked_list *list, void *key, size_t size, void *value);
 
-/* Remove an item from linked list */
-bool delete(linked_list *list, void *item, size_t size); 
+/* Remove an key from linked list */
+bool delete(linked_list *list, void *key); 
 
 /* Free memory allocated to linked_list */
 void free_list(linked_list *list);
 
-/* Returns item if present, NULL otherwise */
-void *get(linked_list *list, void *item, size_t size);
+/* Returns key if present, NULL otherwise */
+void *get(linked_list *list, void *key);
 #endif
