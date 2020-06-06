@@ -4,6 +4,7 @@
 
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
+#include <stddef.h>
 
 typedef struct linked_list linked_list;
 

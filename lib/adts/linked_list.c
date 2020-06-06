@@ -28,6 +28,7 @@ struct linked_list {
 /* Free resources allocated to each node */
 void free_node(list_node *node) {
   free(node->key);
+  free(node->value);
   free(node);
 }
 
