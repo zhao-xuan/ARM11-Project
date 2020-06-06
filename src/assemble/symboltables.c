@@ -6,10 +6,6 @@ symbol_table_t *init_parse_table() {
   return symbol_table;
 }
 
-void free_parse_table(symbol_table_t *parse_table) {
-  free_table(parse_table);
-}
-
 enum InstructionType get_type(symbol_table_t *parse_table, char *mnemonic) {
   parse_t parsed_node = get_literal(parse_table, mnemonic);
   return parsed_node->type;
@@ -30,10 +26,6 @@ symbol_table_t *init_label_table() {
     symbol_table_t *symbol_table = create_table();
 	//reads the labels and inserts the required 
   return symbol_table;
-}
-
-void free_label_table(symbol_table_t *label_table) {
-    free_table(label_table);
 }
 
 address_t get_label_address(symbol_table_t *label_table, char *mnemonic) {
