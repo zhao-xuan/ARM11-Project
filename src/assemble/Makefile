@@ -1,33 +1,36 @@
-BIN_DIR = ../../bin
-OBJ_DIR = ../../obj/assemble
-UTIL_OBJ_DIR = ../../obj/common
+PROJ        = ../..
+BIN_DIR     = $(PROJ)/bin
+LIB_DIR     = $(PROJ)/lib
+OBJ_DIR     = $(PROJ)/obj/assemble
+COMMON_OBJ  = $(PROJ)/obj/common
+SRC_FILES   = $(wildcard *.c)
+OBJ_FILES   = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-SRC_FILES = $(wildcard *.c)
-OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+CC          = gcc
+IncludePath = -Iinclude -I../common/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
+CFLAGS      = -O -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
+LFLAGS      = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.)) $(wildcard $(LIB_DIR)/*/*.a)
 
-CC      = gcc
-IncludePath = -I../../lib -I../common/ -I../common/include -Iinclude
-CFLAGS  = -O $(IncludePath) -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS =  
+all: libs $(BIN_DIR)/assemble
 
-
-$(BIN_DIR)/assemble: $(OBJ_FILES) $(UTIL_OBJ_DIR)/utils.o
-	$(CC) $(LDFLAGS) -o $@ $^
+$(BIN_DIR)/assemble: $(OBJ_FILES) $(COMMON_OBJ)/utils.o
+	$(CC) $^ $(LFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(UTIL_OBJ_DIR)/utils.o: ../common/utils.c
+$(COMMON_OBJ)/%.o: ../common/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test: 
-	cd tests; make all;
-	
+libs:
+	cd $(LIB_DIR); make
+
 clean:
 	rm -f $(wildcard $(OBJ_DIR)/*.o)
 	rm -f $(wildcard $(UTIL_OBJ_DIR)/*.o)
 	rm -f $(BIN_DIR)/assemble
 	cd tests; make clean
+	cd $(LIB_DIR); make clean
 
 .SUFFIXES: .c .o .h
-.PHONY: clean test
+.PHONY: clean test libs

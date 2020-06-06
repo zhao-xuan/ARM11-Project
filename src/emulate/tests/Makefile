@@ -1,22 +1,23 @@
 # This Makefile is for testing purpose ONLY
+PROJ        = ../../..
+LIB_DIR     = $(PROJ)/lib
+COMMON_DIR  = $(PROJ)/src/common
 
-CC = gcc
-IncludePath = -I../../../lib -I../../common/ -I../../common/include -I../include -Itestutils
-CFLAGS = -g -Wall $(IncludePath) -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS =
-LDLIBS = -Ltestutils -ltestutils
+TEST_FILES  = $(wildcard *_test.c)
+TESTS       = $(patsubst %_test.c, %_test, $(TEST_FILES))
 
-TEST_FILES = $(wildcard *_test.c)
-BUILD = $(patsubst %_test.c, %_test, $(TEST_FILES))
+SRC_FILES   = $(filter-out ../emulate.c, $(wildcard ../*.c))
+OBJ_FILES   = $(patsubst ../%.c, %.o,$(SRC_FILES)) utils.o
 
-SRC_FILES = $(wildcard ../*.c)
-SRC_NO_MAIN = $(filter-out ../emulate.c, $(SRC_FILES))
-OBJ_FILES = $(patsubst ../%.c, %.o,$(SRC_NO_MAIN)) utils.o
+CC          = gcc
+IncludePath = -I../include -I$(COMMON_DIR)/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
+CFLAGS      = -g -Wall -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
+LFLAGS      = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.)) $(wildcard $(LIB_DIR)/*/*.a)
 
-all: testutils $(BUILD)
+all: libs $(TESTS)
 
 %_test: %_test.o $(OBJ_FILES)
-	$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(CC) $^ $(LFLAGS) -o $@
 
 %_test.o: %_test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -24,16 +25,14 @@ all: testutils $(BUILD)
 %.o: ../%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-utils.o: ../../common/utils.c
+utils.o: $(COMMON_DIR)/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-testutils:
-	cd testutils; make
+libs:
+	cd $(LIB_DIR); make
 
 clean:
-	rm -f $(BUILD) *.o core
-	rm -f memory_test.txt
-	cd testutils; make clean 
+	rm -f $(TESTS) *.o core
+	cd $(LIB_DIR); make clean	
 
-.PHONY: clean, testutils
-
+.PHONY: clean libs
