@@ -1,27 +1,25 @@
-PROJ_ROOT      = ../..
-BIN_DIR        = $(PROJ_ROOT)/bin
-LIB_DIR        = $(PROJ_ROOT)/lib
-OBJ_DIR        = $(PROJ_ROOT)/obj/assemble
-COMMON_OBJ_DIR = $(PROJ_ROOT)/obj/common
-SRC_FILES      = $(wildcard *.c)
-OBJ_FILES      = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
-
+PROJ        = ../..
+BIN_DIR     = $(PROJ)/bin
+LIB_DIR     = $(PROJ)/lib
+OBJ_DIR     = $(PROJ)/obj/assemble
+COMMON_OBJ  = $(PROJ)/obj/common
+SRC_FILES   = $(wildcard *.c)
+OBJ_FILES   = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CC          = gcc
-IncludePath = -Iinclude $(addprefix -I, $(wildcard $(LIB_DIR)/*/.)) $(addprefix -I, $(wildcard ../common/*/.))
-CFLAGS      = -O $(IncludePath) -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS     = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.))
-BUILD       = libs $(BIN_DIR)/emulate
+IncludePath = -Iinclude -I../common/include
+CFLAGS      = -O -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
+LFLAGS      = 
 
-all: $(BUILD)
+all: libs $(BIN_DIR)/emulate
 
-$(BIN_DIR)/emulate: $(OBJ_FILES) $(COMMON_OBJ_DIR)/utils.o
-	$(CC) $^ $(LDFLAGS) $(wildcard $(LIB_DIR)/*/*.a) -o $@
+$(BIN_DIR)/emulate: $(OBJ_FILES) $(COMMON_OBJ)/utils.o
+	$(CC) $^ $(LFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(COMMON_OBJ_DIR)/utils.o: ../common/utils.c
+$(COMMON_OBJ)/%.o: ../common/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 libs:

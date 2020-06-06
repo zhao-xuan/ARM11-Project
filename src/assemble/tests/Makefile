@@ -1,24 +1,23 @@
 # This Makefile is for testing purpose ONLY
-PROJ_ROOT   = ../../..
-LIB_DIR     = $(PROJ_ROOT)/lib
-COMMON_DIR  = $(PROJ_ROOT)/src/common
+PROJ        = ../../..
+LIB_DIR     = $(PROJ)/lib
+COMMON_DIR  = $(PROJ)/src/common
 
 TEST_FILES  = $(wildcard *_test.c)
-BUILD       = $(patsubst %_test.c, %_test, $(TEST_FILES))
+TESTS       = $(patsubst %_test.c, %_test, $(TEST_FILES))
 
-SRC_FILES   = $(wildcard ../*.c)
-SRC_NO_MAIN = $(filter-out ../assemble.c, $(SRC_FILES))
-OBJ_FILES   = $(patsubst ../%.c, %.o,$(SRC_NO_MAIN)) utils.o
+SRC_FILES   = $(filter-out ../assemble.c, $(wildcard ../*.c))
+OBJ_FILES   = $(patsubst ../%.c, %.o,$(SRC_FILES)) utils.o
 
 CC          = gcc
-IncludePath = -I../include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.)) $(addprefix -I, $(wildcard $(COMMON_DIR)/*/.))
-CFLAGS      = -g -Wall $(IncludePath) -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic
-LDFLAGS     = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.))
+IncludePath = -I../include -I$(COMMON_DIR)/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
+CFLAGS      = -g -Wall -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
+LFLAGS      = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.)) $(wildcard $(LIB_DIR)/*/*.a)
 
-all: lib $(BUILD)
+all: libs $(TESTS)
 
 %_test: %_test.o $(OBJ_FILES)
-	$(CC) $^ $(LDFLAGS) $(wildcard $(LIB_DIR)/*/*.a) -o $@
+	$(CC) $^ $(LFLAGS) -o $@
 
 %_test.o: %_test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -29,11 +28,11 @@ all: lib $(BUILD)
 utils.o: $(COMMON_DIR)/utils.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-lib:
+libs:
 	cd $(LIB_DIR); make
 
 clean:
-	rm -f $(BUILD) *.o core
+	rm -f $(TESTS) *.o core
 	cd $(LIB_DIR); make clean	
 
-.PHONY: clean, testutils
+.PHONY: clean libs
