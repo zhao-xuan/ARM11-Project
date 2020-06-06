@@ -1,6 +1,13 @@
+SUBDIRS  = $(wildcard */.)
+SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
 
-lib:
-	cd testutils; make
+all: $(SUBDIRS)
+clean: $(SUBCLEAN)
 
-clean:
-	cd testutils; make clean
+$(SUBDIRS):
+	make -C $@
+
+$(SUBCLEAN): %.clean:
+	make -C $* clean
+
+.PHONY: all clean $(SUBDIRS) $(SUBCLEAN)

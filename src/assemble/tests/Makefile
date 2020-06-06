@@ -10,7 +10,7 @@ SRC_FILES   = $(filter-out ../assemble.c, $(wildcard ../*.c))
 OBJ_FILES   = $(patsubst ../%.c, %.o,$(SRC_FILES)) utils.o
 
 CC          = gcc
-IncludePath = -I../include -I$(COMMON_DIR)/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
+IncludePath = -I$(PROJ)/lib/adts/include -I../include -I$(COMMON_DIR)/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
 CFLAGS      = -g -Wall -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
 LFLAGS      = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.)) $(wildcard $(LIB_DIR)/*/*.a)
 
