@@ -1,7 +1,7 @@
 PROJ        = ../..
 BIN_DIR     = $(PROJ)/bin
 LIB_DIR     = $(PROJ)/lib
-OBJ_DIR     = $(PROJ)/obj/assemble
+OBJ_DIR     = $(PROJ)/obj/emulate
 COMMON_OBJ  = $(PROJ)/obj/common
 SRC_FILES   = $(wildcard *.c)
 OBJ_FILES   = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
@@ -27,10 +27,11 @@ libs:
 
 clean:
 	rm -f $(wildcard $(OBJ_DIR)/*.o)
-	rm -f $(wildcard $(UTIL_OBJ_DIR)/*.o)
+	rm -f $(wildcard $(COMMON_OBJ)/*.o)
 	rm -f $(BIN_DIR)/emulate
 	cd tests; make clean
 	cd $(LIB_DIR); make clean
+
 
 .SUFFIXES: .c .o .h
 .PHONY: clean test libs
