@@ -1,7 +1,13 @@
-all:
-	cd testutils; make
-	cd adts; make
+SUBDIRS  = $(wildcard */.)
+SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
 
-clean:
-	cd testutils; make clean
-	cd adts; make clean
+all: $(SUBDIRS)
+clean: $(SUBCLEAN)
+
+$(SUBDIRS):
+	make -C $@
+
+$(SUBCLEAN): %.clean:
+	make -C $* clean
+
+.PHONY: all clean $(SUBDIRS) $(SUBCLEAN)

@@ -6,9 +6,6 @@
 #include "linked_list.h"
 #include "testutils.h"
 
-size_t key_size;
-char *key;
-char *test_name;
 
 #define TEST_INSERT(sign)\
   testbool(sign insert(list, key, key_size, (void *) value), test_name)
@@ -28,6 +25,10 @@ int mod_strcmp(void *this, void *that){
  * key as a string at the moment
  */
 int main() {
+  size_t key_size;
+  char *key = malloc(sizeof(char) * 50);
+  char *test_name;
+
   int *value = malloc(sizeof(int));
 
   linked_list *list = create_linked_list(&mod_strcmp);

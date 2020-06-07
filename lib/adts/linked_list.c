@@ -34,9 +34,12 @@ void free_node(list_node *node) {
 
 /* Free resources allocated to linked list */
 void free_list(linked_list *list) {
-  for (list_node *curr = list->head; curr; curr = curr->next) {
-    free_node(curr);
-  }
+  list_node *prev = list->head, *curr = prev->next;
+  
+  for (; curr; prev = curr, curr = curr->next) {
+    free_node(prev);
+  }  
+  free_node(prev);
   free(list);
 }
 

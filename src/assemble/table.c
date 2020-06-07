@@ -24,10 +24,6 @@ bool insert_literal(symbol_table_t *table, char *label, void *literal) {
   return insert(table, label, strlen(label) + 1, literal);
 }
 
-bool insert_symbol(symbol_table_t *table, symbol_t *symbol) {
-  return insert_literal(table, symbol->label, symbol->literal);
-}
-
 void *get_literal(symbol_table_t *table, char *label) {
   return find(table, label); 
 }
