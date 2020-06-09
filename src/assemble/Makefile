@@ -28,7 +28,7 @@ libs:
 
 clean:
 	rm -f $(wildcard $(OBJ_DIR)/*.o)
-	rm -f $(wildcard $(UTIL_OBJ_DIR)/*.o)
+	rm -f $(wildcard $(COMMON_OBJ)/*.o)
 	rm -f $(BIN_DIR)/assemble
 	cd tests; make clean
 	cd $(LIB_DIR); make clean

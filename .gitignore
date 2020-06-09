@@ -6,6 +6,9 @@
 #ignore pdf files (just keep source files)
 *.pdf
 
+#ignore diagrams
+*.png
+
 #ignore junk files from latex output
 *.out
 *.log
