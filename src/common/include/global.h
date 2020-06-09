@@ -13,6 +13,17 @@
 /* Maximum number of lines pulled from my ass */
 #define MAX_FILE_LINES 50
 
+/*
+ * Enum of instruction types
+ */
+enum InstructionType {
+  DATA_PROCESSING,
+  MULTIPLY,
+  BRANCH,
+  DATA_TRANSFER,
+  HALT,
+  EMPTY
+};
 
 /* The state of the machine */
 
