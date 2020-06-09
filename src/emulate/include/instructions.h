@@ -70,18 +70,6 @@ typedef struct {
 } branch_t;
 
 /*
- * Enum of instruction types
- */
-enum InstructionType {
-  DATA_PROCESSING,
-  MULTIPLY,
-  BRANCH,
-  DATA_TRANSFER,
-  HALT,
-  EMPTY
-};
-
-/*
  * A wrapper for all instructions.
  * The execute function can infer the type of the instruction from "type" enum
  * field..
