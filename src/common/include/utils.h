@@ -36,16 +36,10 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size);
 /*
  * @brief: Loads an assembly file into the buffer.
  * @param path: path to the assembly file.
- * @returns : A pointer to a string array on the heap, NULL terminated.
- * @example:
- *    char **buffer = read_assembly_file(argv[1]);
- *      for (int i = 0; buffer[i]; i++) {
- *      printf("%s\n",buffer[i]); 
- *      free(buffer[i]);
- *     }
- *    free(buffer);
+ * @param buffer: buffer to load into. 
+ * @returns : The number of lines in this buffer. 
  */
-char **read_assembly_file(const char *path);
+int read_assembly_file(const char *path, char **buffer);
 
 /*
  * @brief: takes in an unsigned 32 bit number, and print out its bits to stdout.

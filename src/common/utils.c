@@ -67,9 +67,8 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
   fclose(file);
 }
 
-char **read_assembly_file(const char *path) {
+int read_assembly_file(const char *path, char **buffer) {
   FILE *file;
-  size_t file_length;
 
   file = fopen(path, "r");
   if (!file) {
@@ -79,20 +78,16 @@ char **read_assembly_file(const char *path) {
         path);
     exit(EXIT_FAILURE);
   }
-
-  fseek(file, 0, SEEK_END);
-  file_length = ftell(file);
-  fseek(file, 0, SEEK_SET);
-  size_t size = file_length + 1;
  
-  char **buffer = calloc(size, sizeof(char *));
-  char readbuffer[size];
-  for (int i = 0; fgets(readbuffer, size, file); i++) {
-    buffer[i] = malloc(strlen(readbuffer) + 1);
-    strncpy(buffer[i], strtok(readbuffer, "\n"), strlen(readbuffer));
+  char readbuffer[MAX_LINE_LENGTH];
+  int lines;
+  for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
+    buffer[lines] = malloc(strlen(readbuffer) + 1);
+    strncpy(buffer[lines], strtok(readbuffer, "\n"), strlen(readbuffer));
   }
+
   fclose(file);
-  return buffer;
+  return lines;
 }
 
 void print_bits(word_t x) {

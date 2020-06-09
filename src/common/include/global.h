@@ -7,6 +7,13 @@
 
 #include <stdint.h>
 
+/* Maximum length of lines according to spec */
+#define MAX_LINE_LENGTH 512
+
+/* Maximum number of lines pulled from my ass */
+#define MAX_FILE_LINES 50
+
+
 /* The state of the machine */
 
 /* empty instruction values for when pipeline is empty */
