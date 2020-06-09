@@ -42,7 +42,7 @@ bool init_mnemonic_table();
  */
 mnemoic_p get_mnemonic_data(char *mnemonic);
 
-
-
+/* Free allocated resources to table */
+void free_mnemonic_table();
 
 #endif 
