@@ -19,7 +19,9 @@
 #ignore junk files from compiling C code
 *.o
 *.out
-bin/*
+bin/emulate
+bin/assemble
+
 
 #ignore junk files from compiling Haskell code
 *.hi
