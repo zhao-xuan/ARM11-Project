@@ -1,7 +1,7 @@
 #include "tokenizer.h"
 
 assembly_program tokenize(char **buffer, size_t max_line) {
-  assembly_program aspg = calloc(max_line, sizeof(assembly_line));
+  assembly_program aspg = calloc(1, sizeof(assembly_program));
   address_t lc = 0U;
 
   for (int i = 0; buffer[i]; i++) {
@@ -31,7 +31,7 @@ assembly_program tokenize(char **buffer, size_t max_line) {
         break;
     }
     asl->location_counter = lc;
-    aspg[i] = asl;
+    aspg->lines[i] = asl;
     free(sections);
   }
   return aspg;

@@ -18,10 +18,13 @@ typedef struct {
   char *opcode;
   char *operands;
   address_t location_counter;
-} * assembly_line;
+} *assembly_line;
 
 /* NULL terminated array of assembly lines */
-typedef assembly_line *assembly_program;
+typedef struct {
+  assembly_line *lines;
+  size_t total_lines;
+} *assembly_program;
 
 assembly_program tokenize(char **buffer, size_t max_line);
 
