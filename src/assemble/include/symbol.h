@@ -7,6 +7,7 @@
 
 #include "instructions.h"
 #include "table.h"
+#include "tokenizer.h"
 
 symbol_table_t *init_parse_table();
 
