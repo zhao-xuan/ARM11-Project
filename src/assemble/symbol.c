@@ -13,13 +13,13 @@ symbol_table_t *init_parse_table() {
   return symbol_table;
 }
 
-symbol_table_t *init_label_table(assembly_program aspg) {
+symbol_table_t *init_label_table(assembly_program *aspg) {
   symbol_table_t *symbol_table = create_table();
-  for (size_t i = 0; aspg[i]; i++) {
-    if (aspg[i]->label != NULL) {
+  for (size_t i = 0; aspg->lines[i]; i++) {
+    if (aspg->lines[i]->label != NULL) {
       address_t *location_counter = malloc(sizeof(address_t));
-      *location_counter = aspg[i]->location_counter;
-      insert_literal(symbol_table, strtok(aspg[i]->label, ":"),
+      *location_counter = aspg->lines[i]->location_counter;
+      insert_literal(symbol_table, strtok(aspg->lines[i]->label, ":"),
                      location_counter);
     }
   }
