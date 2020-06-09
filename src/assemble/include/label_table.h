@@ -5,7 +5,6 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
-#include "instructions.h"
 #include "table.h"
 #include "tokenizer.h"
 
