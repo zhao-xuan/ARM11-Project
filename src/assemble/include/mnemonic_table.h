@@ -20,7 +20,8 @@ bool init_mnemonic_table();
  *  @returns: a pointer to mnemonic_t which includes:
  *    - type: enum of instruction type
  *    - bin: partially set binary representation of instruction
- *           based on the rules below 
+ *           based on the rules below, bits which are not set
+ *           have the value 0
  *  
  *  1. Data processing
  *    a. [20-24], [26-31] are set
