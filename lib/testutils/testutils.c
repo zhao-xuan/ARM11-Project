@@ -7,7 +7,7 @@
 
 #include "testutils.h"
 
-static void switch_color(bool condition) {
+void switch_color(bool condition) {
   if (condition) {
     /* Switch to green */
     printf("\033[0;32m");
@@ -17,7 +17,7 @@ static void switch_color(bool condition) {
   }
 }
 
-static void reset_color() { printf("\033[0m"); }
+void reset_color() { printf("\033[0m"); }
 
 void testbool(bool condition, char *testname) {
   switch_color(condition);

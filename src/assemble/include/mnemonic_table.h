@@ -3,6 +3,10 @@
 #ifndef MNEMONIC_TABLE_H
 #define MNEMONIC_TABLE_H
 
+#include <stdbool.h>
+
+#include "global.h"
+
 typedef struct {
   word_t bin;
   enum InstructionType type;
@@ -40,7 +44,7 @@ bool init_mnemonic_table();
  *    b. Offset is not
  *  
  */
-mnemoic_p get_mnemonic_data(char *mnemonic);
+mnemonic_p get_mnemonic_data(char *mnemonic);
 
 /* Free allocated resources to table */
 void free_mnemonic_table();

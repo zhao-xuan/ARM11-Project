@@ -86,8 +86,12 @@ enum InstructionType {
 #define UP_BIT_LOCATION 23
 /* Location of Offset field for DATA_TRANSFER */
 #define DT_OFFSET_LOCATION 0
+/*  The constant for DATA_TRANSFER */
+#define DT_CONST (1 << 26)
 
 /* MULTIPLY & BRANCH */
+/* Location of constant 0b1001 */
+#define MUL_CONST (9 << 4)
 /* Location of Rn field for MULTIPLY */
 #define MUL_RN_LOCATION 12
 /* Location of Rd field for MULTIPLY */
@@ -100,6 +104,8 @@ enum InstructionType {
 #define ACCUMULATE_LOCATION 21
 /* Location of Offset field for BRANCH */
 #define BRANCH_OFFSET_LOCATION 0
+/* Branch constant */
+#define BRANCH_CONST (5 << 25)
 
 /* Field size matching definition */
 /* Field size of 1 bit */
