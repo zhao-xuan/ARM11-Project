@@ -24,6 +24,7 @@ typedef struct {
   assembly_line **lines;
   size_t total_lines;
 } assembly_program;
+
 /*
  * @param buffer: buffer containing the raw input from read file.
  * @param max_line: The number of lines of the input file, an upper bound for

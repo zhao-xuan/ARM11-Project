@@ -9,14 +9,6 @@
 #include "table.h"
 #include "tokenizer.h"
 
-symbol_table_t *init_parse_table();
-
-enum InstructionType get_type(symbol_table_t *parse_table, char *mnemonic);
-
-byte_t get_cond(symbol_table_t *parse_table, char *mnemonic);
-
-byte_t get_opcode(symbol_table_t *parse_table, char *mnemonic);
-
 /*
  * @param aspg: a tokenised assembly program.
  * @returns: a table mapping labels to addesses.  

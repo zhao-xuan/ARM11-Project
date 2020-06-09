@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "symbol.h"
+#include "label_table.h"
 #include "table.h"
 #include "tokenizer.h"
 
