@@ -8,7 +8,7 @@
 
 #define NUM_DP_MNEMONICS 10
 #define NUM_ML_MNEMONICS 2
-#define NUM_BR_MNEMONICS 6
+#define NUM_BR_MNEMONICS 8
 #define NUM_DT_MNEMONICS 2
 #define NUM_SP_MNEMONICS 2
 
@@ -27,10 +27,10 @@ static char ml_mnemonics[][4] =
   { "mul", "mla" };
 
 static char br_mnemonics[][4] =  
-  { "beq", "bne", "bge", "blt", "bgt", "ble"};
+  { "beq", "bne", "bge", "blt", "bgt", "ble", "bal", "b"};
 
 static char dt_mnemonics[][4] = 
-  { "ldr", "str" };
+  { "str", "ldr" };
 
 static bool init_dp_mnemonics();
 static bool init_dt_mnemonics();
@@ -52,6 +52,8 @@ bool init_mnemonic_table() {
                  && init_br_mnemonics(mnemonic_table)
                  && init_ml_mnemonics(mnemonic_table)
                  && init_sp_mnemonics(mnemonic_table);
+
+  /* If anything fails then free the table and return false*/
   if (!success) free_mnemonic_table();
   return success;
 }
@@ -67,18 +69,18 @@ static void get_opcode_and_set_bits(int index, word_t *opcode, word_t *set) {
 static bool init_dp_mnemonics() {
   word_t opcode = 0, set = 0, bin = 0;
   for (int i = 0; i < NUM_DP_MNEMONICS; i++) {
-    /* Get opcode and S-bit shifted to the right position */
-    get_opcode_and_set_bits(i, &opcode, &set);
+    /* Malloc pointer to value */
     mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
     if (!mnemonic) return false;
+    
+    /* Get opcode and S-bit shifted to the right position */
+    get_opcode_and_set_bits(i, &opcode, &set);
 
     /* Set the correct bits in the binary */
-    bin = (ALWAYS << 28) | opcode | set;
- 
-    *mnemonic = (mnemonic_t) {bin, DATA_PROCESSING};
+    bin = (ALWAYS << COND_LOCATION) | opcode | set;
+     *mnemonic = (mnemonic_t) {bin, DATA_PROCESSING};
   
-    
-    //if (!insert(mnemonic_table, dp_mnemonics[i], 3, mnemonic)) return false;
+    /* Try to insert mnemonic into table */
     if (!INSERT_MNEMONIC(dp_mnemonics[i])) return false;
   
   }
@@ -91,50 +93,55 @@ static bool init_dt_mnemonics() {
     mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
     if (!mnemonic) return false;
 
-    /* Set the partial binary */
-    bin = (ALWAYS << COND_LOCATION) | (i << LOAD_STORE_LOCATION);
+    bin = (ALWAYS << COND_LOCATION) | DT_CONST;
+    bin |= i << LOAD_STORE_LOCATION;
     *mnemonic = (mnemonic_t) {bin, DATA_TRANSFER};
+
     if (!INSERT_MNEMONIC(dt_mnemonics[i])) return false;
   }
   return true;
 }
 
 static word_t get_cond(int index) {
+  if (index == NUM_BR_MNEMONICS - 1) 
+    return ALWAYS << COND_LOCATION;
+
   word_t cond_raw = index > 1 ? (index + 8) : index;
   return cond_raw << COND_LOCATION;
 }
 
 static bool init_br_mnemonics() {
-  bool success = true;
   for (int i = 0; i < NUM_BR_MNEMONICS; i++) {
     mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) break;
+    if (!mnemonic) return false;
+    
     word_t bin = get_cond(i) | BRANCH_CONST;
     *mnemonic = (mnemonic_t) {bin, BRANCH}; 
+    
     if (!INSERT_MNEMONIC(br_mnemonics[i])) return false;
   }
-  return success; 
+  return true; 
 }
 
 static bool init_ml_mnemonics() {
-  bool success = true;
   word_t bin = MUL_CONST | (ALWAYS << COND_LOCATION);
-  for (int i = 0; i < NUM_ML_MNEMONICS && success; i++) {
+  for (int i = 0; i < NUM_ML_MNEMONICS; i++) {
     mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) break;
-    word_t set_bit = i << SET_COND_LOCATION;
+    if (!mnemonic) return false;
+
+    word_t set_bit = i << ACCUMULATE_LOCATION;
     *mnemonic = (mnemonic_t) {bin | set_bit, MULTIPLY}; 
-    success = INSERT_MNEMONIC(ml_mnemonics[i]); 
+   
+   if (!INSERT_MNEMONIC(ml_mnemonics[i])) return false; 
   }
-  return success;
+  return true;
 }
 
 static bool init_sp_mnemonics() {
   mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
   if (!mnemonic) return false;
   
-  *mnemonic = (mnemonic_t) {HALT};
-
+  *mnemonic = (mnemonic_t) {0, HALT};
   return INSERT_MNEMONIC("andeq"); 
 }
 

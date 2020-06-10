@@ -34,7 +34,7 @@ void print_mnemonic(mnemonic_p ptr, char *out) {
       type = "Unknown Type";
   }
 
-  sprintf(out, "{.type: %15s, .bin: 0x%08x}", type, ptr->bin); 
+  sprintf(out, "{.type: %-15s, .bin: 0x%08x}", type, ptr->bin); 
 
 }
 
@@ -46,7 +46,7 @@ void testmnemonic(mnemonic_p expected, mnemonic_p got, char *testname) {
   char exp[50], out[50];
   print_mnemonic(expected, exp);
   print_mnemonic(got, out);
-  printf("T %s:  %s \n  expected=%s \n       got=%s)\n", 
+  printf("T %s: ----------------- %s \n  expected=%s \n       got=%s\n", 
     testname, match ? "OK" : "FAIL", exp, out);
 } 
 
@@ -120,6 +120,91 @@ int main() {
   testname = "Cmp should return correct binary";
   SET_EXP(DATA_PROCESSING, 3780116480);
   TEST_MNEMONIC("cmp");
+  
+
+  /* Multiply */
+
+  /* mul 11100000_00000000_00000000_10010000*/
+  testname = "Mul should return correct binary";
+  SET_EXP(MULTIPLY, 3758096528);
+  TEST_MNEMONIC("mul");
+
+  /* mla 11100000_00100000_00000000_10010000 */
+  testname = "Mla should return correct binary";
+  SET_EXP(MULTIPLY, 3760193680);
+  TEST_MNEMONIC("mla");
+
+
+  /* Single Data Transfer */
+
+  /* ldr 11100100_00010000_00000000_00000000 */
+  testname = "Ldr should return correct binary";
+  SET_EXP(DATA_TRANSFER, 3826253824);
+  TEST_MNEMONIC("ldr");
+
+  /* str 11100100_00000000_00000000_00000000 */
+  testname = "Str should return correct binary";
+  SET_EXP(DATA_TRANSFER, 3825205248);
+  TEST_MNEMONIC("str");
+
+
+  /* Branch instruction */
+   
+  /* beq 00001010_00000000_00000000_00000000 */
+  testname = "Beq should return correct binary";
+  SET_EXP(BRANCH, 167772160);
+  TEST_MNEMONIC("beq");
+
+  /* bne 00011010_00000000_00000000_00000000 */
+  testname = "Bne should return correct binary";
+  SET_EXP(BRANCH, 436207616);
+  TEST_MNEMONIC("bne");
+
+  /* bge 10101010_00000000_00000000_00000000 */
+  testname = "Bge should return correct binary";
+  SET_EXP(BRANCH, 2852126720);
+  TEST_MNEMONIC("bge");
+  
+  /* blt 10111010_00000000_00000000_00000000 */
+  testname = "Blt should return correct binary";
+  SET_EXP(BRANCH, 3120562176);
+  TEST_MNEMONIC("blt");
+
+  /* bgt 11001010_00000000_00000000_00000000 */
+  testname = "Bgt should return correct binary";
+  SET_EXP(BRANCH, 3388997632);
+  TEST_MNEMONIC("bgt");
+
+  /* ble 11011010_00000000_00000000_00000000 */
+  testname = "ble should return correct binary";
+  SET_EXP(BRANCH, 3657433088);
+  TEST_MNEMONIC("ble");
+
+  /* bal 11101010_00000000_00000000_00000000 */
+  testname = "Bal should return correct binary";
+  SET_EXP(BRANCH, 3925868544);
+  TEST_MNEMONIC("bal");
+
+  /* b   11101010_00000000_00000000_00000000*/
+  testname = "B (Branch always without suffix) returns correct binary";
+  TEST_MNEMONIC("b");
+
+  /* Special instruction */
+  /* Halt */
+  testname = "Andeq should return correct binary";
+  SET_EXP(HALT, 0);
+  TEST_MNEMONIC("andeq");
+  
+  /* Unknown instructions */
+  testname = "Unknown instruction should return NULL";
+  testbool(get_mnemonic_data("nonsense") == NULL, testname);
+
+  /* Free table */
+  free_mnemonic_table();
+  testname = "Table can be freed correctly";
+  testbool(true, testname);
+  
+
   return 0;
 }
 
