@@ -1,6 +1,6 @@
 #include "parser.h"
 // Declarations of static helper functions for the parser below:
-
+static void parse_dp(assembly_line *line, word_t bin, machine_code *mcode);
 // Declarations for string processing (helper) functions below:
 static char **operand_processor(char *operand);
 static char *trim_field(char *str);
@@ -27,6 +27,28 @@ void free_machine_code(machine_code *mcode) {
 }
 
 // Implementation for the parser helper functions below:
+/* DATA_PROCESSING parsing functions*/
+static void parse_dp(assembly_line *line, word_t *bin) {
+  byte_t opcode_field = (bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
+  char **tokens = operand_processor(line->operands);
+  if (opcode_field <= 4 || opcode_field == 12) {
+    /* result-computing instruction */
+    bin = bin | ();
+  } else if (opcode_field == 13) {
+    /* mov instruction */
+    
+  } else if (opcode_field >= 8 && opcode_field <= 10) {
+    /* CPSR flag set instruction */
+  }
+}
+
+static wort_t parse_dp_operand2(char *operand2) {
+  
+}
+
+static byte_t reg_to_bin(char *reg) {
+  return atoi(reg + 1);
+}
 
 // Implementation for the string processing (helper) functions below:
 /*
