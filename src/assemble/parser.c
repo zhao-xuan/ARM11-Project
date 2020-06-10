@@ -49,7 +49,7 @@ static char **operand_processor(char *operand) {
  */
 static char *trim_field(char *str) {
   int i = 0;
-  while (*str == ' ' || *str == '[') {
+  while (*(str + i) == ' ' || *(str + i) == '[') {
     i++;
   }
   char *trimmed = malloc((strlen(str) - i) * sizeof(char));
