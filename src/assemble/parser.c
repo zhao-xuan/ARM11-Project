@@ -28,7 +28,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 }
 
 void free_machine_code(machine_code *mcode) {
-  free(mcode -> bin);
+  free(mcode->bin);
   free(mcode);
 }
 
@@ -53,7 +53,7 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
  * @return: an array of string representing the operand fields
  */
 
-#define MAX_FIELD_COUNT 4;
+#define MAX_FIELD_COUNT 4
 
 static char **operand_processor(char *operand) {
   char **tokens = calloc(MAX_FIELD_COUNT, sizeof(char *));
@@ -61,7 +61,7 @@ static char **operand_processor(char *operand) {
   char *literal = strtok(operand, ",");
   while (literal != NULL) {
     tokens[i] = malloc(strlen(literal) * sizeof(char));
-    strcpy(token[i], literal);
+    strcpy(tokens[i], literal);
     i++;
     literal = strtok(NULL, ",");
   }
