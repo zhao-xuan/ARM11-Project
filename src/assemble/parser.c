@@ -2,11 +2,13 @@
 #include "parser.h"
 
 /* Translates a register/hash/equal expression into its numerical expression. */
-#define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
+#define to_index(literal, nptr) ((int) strtol(literal + 1, nptr, 0))
 
 // Declarations of static helper functions for the parser below:
 
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
+static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
+
 // Declarations for string processing (helper) functions below:
 static char **operand_processor(char *operand);
 static char *trim_field(char *str);
@@ -33,18 +35,42 @@ void free_machine_code(machine_code *mcode) {
 
 // Implementation for the parser helper functions below:
 
+/*
+ * Parser for multiplication instructions
+ * @param *bin: a pointer to the 32-bits binary word parsed by this function
+ * @param **operands: an array of strings that holds the operands
+ * @param *mnemonic: mnemonic of the multiplication instruction
+ */
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
   /* Sets Rd register */
-  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 16;
+  *bin |= (to_index(operands[0], NULL) & FOUR_BIT_FIELD) << 16;
   /* Sets Rn register */
-  *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD) << 12;
+  *bin |= (to_index(operands[1], NULL) & FOUR_BIT_FIELD) << 12;
   /* Sets Rs register */
-  *bin |= (to_index(operands[2]) & FOUR_BIT_FIELD) << 8;
+  *bin |= (to_index(operands[2], NULL) & FOUR_BIT_FIELD) << 8;
   /* Sets Rm register */
   if (strcmp(mnemonic, "mla") == 0) {
-    *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD);
+    *bin |= (to_index(operands[3], NULL) & FOUR_BIT_FIELD);
   }
 }
+
+/*
+ * Parser for branching instructions
+ * @param *bin: a pointer to the 32-bits binary word parsed by this function
+ * @param **operands: an array of strings that holds the operands
+ * @param *label_table: a pointer to the label table produced in the first pass
+ */
+static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current) {
+  char *errptr = NULL;
+  word_t addr = (word_t) to_index(operands[0], errptr);
+  /* Expression is a label, not a number */
+  if (errptr != NULL) {
+    addr = get_label_address(label_table, operands[0]);
+  }
+
+  *bin |= ((addr - current - 8) >> 2) & TWENTY_FOUR_BIT_FIELD;
+}
+
 // Implementation for the string processing (helper) functions below:
 /*
  * Second-pass: tokenize the operand field
