@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+void switch_color(bool);
+void reset_color();
+
 extern void testbool(bool condition, char *testname);
 extern void testint(int got, int expected, char *testname);
 extern void testlong(long got, long expected, char *testname);
