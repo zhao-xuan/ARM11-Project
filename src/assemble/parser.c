@@ -3,7 +3,7 @@
 
 // Declarations for string processing (helper) functions below:
 static char **operand_processor(char *operand);
-char *trim_field(char *str);
+static char *trim_field(char *str);
 
 // Implementation for public functions:
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
@@ -25,7 +25,7 @@ void free_machine_code(machine_code *mcode) {
  * @return: an array of string representing the operand fields
  */
 
-#define MAX_FIELD_COUNT;
+#define MAX_FIELD_COUNT 4;
 
 static char **operand_processor(char *operand) {
   char **tokens = calloc(MAX_FIELD_COUNT, sizeof(char *));
