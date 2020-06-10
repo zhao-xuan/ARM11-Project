@@ -12,6 +12,9 @@ int main(int argc, char **argv) {
   symbol_table_t *labels = init_label_table(aspg);
   printf("%d\n", get_label_address(labels, "wait"));
 
-  free(buffer);
+  free_program(aspg);
+  free_table(labels);
+  free_buffer(buffer, file_lines);
   return EXIT_SUCCESS;
 }
+

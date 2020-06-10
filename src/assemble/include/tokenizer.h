@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "global.h"
 #include "utils.h"
@@ -34,4 +35,8 @@ typedef struct {
  */
 assembly_program *tokenize(char **buffer, size_t max_line);
 
+/*
+ * @param aspg: assembly_program to free.
+ */
+void free_program(assembly_program *aspg);
 #endif

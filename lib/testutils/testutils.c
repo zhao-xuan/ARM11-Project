@@ -73,3 +73,10 @@ void testsize(size_t got, size_t expected, char *testname) {
          expected == got ? "OK" : "FAIL");
   reset_color();
 }
+
+void testpointer(void *got, void *expected, char *testname) {
+  switch_color(got == expected);
+  printf("T %s (expected=%p, got=%p): %s\n", testname, expected,
+         got,expected == got ? "OK" : "FAIL");
+  reset_color();
+}
