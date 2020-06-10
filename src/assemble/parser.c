@@ -2,7 +2,7 @@
 // Declarations of static helper functions for the parser below:
 static void parse_dp(assembly_line *line, word_t bin, machine_code *mcode);
 // Declarations for string processing (helper) functions below:
-static char **operand_processor(char *operand);
+static char **operand_processor(char *operand, int field_count);
 static char *trim_field(char *str);
 
 // Implementation for public functions:
@@ -30,7 +30,7 @@ void free_machine_code(machine_code *mcode) {
 /* DATA_PROCESSING parsing functions*/
 static void parse_dp(assembly_line *line, word_t *bin) {
   byte_t opcode_field = (*bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
-  char **tokens = operand_processor(line->operands);
+  char **tokens = operand_processor(line->operands, 3);
   if (opcode_field <= 4 || opcode_field == 12) {
     /* result-computing instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
@@ -39,11 +39,11 @@ static void parse_dp(assembly_line *line, word_t *bin) {
   } else if (opcode_field == 13) {
     /* mov instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of     the immediate bit as well
+    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field >= 8 && opcode_field <= 10) {
     /* CPSR flag set instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RN_LOCATION;
-    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of     the immediate bit as well
+    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
 }
 
@@ -90,16 +90,15 @@ static wort_t parse_dp_operand2(char *operand2) {
 /*
  * Second-pass: tokenize the operand field
  * @param: char *operand: the operand fields in a string
+ * @param: int field_count: the maximum number of tokens(fields). This is needed in situations where <operand2> in DATA_PROCESSING and <address> in DATA_TRANSFER should not be further tokenized
  * @return: an array of string representing the operand fields
  */
 
-#define MAX_OPERAND2_FIELD_COUNT 3;
-
-static char **operand_processor(char *operand) {
-  char **tokens = calloc(MAX_OPERAND2_FIELD_COUNT, sizeof(char *));
+static char **operand_processor(char *operand, int field_count) {
+  char **tokens = calloc(field_count, sizeof(char *));
   int i = 0;
   char *literal = strtok(operand, ",");
-  while (literal != NULL || i < MAX_OPERAND2_FIELD_COUNT) {
+  while (literal != NULL || i < field_count) {
     tokens[i] = malloc(strlen(literal) * sizeof(char));
     strcpy(token[i], literal);
     i++;
@@ -108,6 +107,20 @@ static char **operand_processor(char *operand) {
   tokens = realloc(tokens, i * sizeof(char *));
 
   return tokens;
+}
+
+/*
+ * @brief: free an array of string tokens
+ * @param: char **tokens: the array of string tokens that need to be freed
+ */
+static void free_tokens(char **tokens) {
+  int i = 0;
+  while (tokens[i] != NULL) {
+    free(tokens[i]);
+    i++;
+  }
+
+  free(tokens);
 }
 
 /*
