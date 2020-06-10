@@ -18,10 +18,9 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   mcode->bin = calloc(mcode->length, sizeof(word_t));
 
   for (int i = 0; i < program->total_lines; i++) {
-    assembly_line *line = program->lines[i];
-    mnemonic_p content = get_mnemonic_data(line->opcode);
-    word_t bin = content->bin;
-    
+    //assembly_line *line = program->lines[i];
+    //mnemonic_p content = get_mnemonic_data(line->opcode);
+    //word_t bin = content->bin;
   }
   // TODO
   return NULL;
