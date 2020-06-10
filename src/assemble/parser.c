@@ -3,11 +3,13 @@
 
 /* Translates a register/hash/equal expression into its numerical expression. */
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
+#define equal(literal) (literal[0] == '=')
+#define hash(literal) (literal[0] == '#')
 
 // Declarations of static helper functions for the parser below:
 
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
-static void parse_dt(word_t *bin, char **operands, word_t *data, address_t current);
+static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset);
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
 
 // Declarations for string processing (helper) functions below:
@@ -64,9 +66,35 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
  * @param *data: a pointer to the data that need to be appended at the end of the machine code.
  * *data will be set to 0 if no data need to be appended. Note if data need to be appended,
  * it can't be 0, since such instructions will be interpreted as a mov instruction
+ * @param offset: the offset of the current address to the end of the memory, taking into
+ * account of the pipeline
  */
-static void parse_dt(word_t *bin, char **operands, word_t *data, address_t current) {
-  //TODO
+static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset) {
+  /* Sets Rd Register */
+  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 12;
+  /* Pre-indexing if no comma can be found in the second operand OR there are only two operands */
+  bool pre_index = strchr(operands[1], ',') != NULL || operands[2] == NULL;
+  bool up = true;
+
+  if (equal(operands[1])) {  /* Load value */
+    *data = to_index(operands[1]);
+    /* Sets Rn to PC */
+    *bin |= PC << 16;
+    *bin |= offset & TWELVE_BIT_FIELD;
+  } else if (pre_index) { /* Pre-indexing */
+
+  } else { /* Post-indexing */
+    /* Sets Rn Register */
+    *bin |= (to_index(trim_field(operands[1])) & FOUR_BIT_FIELD) << 16;
+    if (hash(operands[2])) { /* Hash expression */
+      *bin |= to_index(operands[2]) & TWELVE_BIT_FIELD;
+    } else { /* Operand2 */
+      //TODO
+    }
+  }
+
+  *bin |= (pre_index & 1) << 24;
+  *bin |= (up & 1) << 23;
 }
 
 
@@ -79,7 +107,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t curre
  */
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current) {
   char *errptr = NULL;
-  word_t addr = (word_t) strtol(operands[0] + 1, errptr, 0);
+  word_t addr = (word_t) strtol(operands[0] + 1, &errptr, 0);
   /* Expression is a label, not a number. See documentation for strtol */
   if (errptr != NULL) {
     addr = get_label_address(label_table, operands[0]);
