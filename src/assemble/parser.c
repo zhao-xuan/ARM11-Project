@@ -7,6 +7,7 @@
 // Declarations of static helper functions for the parser below:
 
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
+static void parse_dt(word_t *bin, char **operands, word_t *data, address_t current);
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
 
 // Declarations for string processing (helper) functions below:
@@ -56,6 +57,20 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
 }
 
 /*
+ * Parser for single data transfer instructions
+ * @param *bin: a pointer to the 32-bits binary word parsed by this function
+ * This function sets bits [25-23], [19-0] of *bin
+ * @param **operands: an array of strings that holds the operands
+ * @param *data: a pointer to the data that need to be appended at the end of the machine code.
+ * *data will be set to 0 if no data need to be appended. Note if data need to be appended,
+ * it can't be 0, since such instructions will be interpreted as a mov instruction
+ */
+static void parse_dt(word_t *bin, char **operands, word_t *data, address_t current) {
+  //TODO
+}
+
+
+/*
  * Parser for branching instructions
  * @param *bin: a pointer to the 32-bits binary word parsed by this function
  * This function sets bits [24-0] of *bin
@@ -65,7 +80,7 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current) {
   char *errptr = NULL;
   word_t addr = (word_t) strtol(operands[0] + 1, errptr, 0);
-  /* Expression is a label, not a number */
+  /* Expression is a label, not a number. See documentation for strtol */
   if (errptr != NULL) {
     addr = get_label_address(label_table, operands[0]);
   }
