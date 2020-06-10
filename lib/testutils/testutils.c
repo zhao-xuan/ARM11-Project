@@ -7,7 +7,7 @@
 
 #include "testutils.h"
 
-static void switch_color(bool condition) {
+void switch_color(bool condition) {
   if (condition) {
     /* Switch to green */
     printf("\033[0;32m");
@@ -17,7 +17,7 @@ static void switch_color(bool condition) {
   }
 }
 
-static void reset_color() { printf("\033[0m"); }
+void reset_color() { printf("\033[0m"); }
 
 void testbool(bool condition, char *testname) {
   switch_color(condition);
@@ -71,5 +71,12 @@ void testsize(size_t got, size_t expected, char *testname) {
   switch_color(got == expected);
   printf("T %s (expected=0x%zu, got=0x%zu): %s\n", testname, expected, got,
          expected == got ? "OK" : "FAIL");
+  reset_color();
+}
+
+void testpointer(void *got, void *expected, char *testname) {
+  switch_color(got == expected);
+  printf("T %s (expected=%p, got=%p): %s\n", testname, expected,
+         got,expected == got ? "OK" : "FAIL");
   reset_color();
 }

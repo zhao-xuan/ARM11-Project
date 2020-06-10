@@ -3,6 +3,8 @@
 #ifndef MNEMONIC_TABLE_H
 #define MNEMONIC_TABLE_H
 
+#include <stdbool.h>
+
 #include "global.h"
 
 typedef struct {
