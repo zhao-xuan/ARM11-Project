@@ -22,7 +22,7 @@ int main(void) {
   teststring(program->lines[1]->operands, "r1,r1,r1", name);
   printf("\n");
   free(buffer);
-  // free program
+  free_program(program);
 
   /* loop01 */
   buffer = calloc(5, sizeof(char *));
@@ -41,7 +41,7 @@ int main(void) {
   testint(program->total_lines, 4, name);
   printf("\n");
   free(buffer);
-  // free program
+  free_program(program);
 
   /* opt_ldr12 (modified) */
   buffer = calloc(5, sizeof(char *));
@@ -59,7 +59,7 @@ int main(void) {
   testpointer(program->lines[4]->label, NULL, name);
   printf("\n");
   free(buffer);
-  // free program
+  free_program(program);
 
   /* opt_add & tst04 */
   buffer = calloc(5, sizeof(char *));
@@ -77,7 +77,7 @@ int main(void) {
   testint(program->total_lines, 4, name);
   printf("\n");
   free(buffer);
-  // free program
+  free_program(program);
 
   return 0;
 }

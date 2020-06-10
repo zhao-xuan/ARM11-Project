@@ -28,7 +28,7 @@ assembly_program *tokenize(char **buffer, size_t max_line) {
   aspg->lines = calloc(max_line, sizeof(assembly_line *));
 
   int instruction_count = 0;
-  for (int i = 0; buffer[i] && i < max_line; i++) {
+  for (int i = 0; i < max_line && buffer[i]; i++) {
     if (strlen(buffer[i]) < 2) continue;
     assembly_line *asl = malloc(sizeof(assembly_line));
     char **sections = calloc(4, sizeof(char *));
