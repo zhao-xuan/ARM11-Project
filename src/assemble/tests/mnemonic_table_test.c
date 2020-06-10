@@ -203,7 +203,8 @@ int main() {
   free_mnemonic_table();
   testname = "Table can be freed correctly";
   testbool(true, testname);
-  
+
+  free(expected);
 
   return 0;
 }
