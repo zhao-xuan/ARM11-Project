@@ -31,7 +31,6 @@ static char **operand_processor(char *operand) {
   char **tokens = calloc(MAX_FIELD_COUNT, sizeof(char *));
   int i = 0;
   char *literal = strtok(operand, ",");
-  int i = 0;
   while (literal != NULL) {
     tokens[i] = malloc(strlen(literal) * sizeof(char));
     strcpy(token[i], literal);
