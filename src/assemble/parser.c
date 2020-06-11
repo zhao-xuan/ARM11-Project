@@ -2,23 +2,20 @@
 #include "parser.h"
 #include "exceptions.h"
 
-/* Translates a register/hash/equal expression into its numerical expression. */
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 #define equal(literal) (literal[0] == '=')
 #define hash(literal) (literal[0] == '#')
 
-// Declarations of static helper functions for the parser below:
-static void parse_dp(assembly_line *line, word_t *bin);
-static word_t parse_operand2(char *operand2);
+static void parse_dp(char **operands, word_t *bin);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
 static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset);
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
+static word_t parse_operand2(char *operand2);
 
-// Declarations for string processing (helper) functions below:
 static char **operand_processor(const char *operand, int field_count);
+static void free_operands(char **tokens);
 static char *trim_field(char *str);
-#define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
-// Implementation for public functions:
+
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   machine_code *mcode = malloc(sizeof(machine_code));
   mcode->length = program->total_lines;
@@ -26,7 +23,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
   for (int i = 0; i < program->total_lines; i++) {
     assembly_line *line = program->lines[i];
-    char **operands = operand_processor(line->operands);
+    char **operands = operand_processor(line->operands, 3);
     mnemonic_p content = get_mnemonic_data(line->opcode);
 
     /* Special case for ldr interpreted as mov */
@@ -41,6 +38,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
     switch (content->type) {
     case DATA_PROCESSING:
+      parse_dp(operands, &bin);
       break;
     case MULTIPLY:
       parse_mul(&bin, operands, line->opcode);  
@@ -50,7 +48,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       parse_dt(&bin, operands, &data, current - line->location_counter - 12);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
-        mcode->bin = realloc(mcode->length, sizeof(word_t));
+        mcode->bin = realloc(mcode->bin, mcode->length * sizeof(word_t));
         mcode->bin[mcode->length - 1] = data;
       }
     case BRANCH:
@@ -61,6 +59,8 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     default:
       exceptions(UNKNOWN_INSTRUCTION_TYPE, current);
     }
+
+    free_operands(operands);
   }
   return mcode;
 }
@@ -73,22 +73,21 @@ void free_machine_code(machine_code *mcode) {
 // Implementation for the parser helper functions below:
 /* DATA_PROCESSING parsing functions*/
 
-static void parse_dp(assembly_line *line, word_t *bin) {
+static void parse_dp(char **operands, word_t *bin) {
   byte_t opcode_field = (*bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
-  char **tokens = operand_processor(line->operands, 3);
   if (opcode_field <= 4 || opcode_field == 12) {
     /* result-computing instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= to_index(tokens[1]) << DP_DT_RN_LOCATION;
-    *bin |= parse_operand2(tokens[2]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
+    *bin |= to_index(operands[1]) << DP_DT_RN_LOCATION;
+    *bin |= parse_operand2(operands[2]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field == 13) {
     /* mov instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
+    *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field >= 8 && opcode_field <= 10) {
     /* CPSR flag set instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RN_LOCATION;
-    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RN_LOCATION;
+    *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
 }
 /*
@@ -201,7 +200,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
     *bin |= PC << 16;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
-    char **pre = operand_processor(trim_field(pre), 2);
+    char **pre = operand_processor(trim_field(operands[1]), 2);
     *bin |= (to_index(pre[0]) & FOUR_BIT_FIELD) << 16;
 
     if (pre[1] != NULL) {
@@ -212,6 +211,8 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
         *bin |= parse_operand2(operands[2]);
       }
     }
+    free_operands(pre);
+    
   } else { /* Post-indexing */
     /* Sets Rn Register */
     *bin |= (to_index(trim_field(operands[1])) & FOUR_BIT_FIELD) << 16;
@@ -280,7 +281,7 @@ static char **operand_processor(const char *operand, int field_count) {
  * @brief: free an array of string tokens
  * @param: char **tokens: the array of string tokens that need to be freed
  */
-static void free_tokens(char **tokens) {
+static void free_operands(char **tokens) {
   int i = 0;
   while (tokens[i] != NULL) {
     free(tokens[i]);
