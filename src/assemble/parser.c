@@ -121,9 +121,9 @@ static word_t parse_operand2(char *operand2) {
       while (!((imm >> j) & 1)) {
         j--;
       }
-      if (j - i < 8 && (31 - j + 8) % 2 == 0) {
+      if (j - i <= 7 && (31 - j + 8) % 2 == 0) {
         /* Value can be represented by right-rotated 8-bit immediate field */
-        bin |= ((31 - j + 8) / 2) << OPERAND2_ROTATE_LOCATION;
+        bin |= ((31 - j + 7) / 2) << OPERAND2_ROTATE_LOCATION;
         bin |= imm >> i;
       } else {
         /* cannot be represented using the right-rotated 8-bits, throw an error */
@@ -276,7 +276,9 @@ static char **operand_processor(const char *operand, int field_count) {
     char *literal = strtok(str, ",");
     while (literal != NULL && i < field_count) {
         tokens[i] = malloc(strlen(literal) * sizeof(char));
-        strcpy(tokens[i], literal);
+        char *trimmed = trim_field(literal);
+        strcpy(tokens[i], trimmed);
+        free(trimmed);
         i++;
         literal = strtok(NULL, ",");
     }
