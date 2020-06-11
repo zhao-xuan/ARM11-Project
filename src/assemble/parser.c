@@ -1,5 +1,6 @@
 #include <string.h>
 #include "parser.h"
+#include "exceptions.h"
 
 /* Translates a register/hash/equal expression into its numerical expression. */
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
@@ -47,15 +48,15 @@ static void parse_dp(assembly_line *line, word_t *bin) {
     /* result-computing instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
     *bin |= to_index(tokens[1]) << DP_DT_RN_LOCATION;
-    *bin |= parse_dp_operand2(tokens[2]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= parse_operand2(tokens[2]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field == 13) {
     /* mov instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field >= 8 && opcode_field <= 10) {
     /* CPSR flag set instruction */
     *bin |= to_index(tokens[0]) << DP_DT_RN_LOCATION;
-    *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
 }
 /*
@@ -168,7 +169,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
     *bin |= PC << 16;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
-    char **pre = operand_processor(trim_field(pre, 2));
+    char **pre = operand_processor(trim_field(pre), 2);
     *bin |= (to_index(pre[0]) & FOUR_BIT_FIELD) << 16;
 
     if (pre[1] != NULL) {
