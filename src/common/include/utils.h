@@ -9,9 +9,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* Wrappers for calloc and malloc with error detection */
+/* Wrappers for memory allocation with error detection */
 void *eMalloc(size_t size);
 void *eCalloc(size_t nmemb, size_t size);
+void *eRealloc(void *ptr, size_t size);
 
 /*
  * @brief: Loads a binary file into the buffer.

@@ -10,11 +10,11 @@
 
 #include "global.h"
 
-/* Error detection for Callocs and Mallocs */
+/* error detection for memory allocation */
 void *eMalloc(size_t size) {
   void *vp = malloc(size);
   if (!vp) {
-    fprintf(stderr, "Memory error!\n");
+    fprintf(stderr, "Malloc memory error!\n");
     exit(EXIT_FAILURE);
   }
   return vp;
@@ -23,7 +23,17 @@ void *eMalloc(size_t size) {
 void *eCalloc(size_t nmemb, size_t size) {
   void *vp = calloc(nmemb, size);
   if (!vp) {
-    fprintf(stderr, "Memory error!\n");
+    fprintf(stderr, "Calloc memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+
+void *eRealloc(void *ptr, size_t size) {
+  void *vp = realloc(ptr, size);
+  if (!vp) {
+    fprintf(stderr, "Realloc memory error!\n");
     exit(EXIT_FAILURE);
   }
   return vp;
