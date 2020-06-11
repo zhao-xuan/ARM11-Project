@@ -11,18 +11,18 @@
 #include "global.h"
 
 /* Error detection for Callocs and Mallocs */
-void *eMalloc(size_t size){
+void *eMalloc(size_t size) {
   void *vp = malloc(size);
-    if (!vp) {
+  if (!vp) {
     fprintf(stderr, "Memory error!\n");
     exit(EXIT_FAILURE);
   }
   return vp;
 }
 
-void *eCalloc(size_t nmemb, size_t size){
+void *eCalloc(size_t nmemb, size_t size) {
   void *vp = calloc(nmemb, size);
-    if (!vp) {
+  if (!vp) {
     fprintf(stderr, "Memory error!\n");
     exit(EXIT_FAILURE);
   }
@@ -36,9 +36,7 @@ void read_binary_file(const char *path, word_t **buffer, size_t *size) {
 
   file = fopen(path, "rb");
   if (!file) {
-    fprintf(stderr,
-            "Unable to open file %s\nUsage: ./emulate <path_to_binary_file>\n",
-            path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
 
@@ -69,10 +67,7 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
 
   file = fopen(path, "wb");
   if (!file) {
-    fprintf(stderr,
-            "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file> "
-            "<path_to_write_to>\n",
-            path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
 
@@ -95,10 +90,7 @@ int read_assembly_file(const char *path, char **buffer) {
 
   file = fopen(path, "r");
   if (!file) {
-    fprintf(stderr,
-            "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file> "
-            "<path_to_write_to>\n",
-            path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
 
