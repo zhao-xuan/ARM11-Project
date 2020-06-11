@@ -23,14 +23,17 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
   for (int i = 0; i < program->total_lines; i++) {
     assembly_line *line = program->lines[i];
-    char **operands;
+    char **operands = operand_processor(line->operands, 3);
     mnemonic_p content = get_mnemonic_data(line->opcode);
 
     /* Special case for ldr interpreted as mov */
     if ((strcmp(line->opcode, "ldr")) && (operands[2] != NULL) &&
          equal(operands[2]) && (to_index(operands[2]) <= 0xFF)) {
       content = get_mnemonic_data("mov");
+      strcpy(line->opcode, "mov");
     }
+    free_operands(operands);
+
     word_t bin = content->bin;
     word_t data;
     address_t current = i * 4;
