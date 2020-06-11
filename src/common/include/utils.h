@@ -42,6 +42,12 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size);
 int read_assembly_file(const char *path, char **buffer);
 
 /*
+ * @param buffer: buffer to free. 
+ * @param size: size of buffer.
+ */
+void free_buffer(char **buffer, int size);
+
+/*
  * @brief: takes in an unsigned 32 bit number, and print out its bits to stdout.
  * @param x: the number to be printed.
  */

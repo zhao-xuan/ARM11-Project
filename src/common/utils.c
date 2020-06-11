@@ -90,6 +90,14 @@ int read_assembly_file(const char *path, char **buffer) {
   return lines;
 }
 
+void free_buffer(char **buffer, int size){
+    for (int i = 0; i < size; i++)
+  {
+    if (buffer[i]) free(buffer[i]);
+  }
+  free(buffer);
+}
+
 void print_bits(word_t x) {
   int i;
   word_t mask = 1 << 31;
