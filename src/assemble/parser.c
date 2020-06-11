@@ -66,6 +66,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       exceptions(UNKNOWN_INSTRUCTION_TYPE, current);
     }
 
+    mcode->bin[i] = bin;
     free_operands(operands);
   }
   return mcode;

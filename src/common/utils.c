@@ -71,7 +71,7 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
     exit(EXIT_FAILURE);
   }
 
-  if (!*buffer) {
+  if (!buffer) {
     fprintf(stderr, "Memory error!\n");
     fclose(file);
     exit(EXIT_FAILURE);
