@@ -9,6 +9,9 @@
 #ignore diagrams
 *.png
 
+#ignore scripts
+*.sh
+
 #ignore junk files from latex output
 *.out
 *.log

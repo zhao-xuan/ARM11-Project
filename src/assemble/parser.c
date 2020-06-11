@@ -136,27 +136,29 @@ static word_t parse_operand2(char *operand2) {
     char *base_reg = strtok(operand2, ",");
     bin |= to_index(base_reg);
     char *shift_name = strtok(NULL, " ");
-    char *shift_name_list[] = {"lsl", "lsr", "asr", "ror"};
-    for (int i = 0; i < 4; i++) {
-      if (strcmp(shift_name_list[i], shift_name)) {
+    if (shift_name != NULL) {
+      char *shift_name_list[] = {"lsl", "lsr", "asr", "ror"};
+      for (int i = 0; i < 4; i++) {
+        if (strcmp(shift_name_list[i], shift_name)) {
           bin |= i << OPERAND2_SHIFT_TYPE_LOCATION;
           break;
+        }
       }
-    }
 
-    char *shamt_str = strtok(NULL, " ");
-    long shamt = to_index(shamt_str);
-    if (shamt_str[0] == '#') {
-      if (shamt < 32) {
-        bin |= shamt << OPERAND2_INTEGER_SHIFT_LOCATION;
+      char *shamt_str = strtok(NULL, " ");
+      long shamt = to_index(shamt_str);
+      if (shamt_str[0] == '#') {
+        if (shamt < 32) {
+          bin |= shamt << OPERAND2_INTEGER_SHIFT_LOCATION;
+        } else {
+          /* An error should be thrown: shift integer is not in the range */
+          /* How should the address field be handled properly? */
+          exceptions(IMMEDIATE_VALUE_OUT_OF_BOUND, 0x00000000);
+        }
       } else {
-        /* An error should be thrown: shift integer is not in the range */
-        /* How should the address field be handled properly? */
-        exceptions(IMMEDIATE_VALUE_OUT_OF_BOUND, 0x00000000);
+        bin |= 1 << OPERAND2_SHIFT_SPEC_LOCATION;
+        bin |= shamt << OPERAND2_REGISTER_SHIFT_LOCATION;
       }
-    } else {
-      bin |= 1 << OPERAND2_SHIFT_SPEC_LOCATION;
-      bin |= shamt << OPERAND2_REGISTER_SHIFT_LOCATION;
     }
   }
 
