@@ -70,26 +70,38 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
  * account of the pipeline
  */
 static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset) {
+  *data = 0;
   /* Sets Rd Register */
   *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 12;
   /* Pre-indexing if no comma can be found in the second operand OR there are only two operands */
   bool pre_index = strchr(operands[1], ',') != NULL || operands[2] == NULL;
   bool up = true;
 
-  if (equal(operands[1])) {  /* Load value */
+  if (equal(operands[1])) {  /* Load value (equal expression) */
     *data = to_index(operands[1]);
     /* Sets Rn to PC */
     *bin |= PC << 16;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
+    char **pre = operand_processor(trim_field(pre, 2));
+    *bin |= (to_index(pre[0]) & FOUR_BIT_FIELD) << 16;
 
+    if (pre[1] != NULL) {
+      if (hash(pre[1])) { /* Hash expression */
+        *bin |= to_index(pre[1]) & TWELVE_BIT_FIELD;
+      } else { /* Operand2 */
+        up = !(pre[1][0] == '-');
+        *bin |= parse_operand2(operands[2]);
+      }
+    }
   } else { /* Post-indexing */
     /* Sets Rn Register */
     *bin |= (to_index(trim_field(operands[1])) & FOUR_BIT_FIELD) << 16;
     if (hash(operands[2])) { /* Hash expression */
       *bin |= to_index(operands[2]) & TWELVE_BIT_FIELD;
     } else { /* Operand2 */
-      //TODO
+      up = !(operands[1][0] == '-');
+      *bin |= parse_operand2(operands[2]);
     }
   }
 
