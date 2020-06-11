@@ -108,7 +108,7 @@ static word_t parse_operand2(char *operand2) {
     /* processing hash expressions in DATA_PROCESSING*/
     bin |= 1 << IMM_LOCATION;
     long imm = to_index(operand2);
-    if (imm >= 0 && imm < 128)  {
+    if (imm >= 0 && imm < 256)  {
       /* if the hash constant can be represented using 8 bits, then directly set it */
       bin |= imm;
     } else {
