@@ -27,9 +27,11 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     mnemonic_p content = get_mnemonic_data(line->opcode);
 
     /* Special case for ldr interpreted as mov */
-    if ((strcmp(line->opcode, "ldr")) && (operands[2] != NULL) &&
-         equal(operands[2]) && (to_index(operands[2]) <= 0xFF)) {
+    if ((strcmp(line->opcode, "ldr") == 0) && (operands[1] != NULL) &&
+         equal(operands[1]) && (to_index(operands[1]) <= 0xFF)) {
       content = get_mnemonic_data("mov");
+      /* Replace equal by hash */
+      *strchr(line->operands, '=') = '#';
       strcpy(line->opcode, "mov");
     }
     free_operands(operands);
