@@ -5,7 +5,7 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
-#include "table.h"
+#include "symbol_table.h"
 #include "tokenizer.h"
 
 /*
@@ -22,4 +22,3 @@ symbol_table_t *init_label_table(assembly_program *aspg);
 address_t get_label_address(symbol_table_t *label_table, char *mnemonic);
 
 #endif
-

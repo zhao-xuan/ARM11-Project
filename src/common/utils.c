@@ -10,15 +10,33 @@
 
 #include "global.h"
 
+/* Error detection for Callocs and Mallocs */
+void *eMalloc(size_t size) {
+  void *vp = malloc(size);
+  if (!vp) {
+    fprintf(stderr, "Memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+void *eCalloc(size_t nmemb, size_t size) {
+  void *vp = calloc(nmemb, size);
+  if (!vp) {
+    fprintf(stderr, "Memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+/* File operations */
 void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
   file = fopen(path, "rb");
   if (!file) {
-    fprintf(stderr,
-            "Unable to open file %s\nUsage: ./emulate <path_to_binary_file>\n",
-            path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
 
@@ -49,7 +67,7 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
 
   file = fopen(path, "wb");
   if (!file) {
-    fprintf(stderr, "Unable to open file %s\n", path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
 
@@ -72,13 +90,10 @@ int read_assembly_file(const char *path, char **buffer) {
 
   file = fopen(path, "r");
   if (!file) {
-    fprintf(
-        stderr,
-        "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file>\n",
-        path);
+    fprintf(stderr, "Unable to open file %s. \n", path);
     exit(EXIT_FAILURE);
   }
- 
+
   char readbuffer[MAX_LINE_LENGTH];
   int lines;
   for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
@@ -90,14 +105,14 @@ int read_assembly_file(const char *path, char **buffer) {
   return lines;
 }
 
-void free_buffer(char **buffer, int size){
-    for (int i = 0; i < size; i++)
-  {
+void free_buffer(char **buffer, int size) {
+  for (int i = 0; i < size; i++) {
     if (buffer[i]) free(buffer[i]);
   }
   free(buffer);
 }
 
+/* Prints for debugging */
 void print_bits(word_t x) {
   int i;
   word_t mask = 1 << 31;
@@ -120,6 +135,7 @@ void dump_hex(word_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
+/*Sign extending words */
 word_t sign_extend(word_t x, int bits) {
   word_t m = 1u << (bits - 1);
   return (x ^ m) - m;
