@@ -89,7 +89,6 @@ static void parse_dp(char **operands, word_t *bin) {
     *bin |= to_index(operands[0]) << DP_DT_RN_LOCATION;
     *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
-  free_tokens(operands);
 }
 /*
  * @brief: further tokenizing the operand2 field in DATA_PROCESSING and offset field in DATA_TRANSFER
@@ -174,7 +173,6 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
   if (strcmp(mnemonic, "mla") == 0) {
     *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD);
   }
-  free_tokens(operands);
 }
 
 /*
@@ -228,8 +226,6 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
 
   *bin |= (pre_index & 1) << 24;
   *bin |= (up & 1) << 23;
-  
-  free_tokens(operands);
 }
 
 
@@ -249,8 +245,6 @@ static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, a
   }
 
   *bin |= ((addr - current - 8) >> 2) & TWENTY_FOUR_BIT_FIELD;
-  
-  free_tokens(operands);
 }
 
 // Implementation for the string processing (helper) functions below:
