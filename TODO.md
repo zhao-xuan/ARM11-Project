@@ -23,14 +23,14 @@
 
 ### Part 2
 
-| Task                                        | Name | Status     | Checked By(Before pushed to master) |
-| ------------------------------------------- | ---- | ---------- | ----------------------------------- |
-| Binary file writer                          |      | Incomplete |                                     |
-| Tokenizer and symbol table                  |      | Incomplete |                                     |
-| Data processing instructions                |      | Incomplete |                                     |
-| Multiply and Branch                         |      | Incomplete |                                     |
-| Single Data Transfer & Special Instrucitons |      | Incomplete |                                     |
-| Testing                                     |      | Incomplete |                                     |
+| Task                                        |      Name     | Status     | Checked By(Before pushed to master) |
+| ------------------------------------------- | ------------- | ---------- | ----------------------------------- |
+| Binary file writer                          |     Daniel    |  Complete  |                Tom                  |
+| Tokenizer and symbol table                  | Daniel, Hoang |  Complete  |               Kaiyan                |
+| Data processing instructions                |               | Incomplete |                                     |
+| Multiply and Branch                         |    Kaiyan     | Incomplete |                                     |
+| Single Data Transfer & Special Instrucitons |               | Incomplete |                                     |
+| Testing                                     |      All      | Incomplete |                                     |
 
 ## Part 1
 Should we workout the overall structure of the project and write “emulate.c” (main function) and all the header files first?
