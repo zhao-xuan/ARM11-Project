@@ -1,10 +1,11 @@
 #include "parser.h"
 // Declarations of static helper functions for the parser below:
-static void parse_dp(assembly_line *line, word_t bin, machine_code *mcode);
+static void parse_dp(assembly_line *line, word_t *bin);
+static word_t parse_dp_operand2(char *operand2);
 // Declarations for string processing (helper) functions below:
 static char **operand_processor(char *operand, int field_count);
 static char *trim_field(char *str);
-
+#define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 // Implementation for public functions:
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   machine_code *mcode = malloc(sizeof(machine_code));
@@ -15,7 +16,6 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     assembly_line *line = program->lines[i];
     mnemonic_p content = get_mnemonic_data(line->opcode);
     word_t bin = content->bin;
-    
   }
   // TODO
   return NULL;
@@ -28,6 +28,7 @@ void free_machine_code(machine_code *mcode) {
 
 // Implementation for the parser helper functions below:
 /* DATA_PROCESSING parsing functions*/
+
 static void parse_dp(assembly_line *line, word_t *bin) {
   byte_t opcode_field = (*bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
   char **tokens = operand_processor(line->operands, 3);
@@ -47,7 +48,7 @@ static void parse_dp(assembly_line *line, word_t *bin) {
   }
 }
 
-static wort_t parse_dp_operand2(char *operand2) {
+static word_t parse_dp_operand2(char *operand2) {
   word_t bin = 0;
   if (operand2[0] == '#') {
     bin |= 1 << IMM_LOCATION;
@@ -72,8 +73,8 @@ static wort_t parse_dp_operand2(char *operand2) {
     char *shamt_str = strtok(NULL, " ");
     long shamt = to_index(shamt_str);
     if (shamt_str[0] == '#') {
-      if (shift_integer < 32) {
-        bin |= shift_integer << OPERAND2_INTEGER_SHIFT_LOCATION;
+      if (shamt < 32) {
+        bin |= shamt << OPERAND2_INTEGER_SHIFT_LOCATION;
       } else {
         /* An error should be thrown: shift integer is not in the range */
       }
@@ -94,19 +95,26 @@ static wort_t parse_dp_operand2(char *operand2) {
  * @return: an array of string representing the operand fields
  */
 
-static char **operand_processor(char *operand, int field_count) {
-  char **tokens = calloc(field_count, sizeof(char *));
-  int i = 0;
-  char *literal = strtok(operand, ",");
-  while (literal != NULL || i < field_count) {
-    tokens[i] = malloc(strlen(literal) * sizeof(char));
-    strcpy(token[i], literal);
-    i++;
-    literal = strtok(NULL, ",");
-  }
-  tokens = realloc(tokens, i * sizeof(char *));
+static char **operand_processor(const char *operand, int field_count) {
+    char **tokens = calloc(field_count, sizeof(char *));
+    int i = 0;
+    char str[strlen(operand) + 1];
+    for (int j = 0; j < strlen(operand); j++) {
+        str[j] = operand[j];
+    }
+    str[strlen(operand)] = '\0';
+    char *literal = strtok(str, ",");
+    while (literal != NULL && i < field_count) {
+        tokens[i] = malloc(strlen(literal) * sizeof(char));
+        strcpy(tokens[i], literal);
+        i++;
+        literal = strtok(NULL, ",");
+    }
 
-  return tokens;
+    tokens = realloc(tokens, (i + 1) * sizeof(char *));
+    tokens[i] = NULL;
+
+    return tokens;
 }
 
 /*
@@ -129,16 +137,16 @@ static void free_tokens(char **tokens) {
  * @return: str without leading spaces
  */
 static char *trim_field(char *str) {
-  int i = 0;
-  while (*(str + i) == ' ' || *(str + i) == '[') {
-    i++;
-  }
-  char *trimmed = malloc((strlen(str) - i) * sizeof(char));
-  strcpy(trimmed, str + i);
-  if (*(str + strlen(str) - 1) == ']') {
-    trimmed = realloc(trimmed, strlen(trimmed) - 1);
-  }
-  free(str);
-  return trimmed;
-}
+    int i = 0;
+    while (str[i] == ' ' || str[i] == '[') {
+        i++;
+    }
+    int j = strlen(str) - 1;
+    while (!(str[j] - '0' >= 0 && str[j] - '0' <= 9) && !(str[j] - 'a' >= 0 && str[j] - 'a' <= 25)) {
+        j--;
+    }
+    char *trimmed = malloc((j - i) * sizeof(char));
+    strncpy(trimmed, str + i, j - i + 1);
 
+    return trimmed;
+}
