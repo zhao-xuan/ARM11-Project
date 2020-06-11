@@ -57,7 +57,6 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
     word_t bin = content->bin;
     word_t data;
-    address_t current = i * 4;
 
     switch (content->type) {
     case DATA_PROCESSING:
@@ -71,7 +70,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     case DATA_TRANSFER:
       /* Calculates the offset and consider the effect of the pipeline */
       operands = operand_processor(line->operands, 2);
-      parse_dt(&bin, operands, &data, current - line->location_counter - 12);
+      parse_dt(&bin, operands, &data, mcode->length * 4 - line->location_counter - 8);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
         mcode->bin = realloc(mcode->bin, mcode->length * sizeof(word_t));
@@ -80,12 +79,12 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       break;
     case BRANCH:
       operands = operand_processor(line->operands, 1);
-      parse_b(&bin, operands, label_table, current);
+      parse_b(&bin, operands, label_table, line->location_counter);
       break;
     case HALT:
       break;  
     default:
-      exceptions(UNKNOWN_INSTRUCTION_TYPE, current);
+      exceptions(UNKNOWN_INSTRUCTION_TYPE, line->location_counter);
     }
 
     mcode->bin[i] = bin;
