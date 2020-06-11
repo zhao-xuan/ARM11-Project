@@ -5,7 +5,7 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
-#include "table.h"
+#include "symbol_table.h"
 #include "tokenizer.h"
 
 /*

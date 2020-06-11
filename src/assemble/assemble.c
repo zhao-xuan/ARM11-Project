@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "label_table.h"
-#include "table.h"
+#include "symbol_table.h"
 #include "tokenizer.h"
 
 int main(int argc, char **argv) {

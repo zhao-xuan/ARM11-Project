@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "mnemonic_table.h"
-#include "table.h"
+#include "symbol_table.h"
 
 #define NUM_DP_MNEMONICS 10
 #define NUM_ML_MNEMONICS 2

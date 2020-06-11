@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "table.h"
+#include "symbol_table.h"
 #include "testutils.h"
 
 
