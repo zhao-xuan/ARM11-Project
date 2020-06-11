@@ -10,6 +10,26 @@
 
 #include "global.h"
 
+/* Error detection for Callocs and Mallocs */
+void *eMalloc(size_t size){
+  void *vp = malloc(size);
+    if (!vp) {
+    fprintf(stderr, "Memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+void *eCalloc(size_t nmemb, size_t size){
+  void *vp = calloc(nmemb, size);
+    if (!vp) {
+    fprintf(stderr, "Memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+/* File operations */
 void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   FILE *file;
   size_t file_length;
@@ -100,6 +120,7 @@ void free_buffer(char **buffer, int size) {
   free(buffer);
 }
 
+/* Prints for debugging */
 void print_bits(word_t x) {
   int i;
   word_t mask = 1 << 31;
@@ -122,6 +143,7 @@ void dump_hex(word_t *buffer, size_t size) {
   for (int i = 0; i < size; i++) printf("%08x\n", buffer[i]);
 }
 
+/*Sign extending words */
 word_t sign_extend(word_t x, int bits) {
   word_t m = 1u << (bits - 1);
   return (x ^ m) - m;
