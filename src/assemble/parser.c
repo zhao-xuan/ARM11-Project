@@ -6,7 +6,8 @@
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 #define equal(literal) (literal[0] == '=')
 #define hash(literal) (literal[0] == '#')
-#define remove_bracket(literal) (strtok(++literal, ']'))
+#define remove_bracket(literal) (strtok(++literal, "]"))
+#define remove_space(string) for(; isspace(*string); string++)
 
 static void parse_dp(char **operands, word_t *bin);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
@@ -16,7 +17,7 @@ static word_t parse_operand2(char *operand2);
 
 static char **operand_processor(const char *operand, int field_count);
 static void free_operands(char **tokens);
-static char *trim_field(char *str);
+//static char *remove_space(char *str);
 
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   machine_code *mcode = malloc(sizeof(machine_code));
@@ -231,7 +232,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
     *bin |= PC << 16;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
-    char **pre = operand_processor(trim_field(operands[1]), 2);
+    char **pre = operand_processor(remove_bracket(operands[1]), 2);
     *bin |= (to_index(pre[0]) & FOUR_BIT_FIELD) << 16;
 
     if (pre[1] != NULL) {
@@ -246,7 +247,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
     
   } else { /* Post-indexing */
     /* Sets Rn Register */
-    *bin |= (to_index(trim_field(operands[1])) & FOUR_BIT_FIELD) << 16;
+    *bin |= (to_index(remove_bracket(operands[1])) & FOUR_BIT_FIELD) << 16;
     if (hash(operands[2])) { /* Hash expression */
       *bin |= to_index(operands[2]) & TWELVE_BIT_FIELD;
     } else { /* Operand2 */
@@ -297,7 +298,7 @@ static char **operand_processor(const char *operand, int field_count) {
     char *literal = strtok(str, ",");
     while (literal != NULL && i < field_count) {
         tokens[i] = malloc(strlen(literal) * sizeof(char));
-        literal = trim_field(literal);
+        remove_space(literal);
         strcpy(tokens[i], literal);
         i++;
         literal = strtok(NULL, ",");
@@ -328,10 +329,7 @@ static void free_operands(char **tokens) {
  * @param: char *str: the string to be processed
  * @return: str without leading spaces
  */
-static char *trim_field(char *str) {
-  int i = 0;
-  while (isspace(str[i]) || str[i] == '[') {
-    i++;
-  }
-  return str + i;
-}
+// static char *remove_space(char *str) {
+//   for (; isspace(*str); str++);
+//   return str;
+// }
