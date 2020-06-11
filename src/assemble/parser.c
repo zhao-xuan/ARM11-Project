@@ -123,7 +123,7 @@ static word_t parse_operand2(char *operand2) {
       }
       if (j - i <= 7 && (31 - j + 8) % 2 == 0) {
         /* Value can be represented by right-rotated 8-bit immediate field */
-        bin |= ((31 - j + 7) / 2) << OPERAND2_ROTATE_LOCATION;
+        bin |= ((31 - j + 8) / 2) << OPERAND2_ROTATE_LOCATION;
         bin |= imm >> i;
       } else {
         /* cannot be represented using the right-rotated 8-bits, throw an error */
@@ -314,11 +314,14 @@ static char *trim_field(char *str) {
         i++;
     }
     int j = strlen(str) - 1;
-    while (!(str[j] - '0' >= 0 && str[j] - '0' <= 9) && !(str[j] - 'a' >= 0 && str[j] - 'a' <= 25)) {
+    while (!(str[j] - '0' >= 0 && str[j] - '0' <= 9) 
+        && !(str[j] - 'a' >= 0 && str[j] - 'a' <= 25)
+        && !(str[j] - 'A' >= 0 && str[j] - 'A' <= 25)) {
         j--;
     }
-    char *trimmed = malloc((j - i) * sizeof(char));
+    char *trimmed = malloc((j - i + 2) * sizeof(char));
     strncpy(trimmed, str + i, j - i + 1);
+    trimmed[strlen(trimmed) - 1] = '\0';
 
     return trimmed;
 }
