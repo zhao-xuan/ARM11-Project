@@ -82,7 +82,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       parse_b(&bin, operands, label_table, line->location_counter);
       break;
     case HALT:
-      break;  
+      return mcode;  
     default:
       exceptions(UNKNOWN_INSTRUCTION_TYPE, line->location_counter);
     }
