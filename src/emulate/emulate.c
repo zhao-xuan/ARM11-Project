@@ -20,9 +20,9 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  word_t *buffer = NULL;
+  word_t *buffer  = (word_t *) malloc(MEM_ADDR);
   size_t size;
-  read_binary_file(argv[1], &buffer, &size);
+  read_binary_file(argv[1], buffer, &size);
   init_state();
   load_program(buffer, size);
 
