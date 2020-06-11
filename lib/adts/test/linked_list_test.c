@@ -8,13 +8,13 @@
 
 
 #define TEST_INSERT(sign)\
-  testbool(sign insert(list, key, key_size, (void *) value), test_name)
+  testbool(sign list_insert(list, key, key_size, (void *) value), test_name)
   
 #define TEST_FIND(sign)\
-  testbool(sign find(list, key), test_name)
+  testbool(sign list_find(list, key), test_name)
 
 #define TEST_REMOVE(sign)\
-  testbool(sign delete(list, key), test_name)
+  testbool(sign list_delete(list, key), test_name)
 
  
 int mod_strcmp(void *this, void *that){
@@ -51,7 +51,7 @@ int main() {
   
   /* Test get */
   test_name = "Get should return correct value";
-  int *res = (int *) find(list, key);
+  int *res = (int *) list_find(list, key);
   testint(*res, 1, test_name);
 
   /* Repeated inserts */
