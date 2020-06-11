@@ -6,7 +6,7 @@
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 #define equal(literal) (literal[0] == '=')
 #define hash(literal) (literal[0] == '#')
-#define remove_bracket(literal) (strtok(++literal, "]"))
+#define remove_bracket(literal) (strtok(literal + 1, "]"))
 #define remove_space(string) for(; isspace(*string); string++)
 
 static void parse_dp(char **operands, word_t *bin);
@@ -77,6 +77,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
         mcode->bin = realloc(mcode->bin, mcode->length * sizeof(word_t));
         mcode->bin[mcode->length - 1] = data;
       }
+      break;
     case BRANCH:
       operands = operand_processor(line->operands, 1);
       parse_b(&bin, operands, label_table, current);
@@ -197,13 +198,13 @@ static word_t parse_operand2(char *operand2) {
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
   /* Sets Rd register */
   *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 16;
-  /* Sets Rn register */
-  *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD) << 12;
+  /* Sets Rm register */
+  *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD);
   /* Sets Rs register */
   *bin |= (to_index(operands[2]) & FOUR_BIT_FIELD) << 8;
-  /* Sets Rm register */
+  /* Sets Rn register */
   if (strcmp(mnemonic, "mla") == 0) {
-    *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD);
+    *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD) << 12;
   }
 }
 
@@ -242,9 +243,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
         up = !(pre[1][0] == '-');
         *bin |= parse_operand2(operands[2]);
       }
-    }
-    free_operands(pre);
-    
+    }    
   } else { /* Post-indexing */
     /* Sets Rn Register */
     *bin |= (to_index(remove_bracket(operands[1])) & FOUR_BIT_FIELD) << 16;
@@ -279,7 +278,6 @@ static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, a
   *bin |= ((addr - current - 8) >> 2) & TWENTY_FOUR_BIT_FIELD;
 }
 
-// Implementation for the string processing (helper) functions below:
 /*
  * Second-pass: tokenize the operand field
  * @param: char *operand: the operand fields in a string
@@ -291,17 +289,18 @@ static char **operand_processor(const char *operand, int field_count) {
     char **tokens = calloc(field_count, sizeof(char *));
     int i = 0;
     char str[strlen(operand) + 1];
-    for (int j = 0; j < strlen(operand); j++) {
-        str[j] = operand[j];
-    }
-    str[strlen(operand)] = '\0';
+    strcpy(str, operand);
     char *literal = strtok(str, ",");
     while (literal != NULL && i < field_count) {
         tokens[i] = malloc(strlen(literal) * sizeof(char));
         remove_space(literal);
         strcpy(tokens[i], literal);
-        i++;
-        literal = strtok(NULL, ",");
+
+        if (++i + 1 == field_count) {
+          literal = strtok(NULL, "\0");
+        } else {
+          literal = strtok(NULL, ",");
+        }
     }
 
     tokens = realloc(tokens, (i + 1) * sizeof(char *));
@@ -323,13 +322,3 @@ static void free_operands(char **tokens) {
 
   free(tokens);
 }
-
-/*
- * @brief: deleting any leading spaces, '[' and ']' in a string. This function would only deal with white spaces at the beginning of the string or '[' and ']'
- * @param: char *str: the string to be processed
- * @return: str without leading spaces
- */
-// static char *remove_space(char *str) {
-//   for (; isspace(*str); str++);
-//   return str;
-// }
