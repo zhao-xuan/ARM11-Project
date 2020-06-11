@@ -21,10 +21,10 @@ void free_table(symbol_table_t *table){
 }
 
 bool insert_literal(symbol_table_t *table, char *label, void *literal) {
-  return insert(table, label, strlen(label) + 1, literal);
+  return list_insert(table, label, strlen(label) + 1, literal);
 }
 
 void *get_literal(symbol_table_t *table, char *label) {
-  return find(table, label); 
+  return list_find(table, label); 
 }
 
