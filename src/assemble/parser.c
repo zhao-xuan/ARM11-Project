@@ -1,10 +1,12 @@
 #include <string.h>
+#include <ctype.h>
 #include "parser.h"
 #include "exceptions.h"
 
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 #define equal(literal) (literal[0] == '=')
 #define hash(literal) (literal[0] == '#')
+#define remove_bracket(literal) (strtok(++literal, ']'))
 
 static void parse_dp(char **operands, word_t *bin);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
@@ -131,18 +133,19 @@ static word_t parse_operand2(char *operand2) {
       bin |= imm;
     } else {
       /* Check if the hash constant can be represented using right-rotation */
-      int i = 0;
-      int j = 31;
-      while (!((imm >> i) & 1)) {
-        i++;
+      int rotation = 0;
+      word_t i = (word_t) imm; 
+      while (i >= 255 && rotation <= 15) {
+        int mask = (i >> 30) & 3;
+        i <<= 2;
+        i |= mask;
+        rotation++;
       }
-      while (!((imm >> j) & 1)) {
-        j--;
-      }
-      if (j - i <= 7 && (31 - j + 8) % 2 == 0) {
-        /* Value can be represented by right-rotated 8-bit immediate field */
-        bin |= ((31 - j + 8) / 2) << OPERAND2_ROTATE_LOCATION;
-        bin |= imm >> i;
+
+      if (rotation <= 15 && i <= 255 ) {
+        /* Value can be represented by right-rotated 8-bit iediate field */
+        bin |= rotation << OPERAND2_ROTATE_LOCATION;
+        bin |= i;
       } else {
         /* cannot be represented using the right-rotated 8-bits, throw an error */
         /* How should address field be handled properly? */
@@ -157,7 +160,7 @@ static word_t parse_operand2(char *operand2) {
     if (shift_name != NULL) {
       char *shift_name_list[] = {"lsl", "lsr", "asr", "ror"};
       for (int i = 0; i < 4; i++) {
-        if (strcmp(shift_name_list[i], shift_name)) {
+        if (strcmp(shift_name_list[i], shift_name) == 0) {
           bin |= i << OPERAND2_SHIFT_TYPE_LOCATION;
           break;
         }
@@ -294,9 +297,8 @@ static char **operand_processor(const char *operand, int field_count) {
     char *literal = strtok(str, ",");
     while (literal != NULL && i < field_count) {
         tokens[i] = malloc(strlen(literal) * sizeof(char));
-        char *trimmed = trim_field(literal);
-        strcpy(tokens[i], trimmed);
-        free(trimmed);
+        literal = trim_field(literal);
+        strcpy(tokens[i], literal);
         i++;
         literal = strtok(NULL, ",");
     }
@@ -327,19 +329,9 @@ static void free_operands(char **tokens) {
  * @return: str without leading spaces
  */
 static char *trim_field(char *str) {
-    int i = 0;
-    while (str[i] == ' ' || str[i] == '[') {
-        i++;
-    }
-    int j = strlen(str) - 1;
-    while (!(str[j] - '0' >= 0 && str[j] - '0' <= 9) 
-        && !(str[j] - 'a' >= 0 && str[j] - 'a' <= 25)
-        && !(str[j] - 'A' >= 0 && str[j] - 'A' <= 25)) {
-        j--;
-    }
-    char *trimmed = malloc((j - i + 2) * sizeof(char));
-    strncpy(trimmed, str + i, j - i + 1);
-    trimmed[j - i + 1] = '\0';
-
-    return trimmed;
+  int i = 0;
+  while (isspace(str[i]) || str[i] == '[') {
+    i++;
+  }
+  return str + i;
 }
