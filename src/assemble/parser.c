@@ -3,7 +3,7 @@
 static void parse_dp(assembly_line *line, word_t *bin);
 static word_t parse_dp_operand2(char *operand2);
 // Declarations for string processing (helper) functions below:
-static char **operand_processor(char *operand, int field_count);
+static char **operand_processor(const char *operand, int field_count);
 static char *trim_field(char *str);
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 // Implementation for public functions:
@@ -12,11 +12,11 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   mcode->length = program->total_lines;
   mcode->bin = calloc(mcode->length, sizeof(word_t));
 
-  for (int i = 0; i < program->total_lines; i++) {
+  /*for (int i = 0; i < program->total_lines; i++) {
     assembly_line *line = program->lines[i];
     mnemonic_p content = get_mnemonic_data(line->opcode);
     word_t bin = content->bin;
-  }
+  }*/
   // TODO
   return NULL;
 }

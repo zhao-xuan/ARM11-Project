@@ -1,5 +1,5 @@
 #ifndef PARSER_H
-#define PERSER_H
+#define PARSER_H
 
 #include <stdlib.h>
 #include "label_table.h"
