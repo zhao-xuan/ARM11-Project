@@ -237,7 +237,8 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
 
     if (pre[1] != NULL) {
       if (hash(pre[1])) { /* Hash expression */
-        *bin |= to_index(pre[1]) & TWELVE_BIT_FIELD;
+        up = !(pre[1][1] == '-');
+        *bin |= to_index((up ? pre[1] : pre[1] + 1)) & TWELVE_BIT_FIELD;
       } else { /* Operand2 */
         up = !(pre[1][0] == '-');
         *bin |= parse_operand2(operands[2]);
