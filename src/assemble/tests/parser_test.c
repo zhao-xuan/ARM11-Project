@@ -14,7 +14,7 @@ static char *trim_field(char *str);
 static char **operand_processor(const char *operand, int field_count);
 static void parse_dp(assembly_line *line, word_t *bin);
 static void free_tokens(char **tokens);
-static word_t parse_dp_operand2(char *operand2);
+static word_t parse_operand2(char *operand2);
 
 static char *trim_field(char *str) {
   int i = 0;
@@ -82,7 +82,7 @@ static void parse_dp(assembly_line *line, word_t *bin) {
   }
 }
 
-static word_t parse_dp_operand2(char *operand2) {
+static word_t parse_operand2(char *operand2) {
   word_t bin = 0;
   if (operand2[0] == '#') {
     bin |= 1 << IMM_LOCATION;
@@ -164,14 +164,14 @@ int main(void) {
   free_tokens(tokens4);
 
   /* Testing parse_dp ... */
-  //name = "testing if parse_dp() and parse_dp_operand2() work properly";
+  name = "testing if parse_dp() and parse_dp_operand2() work properly";
   /* Assembly Code: add r2,r4,r3 */
-  /*assembly_line *line = malloc(sizeof(assembly_line));
+  assembly_line *line = malloc(sizeof(assembly_line));
   line->opcode = "add";
   line->operands = "r2,r4,r3";
   mnemonic_p content = get_mnemonic_data(line->opcode);
   word_t bin = content->bin;
   parse_dp(line, &bin);
   testword(bin, 0b11100000100001000010000000000011, name);
-  free(line);*/
+  free(line);
 }
