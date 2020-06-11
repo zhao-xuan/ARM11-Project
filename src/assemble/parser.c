@@ -8,7 +8,7 @@
 
 // Declarations of static helper functions for the parser below:
 static void parse_dp(assembly_line *line, word_t *bin);
-static word_t parse_dp_operand2(char *operand2);
+static word_t parse_operand2(char *operand2);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
 static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset);
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
@@ -58,18 +58,41 @@ static void parse_dp(assembly_line *line, word_t *bin) {
     *bin |= parse_dp_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
 }
-
-static word_t parse_dp_operand2(char *operand2) {
+/*
+ * @brief: further tokenizing the operand2 field in DATA_PROCESSING and offset field in DATA_TRANSFER
+ * @return: a binary representation of the instruction set according to the given operand2/offset
+ */
+static word_t parse_operand2(char *operand2) {
   word_t bin = 0;
   if (operand2[0] == '#') {
+    /* processing hash expressions in DATA_PROCESSING*/
     bin |= 1 << IMM_LOCATION;
     long imm = to_index(operand2);
     if (imm >= 0 && imm < 128)  {
+      /* if the hash constant can be represented using 8 bits, then directly set it */
       bin |= imm;
     } else {
-      /* where the right rotation is needed */
+      /* Check if the hash constant can be represented using right-rotation */
+      int i = 0;
+      int j = 31;
+      while (!((imm >> i) & 1)) {
+        i++;
+      }
+      while (!((imm >> j) & 1)) {
+        j--;
+      }
+      if (j - i < 8 && (31 - j + 8) % 2 == 0) {
+        /* Value can be represented by right-rotated 8-bit immediate field */
+        bin |= ((31 - j + 8) / 2) << OPERAND2_ROTATE_LOCATION;
+        bin |= imm >> i;
+      } else {
+        /* cannot be represented using the right-rotated 8-bits, throw an error */
+        /* How should address field be handled properly? */
+        exceptions(IMMEDIATE_VALUE_OUT_OF_BOUND, 0x00000000);
+      }
     }
   } else {
+    /* processing shifted register in DATA_PROCESSING */
     char *base_reg = strtok(operand2, ",");
     bin |= to_index(base_reg);
     char *shift_name = strtok(NULL, " ");
@@ -88,6 +111,8 @@ static word_t parse_dp_operand2(char *operand2) {
         bin |= shamt << OPERAND2_INTEGER_SHIFT_LOCATION;
       } else {
         /* An error should be thrown: shift integer is not in the range */
+        /* How should the address field be handled properly? */
+        exceptions(IMMEDIATE_VALUE_OUT_OF_BOUND, 0x00000000);
       }
     } else {
       bin |= 1 << OPERAND2_SHIFT_SPEC_LOCATION;
