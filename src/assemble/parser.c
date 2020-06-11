@@ -27,7 +27,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
   for (int i = 0; i < program->total_lines; i++) {
     assembly_line *line = program->lines[i];
-    char **operands = operand_processor(line->operands);
+    char **operands;
     mnemonic_p content = get_mnemonic_data(line->opcode);
 
     /* Special case for ldr interpreted as mov */
@@ -41,12 +41,16 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
     switch (content->type) {
     case DATA_PROCESSING:
+      operands = operand_processor(line->operands, 3);
+      parse_dp(operands, &bin);
       break;
     case MULTIPLY:
-      parse_mul(&bin, operands, line->opcode);  
+      operands = operand_processor(line->operands, 4);
+      parse_mul(&bin, operands, line->opcode);
       break;
     case DATA_TRANSFER:
       /* Calculates the offset and consider the effect of the pipeline */
+      operands = operand_processor(line->operands, 2);
       parse_dt(&bin, operands, &data, current - line->location_counter - 12);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
@@ -54,6 +58,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
         mcode->bin[mcode->length - 1] = data;
       }
     case BRANCH:
+      operands = operand_processor(line->operands, 1);
       parse_b(&bin, operands, label_table, current);
       break;
     case HALT:
