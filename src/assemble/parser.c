@@ -339,7 +339,7 @@ static char *trim_field(char *str) {
     }
     char *trimmed = malloc((j - i + 2) * sizeof(char));
     strncpy(trimmed, str + i, j - i + 1);
-    trimmed[strlen(trimmed) - 1] = '\0';
+    trimmed[j - i + 1] = '\0';
 
     return trimmed;
 }
