@@ -8,16 +8,17 @@
 #define hash(literal) (literal[0] == '#')
 
 // Declarations of static helper functions for the parser below:
-static void parse_dp(assembly_line *line, word_t *bin);
-static word_t parse_operand2(char *operand2);
+static void parse_dp(char **operands, word_t *bin);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
 static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset);
 static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, address_t current);
+static word_t parse_operand2(char *operand2);
 
 // Declarations for string processing (helper) functions below:
 static char **operand_processor(const char *operand, int field_count);
+static void free_tokens(char **tokens);
 static char *trim_field(char *str);
-#define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
+
 // Implementation for public functions:
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   machine_code *mcode = malloc(sizeof(machine_code));
@@ -37,7 +38,6 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     word_t bin = content->bin;
     word_t data;
     address_t current = i * 4;
-
 
     switch (content->type) {
     case DATA_PROCESSING:
@@ -73,23 +73,24 @@ void free_machine_code(machine_code *mcode) {
 // Implementation for the parser helper functions below:
 /* DATA_PROCESSING parsing functions*/
 
-static void parse_dp(assembly_line *line, word_t *bin) {
+static void parse_dp(char **operands, word_t *bin) {
   byte_t opcode_field = (*bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
-  char **tokens = operand_processor(line->operands, 3);
+  
   if (opcode_field <= 4 || opcode_field == 12) {
     /* result-computing instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= to_index(tokens[1]) << DP_DT_RN_LOCATION;
-    *bin |= parse_operand2(tokens[2]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
+    *bin |= to_index(operands[1]) << DP_DT_RN_LOCATION;
+    *bin |= parse_operand2(operands[2]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field == 13) {
     /* mov instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RD_LOCATION;
-    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
+    *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
   } else if (opcode_field >= 8 && opcode_field <= 10) {
     /* CPSR flag set instruction */
-    *bin |= to_index(tokens[0]) << DP_DT_RN_LOCATION;
-    *bin |= parse_operand2(tokens[1]); //parse_dp_operand2 will take care of the immediate bit as well
+    *bin |= to_index(operands[0]) << DP_DT_RN_LOCATION;
+    *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
   }
+  free_tokens(operands);
 }
 /*
  * @brief: further tokenizing the operand2 field in DATA_PROCESSING and offset field in DATA_TRANSFER
@@ -174,6 +175,7 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
   if (strcmp(mnemonic, "mla") == 0) {
     *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD);
   }
+  free_tokens(operands);
 }
 
 /*
@@ -225,6 +227,8 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
 
   *bin |= (pre_index & 1) << 24;
   *bin |= (up & 1) << 23;
+  
+  free_tokens(operands);
 }
 
 
@@ -244,6 +248,8 @@ static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, a
   }
 
   *bin |= ((addr - current - 8) >> 2) & TWENTY_FOUR_BIT_FIELD;
+  
+  free_tokens(operands);
 }
 
 // Implementation for the string processing (helper) functions below:
