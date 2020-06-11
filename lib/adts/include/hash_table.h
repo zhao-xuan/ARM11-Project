@@ -3,6 +3,7 @@
 #define HASH_TABLE_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "common.h"
 

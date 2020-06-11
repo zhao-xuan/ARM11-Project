@@ -22,12 +22,12 @@ typedef struct hashnode {
   size_t key_size;
 } hashnode;
 
-struct hash_table{
+typedef struct hash_table {
   size_t size, max_size;
   hashnode **arr;
   comparator cmp;
   hashfunc hashcode;
-};
+} hash_table ;
 
 /* Helper function for using hash to index into array */
 static int get_hash_index(hash_table *table, void *key) {
@@ -43,9 +43,10 @@ static void free_hashnode(hashnode *node) {
 }
 
 /* Free resources allocated to hashtable */
-void free_hashtable(hash_table *table) {
-  for (int i = 0; i < table->max_size; i++) {
-    if (table->arr[i]) free_hashnode(table->arr[i]);
+void free_hashtable(hash_table *table) { 
+  if (table->arr != NULL) {
+    for (int i = 0; i < table->max_size; i++) 
+      if (table->arr[i] != NULL) free_hashnode(table->arr[i]);
   }
   free(table->arr);
   free(table);
@@ -78,10 +79,9 @@ hash_table *create_hashtable(comparator cmp, hashfunc hashcode, size_t initial_s
   table->cmp = cmp;
   table->hashcode = hashcode;
   table->max_size = initial_size;
-  table->arr = (hashnode **) malloc(initial_size * sizeof(hashnode *));
+  table->arr = (hashnode **) calloc(initial_size, sizeof(hashnode *));
 
-  if (!table->arr) free_hashtable(table);
-
+  if (table->arr == NULL) free_hashtable(table);
   return table;
 }
 
@@ -121,7 +121,7 @@ bool hash_contains(hash_table *table, void *key) {
   int index = get_hash_index(table, key);
   assert_array("_hash_contains_");
   
-  while(table->arr[index]) {
+  while(table->arr[index] != NULL) {
     if (table->cmp(table->arr[index]->key, key) == 0)
       return true;
     index = (index + 1) % table->max_size;
@@ -140,7 +140,7 @@ bool hash_insert(hash_table *table, void *key, size_t key_size, void *value) {
   int index = get_hash_index(table, key);
   assert_array("_hash_insert_");
  
-  while (table->arr[index]) {
+  while (table->arr[index] != NULL) {
     if (table->cmp(table->arr[index]->key, key) == 0)
       return false;
     index = (index + 1) % table->max_size;
@@ -162,7 +162,7 @@ bool hash_delete(hash_table *table, void *key) {
   int index = get_hash_index(table, key);
   assert_array("_hash_delete_");
 
-  while (table->arr[index]) {
+  while (table->arr[index]!= NULL) {
     if (table->cmp(table->arr[index]->key, key) == 0) {
       free_hashnode(table->arr[index]);
       table->arr[index] = NULL;
@@ -179,7 +179,8 @@ void *hash_find(hash_table *table, void *key) {
   int index = get_hash_index(table, key);
   assert_array("_hash_find_");
 
-  while(table->arr[index]) {
+  while(table->arr[index] != NULL) {
+    if (table->arr[index]->key == NULL) return NULL;
     if (table->cmp(table->arr[index]->key, key) == 0) 
       return table->arr[index]->value;
     index = (index + 1) % table->max_size;

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -g -Werror -Iinclude -Itestutils 
 LIB = libADT.a 
-LIBOBJS = linked_list.o hash_table.o
+LIBOBJS = linked_list.o hash_table.o symbol_table.o
 LDLIBS = -Ltestutils -ltestutils 
 
 BUILD = $(LIB) 
