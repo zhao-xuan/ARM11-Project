@@ -5,12 +5,12 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "linked_list.h"
+#include "hash_table.h"
 
 /* symbol_table_t is an implementation of the generic
- * interface linked_list
+ * interface hash_table 
  */
-typedef linked_list symbol_table_t;
+typedef hash_table symbol_table_t;
 
 /* Create a table */
 symbol_table_t *create_table();
@@ -25,11 +25,9 @@ void free_table(symbol_table_t *table);
  *    - value: pointer to value you want to insert to
  *  @return:
  *    - TRUE iff label has yet to be seen (i.e. table not modified)
- *----------------------------------------------------------------
- *----------------  IMPORTANT ------------------------------------
- *----------------------------------------------------------------
- * value: is a pointer to a heap allocated position and when
- * the node is removed, this is going to be freed by the list
+ * 
+ *  + value: is a pointer to a heap allocated position and when
+ *  + the node is removed, this is going to be freed by the list
  */
 
 bool insert_literal(symbol_table_t *table, char *label, void *value);
