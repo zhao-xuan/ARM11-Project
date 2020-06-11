@@ -49,7 +49,10 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
 
   file = fopen(path, "wb");
   if (!file) {
-    fprintf(stderr, "Unable to open file %s\n", path);
+    fprintf(stderr,
+            "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file> "
+            "<path_to_write_to>\n",
+            path);
     exit(EXIT_FAILURE);
   }
 
@@ -72,13 +75,13 @@ int read_assembly_file(const char *path, char **buffer) {
 
   file = fopen(path, "r");
   if (!file) {
-    fprintf(
-        stderr,
-        "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file>\n",
-        path);
+    fprintf(stderr,
+            "Unable to open file %s\nUsage: ./assemble <path_to_assembly_file> "
+            "<path_to_write_to>\n",
+            path);
     exit(EXIT_FAILURE);
   }
- 
+
   char readbuffer[MAX_LINE_LENGTH];
   int lines;
   for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
@@ -90,9 +93,8 @@ int read_assembly_file(const char *path, char **buffer) {
   return lines;
 }
 
-void free_buffer(char **buffer, int size){
-    for (int i = 0; i < size; i++)
-  {
+void free_buffer(char **buffer, int size) {
+  for (int i = 0; i < size; i++) {
     if (buffer[i]) free(buffer[i]);
   }
   free(buffer);
