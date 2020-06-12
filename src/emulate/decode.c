@@ -69,15 +69,10 @@ enum InstructionType check_instruction_type(const word_t binary) {
   bool mul_flag =
       !(binary & (1 << 25)) && (binary & (1 << 4)) && (binary & (1 << 7));
 
-  if (digit_26) {
-    return DATA_TRANSFER;
-  } else if (digit_27) {
-    return BRANCH;
-  } else if (mul_flag) {
-    return MULTIPLY;
-  } else if (!(digit_26 || digit_27)) {
-    return DATA_PROCESSING;
-  }
+  if (digit_26) return DATA_TRANSFER;
+  if (digit_27) return BRANCH;
+  if (mul_flag) return MULTIPLY;
+  if (!(digit_26 || digit_27)) return DATA_PROCESSING;
 
   exceptions(UNKNOWN_INSTRUCTION_TYPE, get_reg(PC));
   return EMPTY;

@@ -29,6 +29,9 @@ typedef struct {
  */
 static state_t *state;
 
+static bool isGPIO(address_t addr);
+static bool isONOFF(address_t addr);
+
 void init_state() {
   state = (state_t *)calloc(1, sizeof(state_t));
   if (state == NULL) {
@@ -96,6 +99,7 @@ word_t get_word(address_t addr) {
     }
     return word;
   }
+  if (isGPIO(addr)) return addr;
   exceptions(MEMORY_INDEX_OUT_OF_BOUND, addr);
   return 0;
 }
@@ -108,6 +112,7 @@ void set_word(address_t addr, word_t word) {
     }
     return;
   }
+  if (isGPIO(addr) || isONOFF(addr)) return;
   exceptions(MEMORY_INDEX_OUT_OF_BOUND, addr);
 }
 
@@ -170,4 +175,33 @@ void free_instruction(instruction_t *prev) {
     }
     free(prev);
   }
+}
+
+
+static bool isGPIO(address_t addr) {
+  if (addr == 0x20200000) {
+    printf("One GPIO pin from 0 to 9 has been accessed\n");
+    return true;
+  }
+  if (addr == 0x20200004) {
+    printf("One GPIO pin from 10 to 19 has been accessed\n");
+    return true;
+  }
+  if (addr == 0x20200008) {
+    printf("One GPIO pin from 20 to 29 has been accessed\n");
+    return true;
+  }
+  return false;
+}
+
+static bool isONOFF(address_t addr) {
+  if (addr == 0x20200028) {
+    printf("PIN OFF\n");
+    return true;
+  }
+  if (addr == 0x2020001c) {
+    printf("PIN ON\n");
+    return true;
+  }
+  return false;
 }
