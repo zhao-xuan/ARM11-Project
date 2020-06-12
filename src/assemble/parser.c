@@ -37,9 +37,9 @@ void free_machine_code(machine_code *mcode) {
 }
 
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
-  machine_code *mcode = malloc(sizeof(machine_code));
+  machine_code *mcode = eMalloc(sizeof(machine_code));
   mcode->length = program->total_lines;
-  mcode->bin = calloc(mcode->length, sizeof(word_t));
+  mcode->bin = eCalloc(mcode->length, sizeof(word_t));
 
   for (int i = 0; i < program->total_lines; i++) {
     assembly_line *line = program->lines[i];
@@ -74,7 +74,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       parse_dt(&bin, operands, &data, mcode->length * 4 - line->location_counter - PIPELINE_OFFSET);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
-        mcode->bin = realloc(mcode->bin, mcode->length * sizeof(word_t));
+        mcode->bin = eRealloc(mcode->bin, mcode->length * sizeof(word_t));
         mcode->bin[mcode->length - 1] = data;
       }
       break;
@@ -119,7 +119,7 @@ static void parse_lsl(char **operands, assembly_line *line,
   strcat(expr, ",lsl ");     
   strcat(expr, strtok(NULL, ""));      
 
-  operands = calloc(3, sizeof(char *));
+  operands = eCalloc(3, sizeof(char *));
   operands[0] = rn;
   operands[1] = expr;
 
@@ -322,14 +322,14 @@ static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, a
  */
 
 static char **operand_processor(const char *operand, int field_count) {
-  char **tokens = calloc(field_count, sizeof(char *));
+  char **tokens = eCalloc(field_count, sizeof(char *));
   char str[strlen(operand) + 1];
   strcpy(str, operand);
   char *literal = strtok(str, ",");
   
   int i = 0;
   while (literal != NULL && i < field_count) {
-    tokens[i] = malloc(strlen(literal) * sizeof(char));
+    tokens[i] = eMalloc(strlen(literal) * sizeof(char));
     remove_space(literal);
     strcpy(tokens[i], literal);
     
@@ -337,7 +337,7 @@ static char **operand_processor(const char *operand, int field_count) {
     else literal = strtok(NULL, ",");
   }
 
-  tokens = realloc(tokens, (i + 1) * sizeof(char *));
+  tokens = eRealloc(tokens, (i + 1) * sizeof(char *));
   tokens[i] = NULL;
 
   return tokens;
