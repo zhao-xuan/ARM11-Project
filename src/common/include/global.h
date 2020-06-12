@@ -31,6 +31,8 @@ enum InstructionType {
 #define EMPTY_INSTR 0xffffffff
 /* Word length for this architecture */
 #define WORD_LENGTH 32
+/* Pipeline offset */
+#define PIPELINE_OFFSET 8
 /* Number of addresses for memory */
 #define MEM_ADDR 0x10000
 /* Number of registers */
@@ -189,5 +191,6 @@ typedef uint8_t flag_t;
 #define UNKNOWN_SHIFT_TYPE 61
 #define UNKNOWN_INSTRUCTION_TYPE 70
 #define RUN_TIME_INSTRUCTION_ERROR 71
+#define IMMEDIATE_VALUE_OUT_OF_BOUND 80
 
 #endif

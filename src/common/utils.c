@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -93,7 +94,11 @@ int read_assembly_file(const char *path, char **buffer) {
   int lines;
   for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
     buffer[lines] = malloc(strlen(readbuffer) + 1);
-    strncpy(buffer[lines], strtok(readbuffer, "\n"), strlen(readbuffer));
+
+    int index = 0;
+    while(isspace((unsigned char)*(readbuffer + index))) index++;
+
+    strncpy(buffer[lines], strtok(readbuffer + index, "\n"), strlen(readbuffer + index));
   }
 
   fclose(file);
