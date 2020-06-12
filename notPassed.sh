@@ -24,4 +24,4 @@ for file in !(*.*); do
 done
 
 cd ../../arm11_04/analysis;
-grep -r "invalid\|exit: [^0] bytes" 
+grep -r -l "invalid\|exit: [^0] bytes\|uninitialised" 
