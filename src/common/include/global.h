@@ -17,12 +17,12 @@
  * Enum of instruction types
  */
 enum InstructionType {
-  DATA_PROCESSING,
-  MULTIPLY,
-  BRANCH,
-  DATA_TRANSFER,
-  HALT,
-  EMPTY
+  DATA_PROCESSING = 0,
+  MULTIPLY = 1,
+  BRANCH = 2,
+  DATA_TRANSFER = 3,
+  HALT = 4,
+  EMPTY = 5
 };
 
 /* The state of the machine */
