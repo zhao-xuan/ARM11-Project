@@ -24,15 +24,18 @@ typedef struct {
   symbol_table_t *label_table;
 } parser_t, *parser_p;
 
-static void parse_dp(char **operands, word_t *bin, parser_p parser_pipe);
-static void parse_ml(char **operands, word_t *bin, const char *mnemonic, parser_p parser_pipe);
-static void parse_dt(char **operands, word_t *bin, address_t offset, 
-                    machine_code *mcode, parser_p parser_pipe);
-static void parse_br(char **operands, word_t *bin, symbol_table_t *label_table, 
-                    address_t current, parser_p parser_pipe);
+typedef void (*parse_func) (char **, word_t *, parser_p);
 
-static void parse_ldr_mov(char **operands, assembly_line *line, mnemonic_p *content, parser_p parser_pipe);
-static void parse_lsl(char **operands, assembly_line *line, mnemonic_p *content, word_t *mcode_bin, parser_p parser_pipe);
+static void parse_dp(char **operands, word_t *bin, parser_p parser_pipe);
+static void parse_ml(char **operands, word_t *bin, parser_p parser_pipe);
+static void parse_br(char **operands, word_t *bin, parser_p parser_pipe);
+static void parse_dt(char **operands, word_t *bin, parser_p parser_pipe);
+
+static const int parser_func_maxfield[] = {3, 4, 1, 3};
+static const parse_func parser_helper[] = {&parse_dp, &parse_ml, &parse_br, &parse_dt};
+
+static void parse_ldr_mov(char **operands, mnemonic_p *content, parser_p parser_pipe);
+static void parse_lsl(char **operands, mnemonic_p *content, word_t *mcode_bin, parser_p parser_pipe);
 
 static word_t parse_operand2(char *operand2);
 static void free_operands(char **tokens);
@@ -60,40 +63,25 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 
     parser_pipe->line = line;
     /* Special case for ldr interpreted as mov */
-    parse_ldr_mov(operands, line, &content, parser_pipe);
+    parse_ldr_mov(operands, &content, parser_pipe);
     free_operands(operands);
 
     /* Special case for lsl */
     if (strcmp(line->opcode, "lsl") == 0) {
-      parse_lsl(operands, line, &content, mcode->bin + i, parser_pipe);
+      parse_lsl(operands, &content, mcode->bin + i, parser_pipe);
       continue;
     }
 
     word_t bin = content->bin;
 
     switch (content->type) {
-    case DATA_PROCESSING:
-      operands = operand_processor(line->operands, 3);
-      parse_dp(operands, &bin, parser_pipe);
-      break;
-    case MULTIPLY:
-      operands = operand_processor(line->operands, 4);
-      parse_ml(operands, &bin, line->opcode, parser_pipe);
-      break;
-    case DATA_TRANSFER:
-      /* Calculates the offset and consider the effect of the pipeline */
-      operands = operand_processor(line->operands, 3);
-      parse_dt(operands, &bin, 
-          mcode->length * 4 - line->location_counter - PIPELINE_OFFSET, mcode, parser_pipe);
-      break;
-    case BRANCH:
-      operands = operand_processor(line->operands, 1);
-      parse_br(operands, &bin, label_table, line->location_counter, parser_pipe);
-      break;
     case HALT:
       return mcode;  
-    default:
+    case EMPTY:
       exceptions(UNKNOWN_INSTRUCTION_TYPE, line->location_counter);
+    default:
+      operands = operand_processor(line->operands, parser_func_maxfield[content->type]); 
+      parser_helper[content->type](operands, &bin, parser_pipe);
     }
 
     mcode->bin[i] = bin;
@@ -104,24 +92,24 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
 }
 
 /* Special instruction helper functions */
-static void parse_ldr_mov(char **operands, assembly_line *line, mnemonic_p *content, parser_p parser_pipe) {
-    if (strcmp(line->opcode, "ldr") == 0 
+static void parse_ldr_mov(char **operands, mnemonic_p *content, parser_p parser_pipe) {
+    assembly_line *cur_line = parser_pipe->line;
+    if (strcmp(cur_line->opcode, "ldr") == 0 
         && operands[1] != NULL 
         && equal(operands[1]) 
         && (to_index(operands[1]) <= 0xFF)) {
       /* Convert ldr to mov instruction */
       *content = get_mnemonic_data("mov");
-      *strchr(line->operands, '=') = '#';
-      strcpy(line->opcode, "mov");
+      *strchr(cur_line->operands, '=') = '#';
+      strcpy(cur_line->opcode, "mov");
     }
 
 }
 
-static void parse_lsl(char **operands, assembly_line *line, 
-                      mnemonic_p *content, word_t *mcode_bin, parser_p parser_pipe) {
+static void parse_lsl(char **operands, mnemonic_p *content, word_t *mcode_bin, parser_p parser_pipe) {
 
   *content = get_mnemonic_data("mov");
-  char *rn = strtok(line->operands, ",");
+  char *rn = strtok(parser_pipe->line->operands, ",");
   
   char expr[strlen(rn) * 2 + 6];
   strcpy(expr, rn);
@@ -237,14 +225,14 @@ static word_t parse_reg_operand2(char *operand2){
  *    - operands: pointer to array of strings that holds the operands
  *    - mnemonic: mnemonic of the multiplication instruction
  */
-static void parse_ml(char **operands, word_t *bin, const char *mnemonic, parser_p parser_pipe) {
+static void parse_ml(char **operands, word_t *bin, parser_p parser_pipe) {
   /* Sets Rd, Rm and Rs registers */
   *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << MUL_RD_LOCATION;
   *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD) << MUL_RM_LOCATION;
   *bin |= (to_index(operands[2]) & FOUR_BIT_FIELD) << MUL_RS_LOCATION;
   
   /* Sets Rn register */
-  if (strcmp(mnemonic, "mla") == 0) {
+  if (strcmp(parser_pipe->line->opcode, "mla") == 0) {
     *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD) << MUL_RN_LOCATION;
   }
 }
@@ -263,8 +251,10 @@ static void parse_ml(char **operands, word_t *bin, const char *mnemonic, parser_
  *  *data will be set to 0 if no data need to be appended. Note if data need to be appended,
  *  it can't be 0, since such instructions will be interpreted as a mov instruction
  */
-static void parse_dt(char **operands, word_t *bin, address_t offset, machine_code *mcode, parser_p parser_pipe) {
+static void parse_dt(char **operands, word_t *bin, parser_p parser_pipe) {
   word_t data = 0;
+  machine_code *mcode = parser_pipe->mcode;
+  address_t offset = mcode->length * 4 - parser_pipe->line->location_counter - PIPELINE_OFFSET;
   /* Sets Rd Register */
   *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << DP_DT_RD_LOCATION;
   /* Pre-indexing if no comma can be found in the second operand OR there are only two operands */
@@ -296,7 +286,7 @@ static void parse_dt(char **operands, word_t *bin, address_t offset, machine_cod
   *bin |= imm << IMM_LOCATION;
   *bin |= up << UP_BIT_LOCATION;
   *bin |= pre_index << P_INDEX_LOCATION;
-  
+ 
   if (data != 0) { /* Append data to the end of the machine code */
     mcode->length++;
     mcode->bin = eRealloc(mcode->bin, mcode->length * sizeof(word_t));
@@ -313,15 +303,16 @@ static void parse_dt(char **operands, word_t *bin, address_t offset, machine_cod
  *    - operands: an array of strings that holds the operands
  *    - label_table: a pointer to the label table produced in the first pass
  */
-static void parse_br(char **operands, word_t *bin, symbol_table_t *label_table, address_t current, parser_p parser_pipe) {
+static void parse_br(char **operands, word_t *bin, parser_p parser_pipe) {
   char *errptr = NULL;
+  address_t cur_addr = parser_pipe->line->location_counter;
   word_t addr = (word_t) strtol(operands[0] + 1, &errptr, 0);
   /* Expression is a label, not a number. See documentation for strtol */
   if (errptr != NULL) {
-    addr = get_label_address(label_table, operands[0]);
+    addr = get_label_address(parser_pipe->label_table, operands[0]);
   }
 
-  *bin |= ((addr - current - PIPELINE_OFFSET) >> 2) & TWENTY_FOUR_BIT_FIELD;
+  *bin |= ((addr - cur_addr - PIPELINE_OFFSET) >> 2) & TWENTY_FOUR_BIT_FIELD;
 }
 
 /*
