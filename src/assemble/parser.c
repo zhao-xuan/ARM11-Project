@@ -6,6 +6,11 @@
 #define to_index(literal) ((int) strtol(literal + 1, NULL, 0))
 #define equal(literal) (literal[0] == '=')
 #define hash(literal) (literal[0] == '#')
+/* result-computing data processing instructions */
+#define compute(opcode) (opcode_field <= 4 || opcode_field == 12)
+#define move(opcode) (opcode_field == 13)
+#define flag_set(opcode) (opcode_field >= 8 && opcode_field <= 10)
+
 #define remove_bracket(literal) (strtok(literal + 1, "]"))
 #define remove_space(string) for(; isspace(*string); string++)
 #define open_brak(literal) (literal[0] == '[')
@@ -19,7 +24,6 @@ static word_t parse_operand2(char *operand2);
 
 static char **operand_processor(const char *operand, int field_count);
 static void free_operands(char **tokens);
-//static char *remove_space(char *str);
 
 machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
   machine_code *mcode = malloc(sizeof(machine_code));
@@ -78,7 +82,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     case DATA_TRANSFER:
       /* Calculates the offset and consider the effect of the pipeline */
       operands = operand_processor(line->operands, 3);
-      parse_dt(&bin, operands, &data, mcode->length * 4 - line->location_counter - 8);
+      parse_dt(&bin, operands, &data, mcode->length * 4 - line->location_counter - PIPELINE_OFFSET);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
         mcode->bin = realloc(mcode->bin, mcode->length * sizeof(word_t));
@@ -112,16 +116,16 @@ void free_machine_code(machine_code *mcode) {
 static void parse_dp(char **operands, word_t *bin) {
   byte_t opcode_field = (*bin >> OPCODE_LOCATION) & FOUR_BIT_FIELD;
   
-  if (opcode_field <= 4 || opcode_field == 12) {
+  if (compute(opcode_field)) {
     /* result-computing instruction */
     *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
     *bin |= to_index(operands[1]) << DP_DT_RN_LOCATION;
     *bin |= parse_operand2(operands[2]); //parse_dp_operand2 will take care of the immediate bit as well
-  } else if (opcode_field == 13) {
+  } else if (move(opcode_field)) {
     /* mov instruction */
     *bin |= to_index(operands[0]) << DP_DT_RD_LOCATION;
     *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
-  } else if (opcode_field >= 8 && opcode_field <= 10) {
+  } else if (flag_set(opcode_field)) {
     /* CPSR flag set instruction */
     *bin |= to_index(operands[0]) << DP_DT_RN_LOCATION;
     *bin |= parse_operand2(operands[1]); //parse_dp_operand2 will take care of the immediate bit as well
@@ -133,7 +137,7 @@ static void parse_dp(char **operands, word_t *bin) {
  */
 static word_t parse_operand2(char *operand2) {
   word_t bin = 0;
-  if (operand2[0] == '#') {
+  if (hash(operand2)) {
     /* processing hash expressions in DATA_PROCESSING*/
     bin |= 1 << IMM_LOCATION;
     long imm = to_index(operand2);
@@ -151,13 +155,12 @@ static word_t parse_operand2(char *operand2) {
         rotation++;
       }
 
-      if (rotation <= 15 && i <= 255 ) {
+      if (rotation <= 15 && i <= 255) {
         /* Value can be represented by right-rotated 8-bit iediate field */
         bin |= rotation << OPERAND2_ROTATE_LOCATION;
         bin |= i;
       } else {
         /* cannot be represented using the right-rotated 8-bits, throw an error */
-        /* How should address field be handled properly? */
         exceptions(IMMEDIATE_VALUE_OUT_OF_BOUND, 0x00000000);
       }
     }
@@ -204,14 +207,14 @@ static word_t parse_operand2(char *operand2) {
  */
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
   /* Sets Rd register */
-  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 16;
+  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << MUL_RD_LOCATION;
   /* Sets Rm register */
-  *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD);
+  *bin |= (to_index(operands[1]) & FOUR_BIT_FIELD) << MUL_RM_LOCATION;
   /* Sets Rs register */
-  *bin |= (to_index(operands[2]) & FOUR_BIT_FIELD) << 8;
+  *bin |= (to_index(operands[2]) & FOUR_BIT_FIELD) << MUL_RS_LOCATION;
   /* Sets Rn register */
   if (strcmp(mnemonic, "mla") == 0) {
-    *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD) << 12;
+    *bin |= (to_index(operands[3]) & FOUR_BIT_FIELD) << MUL_RN_LOCATION;
   }
 }
 
@@ -229,7 +232,7 @@ static void parse_mul(word_t *bin, char **operands, const char *mnemonic) {
 static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offset) {
   *data = 0;
   /* Sets Rd Register */
-  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 12;
+  *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << DP_DT_RD_LOCATION;
   /* Pre-indexing if no comma can be found in the second operand OR there are only two operands */
   bool pre_index = operands[2] == NULL || (open_brak(operands[1]) && close_brak(operands[2]));
   bool up = true;
@@ -237,15 +240,15 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
   if (equal(operands[1])) {  /* Load value (equal expression) */
     *data = to_index(operands[1]);
     /* Sets Rn to PC */
-    *bin |= PC << 16;
+    *bin |= PC << DP_DT_RN_LOCATION;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
-    *bin |= (to_index(operands[1] + 1) & FOUR_BIT_FIELD) << 16;
+    *bin |= (to_index(operands[1] + 1) & FOUR_BIT_FIELD) << DP_DT_RN_LOCATION;
     if (operands[2] != NULL) {
       strtok(operands[2], "]");
     }
   } else { /* Post-indexing */
-    *bin |= (to_index(remove_bracket(operands[1])) & FOUR_BIT_FIELD) << 16;
+    *bin |= (to_index(remove_bracket(operands[1])) & FOUR_BIT_FIELD) << DP_DT_RN_LOCATION;
   }
 
   if (operands[2] != NULL) { /* Parses operand2 */
@@ -278,7 +281,7 @@ static void parse_b(word_t *bin, char **operands, symbol_table_t *label_table, a
     addr = get_label_address(label_table, operands[0]);
   }
 
-  *bin |= ((addr - current - 8) >> 2) & TWENTY_FOUR_BIT_FIELD;
+  *bin |= ((addr - current - PIPELINE_OFFSET) >> 2) & TWENTY_FOUR_BIT_FIELD;
 }
 
 /*

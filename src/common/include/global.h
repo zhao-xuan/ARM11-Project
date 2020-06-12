@@ -31,6 +31,8 @@ enum InstructionType {
 #define EMPTY_INSTR 0xffffffff
 /* Word length for this architecture */
 #define WORD_LENGTH 32
+/* Pipeline offset */
+#define PIPELINE_OFFSET 8
 /* Number of addresses for memory */
 #define MEM_ADDR 0x10000
 /* Number of registers */
