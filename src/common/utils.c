@@ -4,8 +4,8 @@
 
 #include "utils.h"
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -29,7 +29,6 @@ void *eCalloc(size_t nmemb, size_t size) {
   }
   return vp;
 }
-
 
 void *eRealloc(void *ptr, size_t size) {
   void *vp = realloc(ptr, size);
@@ -93,12 +92,13 @@ int read_assembly_file(const char *path, char **buffer) {
   char readbuffer[MAX_LINE_LENGTH];
   int lines;
   for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
+    if (readbuffer[0] == '\n') {
+      lines--;
+      continue;
+    }
+
     buffer[lines] = eMalloc(strlen(readbuffer) + 1);
-
-    int index = 0;
-    while(isspace((unsigned char)*(readbuffer + index))) index++;
-
-    strncpy(buffer[lines], strtok(readbuffer + index, "\n"), strlen(readbuffer + index));
+    strncpy(buffer[lines], strtok(readbuffer, "\n"), strlen(readbuffer));
   }
 
   fclose(file);
