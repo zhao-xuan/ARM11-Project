@@ -8,6 +8,8 @@
 #define hash(literal) (literal[0] == '#')
 #define remove_bracket(literal) (strtok(literal + 1, "]"))
 #define remove_space(string) for(; isspace(*string); string++)
+#define open_brak(literal) (literal[0] == '[')
+#define close_brak(literal) (literal[strlen(literal) - 1] == ']')
 
 static void parse_dp(char **operands, word_t *bin);
 static void parse_mul(word_t *bin, char **operands, const char *mnemonic);
@@ -75,7 +77,7 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
       break;
     case DATA_TRANSFER:
       /* Calculates the offset and consider the effect of the pipeline */
-      operands = operand_processor(line->operands, 2);
+      operands = operand_processor(line->operands, 3);
       parse_dt(&bin, operands, &data, mcode->length * 4 - line->location_counter - 8);
       if (data != 0) { /* Append data to the end of the machine code */
         mcode->length++;
@@ -229,7 +231,7 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
   /* Sets Rd Register */
   *bin |= (to_index(operands[0]) & FOUR_BIT_FIELD) << 12;
   /* Pre-indexing if no comma can be found in the second operand OR there are only two operands */
-  bool pre_index = strchr(operands[1], ',') != NULL || operands[2] == NULL;
+  bool pre_index = operands[2] == NULL || (open_brak(operands[1]) && close_brak(operands[2]));
   bool up = true;
 
   if (equal(operands[1])) {  /* Load value (equal expression) */
@@ -238,31 +240,26 @@ static void parse_dt(word_t *bin, char **operands, word_t *data, address_t offse
     *bin |= PC << 16;
     *bin |= offset & TWELVE_BIT_FIELD;
   } else if (pre_index) { /* Pre-indexing */
-    char **pre = operand_processor(remove_bracket(operands[1]), 2);
-    *bin |= (to_index(pre[0]) & FOUR_BIT_FIELD) << 16;
-
-    if (pre[1] != NULL) {
-      if (hash(pre[1])) { /* Hash expression */
-        up = !(pre[1][1] == '-');
-        *bin |= to_index((up ? pre[1] : pre[1] + 1)) & TWELVE_BIT_FIELD;
-      } else { /* Operand2 */
-        up = !(pre[1][0] == '-');
-        *bin |= parse_operand2(operands[2]);
-      }
-    }    
+    *bin |= (to_index(operands[1] + 1) & FOUR_BIT_FIELD) << 16;
+    if (operands[2] != NULL) {
+      strtok(operands[2], "]");
+    }
   } else { /* Post-indexing */
-    /* Sets Rn Register */
     *bin |= (to_index(remove_bracket(operands[1])) & FOUR_BIT_FIELD) << 16;
+  }
+
+  if (operands[2] != NULL) { /* Parses operand2 */
+    up = !(operands[2][0] == '-') && !(operands[2][1] == '-');
     if (hash(operands[2])) { /* Hash expression */
-      *bin |= to_index(operands[2]) & TWELVE_BIT_FIELD;
+      *bin |= to_index(operands[2] + !up) & TWELVE_BIT_FIELD;
     } else { /* Operand2 */
-      up = !(operands[1][0] == '-');
-      *bin |= parse_operand2(operands[2]);
+      *bin |= 1 << IMM_LOCATION;
+      *bin |= parse_operand2(operands[2] + !up);
     }
   }
 
-  *bin |= (pre_index & 1) << 24;
-  *bin |= (up & 1) << 23;
+  *bin |= pre_index << P_INDEX_LOCATION;
+  *bin |= up << UP_BIT_LOCATION;
 }
 
 
@@ -301,7 +298,7 @@ static char **operand_processor(const char *operand, int field_count) {
         tokens[i] = malloc(strlen(literal) * sizeof(char));
         remove_space(literal);
         strcpy(tokens[i], literal);
-
+        
         if (++i + 1 == field_count) {
           literal = strtok(NULL, "\0");
         } else {
