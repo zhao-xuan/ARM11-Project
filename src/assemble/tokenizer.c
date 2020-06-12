@@ -59,6 +59,7 @@ assembly_program *tokenize(char **buffer, size_t max_line) {
 void free_program(assembly_program *aspg){
   for (int i = 0; i < aspg->total_lines; i++) {
       if (aspg->lines[i]){
+        free(aspg->lines[i]->label);
         free(aspg->lines[i]->operands);
         free(aspg->lines[i]->opcode);
         free(aspg->lines[i]);
