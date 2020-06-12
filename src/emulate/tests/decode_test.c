@@ -93,10 +93,9 @@ char *generate_test_name(instruction_t *expected) {
       if (dp_ptr->imm_const) {
         return "Data Processing instruction with immediate constant, decoded "
                "correctly";
-      } else {
-        return "Data Processing instruction with register form, decoded "
-               "correctly";
       }
+      return "Data Processing instruction with register form, decoded "
+             "correctly";
     }
     case MULTIPLY:
       return "Multiply instruction decoded correctly";
@@ -105,10 +104,9 @@ char *generate_test_name(instruction_t *expected) {
       if (dt_ptr->imm_offset) {
         return "Data Transfer instruction with register form, decoded "
                "correctly";
-      } else {
-        return "Data Transfer instruction with immediate constant, decoded "
-               "correctly";
       }
+      return "Data Transfer instruction with immediate constant, decoded "
+             "correctly";
     }
     case BRANCH:
       return "Branch instruction decoded correctly";

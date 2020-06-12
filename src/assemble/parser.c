@@ -162,10 +162,8 @@ static word_t parse_hash_operand2(char *operand2);
 static word_t parse_reg_operand2(char *operand2);
 
 static word_t parse_operand2(char *operand2) {
-  if hash(operand2) 
-    return parse_hash_operand2(operand2);
-   else 
-    return parse_reg_operand2(operand2); 
+  return hash(operand2) ? parse_hash_operand2(operand2)
+                        : parse_reg_operand2(operand2);
 }
 
 static word_t parse_hash_operand2(char *operand2) {
