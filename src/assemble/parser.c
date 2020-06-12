@@ -43,15 +43,21 @@ machine_code *parse(assembly_program *program, symbol_table_t *label_table) {
     if (strcmp(line->opcode, "lsl") == 0) {
       content = get_mnemonic_data("mov");
       char *rn = strtok(line->operands, ",");
-      char *expr = strtok(NULL, ",");
+      
+      char expr[strlen(rn) * 2 + 6];
+      strcpy(expr, rn);
+      strcat(expr, ",lsl ");     
+      strcat(expr, strtok(NULL, ""));      
+
       operands = calloc(3, sizeof(char *));
       operands[0] = rn;
-      //strcpy(operands[1], rn);
-      operands[2] = expr;
-      word_t bin = 0;
-//      parse_dp(operands, &bin);
+      operands[1] = expr;
+
+      word_t bin = content->bin;
+      parse_dp(operands, &bin);
       mcode->bin[i] = bin;
-      free_operands(operands);
+
+      free(operands);
       continue;
     }
 
