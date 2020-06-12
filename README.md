@@ -1,4 +1,4 @@
-## Project Structure
+## Subtree
 
 /doc is an subtree connected to our [overleaf repository](https://www.overleaf.com/4289975884mvfmsjfdbbyf), to update run:
 
@@ -12,7 +12,9 @@
     git fetch extension master
     git subtree pull --prefix extension/tetris-plus-plus extension master
 
-####[Dependency Graph & Planning](https://drive.google.com/drive/folders/1grtk0Vnl6vUNuBGqPvI5pR31Esl_z2pb?usp=sharing)
+## Folder Structure
+
+[Dependency Graph & Planning](https://drive.google.com/drive/folders/1grtk0Vnl6vUNuBGqPvI5pR31Esl_z2pb?usp=sharing)
 
     /arm11_04
     |
