@@ -9,26 +9,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* Wrappers for calloc and malloc with error detection */
+/* Wrappers for memory allocation with error detection */
 void *eMalloc(size_t size);
 void *eCalloc(size_t nmemb, size_t size);
+void *eRealloc(void *ptr, size_t size);
 
 /*
  * @brief: Loads a binary file into the buffer.
  * @param *path: path to the binary file.
  * @param **buffer: a pointer to the buffer that will load the binary file.
  * @param *size: a pointer to the size of the file (length of buffer).
- * @example:
- *   uint32_t *buffer = NULL;
- *   size_t size;
- *   if (read_binary_file(argv[1], &buffer, &size) == 0)
- *   {
- *     printf("%ld\n", size);
- *     dump_hex(buffer, size);
- *     free(buffer);
- *   }
  */
-void read_binary_file(const char *path, uint32_t **buffer, size_t *size);
+void read_binary_file(const char *path, uint32_t *buffer, size_t *size);
 
 /*
  * @brief: Loads a binary file into the buffer.

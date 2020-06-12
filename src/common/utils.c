@@ -11,11 +11,11 @@
 
 #include "global.h"
 
-/* Error detection for Callocs and Mallocs */
+/* error detection for memory allocation */
 void *eMalloc(size_t size) {
   void *vp = malloc(size);
   if (!vp) {
-    fprintf(stderr, "Memory error!\n");
+    fprintf(stderr, "Malloc memory error!\n");
     exit(EXIT_FAILURE);
   }
   return vp;
@@ -24,14 +24,24 @@ void *eMalloc(size_t size) {
 void *eCalloc(size_t nmemb, size_t size) {
   void *vp = calloc(nmemb, size);
   if (!vp) {
-    fprintf(stderr, "Memory error!\n");
+    fprintf(stderr, "Calloc memory error!\n");
+    exit(EXIT_FAILURE);
+  }
+  return vp;
+}
+
+
+void *eRealloc(void *ptr, size_t size) {
+  void *vp = realloc(ptr, size);
+  if (!vp) {
+    fprintf(stderr, "Realloc memory error!\n");
     exit(EXIT_FAILURE);
   }
   return vp;
 }
 
 /* File operations */
-void read_binary_file(const char *path, word_t **buffer, size_t *size) {
+void read_binary_file(const char *path, word_t *buffer, size_t *size) {
   FILE *file;
   size_t file_length;
 
@@ -44,18 +54,9 @@ void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   fseek(file, 0, SEEK_END);
   file_length = ftell(file);
   fseek(file, 0, SEEK_SET);
+  *size = (file_length + 1) / 4;
 
-  size_t size_bytes = file_length + 1;
-  *buffer = (word_t *)malloc(size_bytes);
-  *size = size_bytes / 4;
-
-  if (!*buffer) {
-    fprintf(stderr, "Memory error!\n");
-    fclose(file);
-    exit(EXIT_FAILURE);
-  }
-
-  if (fread(*buffer, file_length, 1, file) != 1 || ferror(file)) {
+  if (fread(buffer, file_length, 1, file) != 1 || ferror(file)) {
     fprintf(stderr, "Error reading from file.\n");
     fclose(file);
     exit(EXIT_FAILURE);
@@ -63,18 +64,12 @@ void read_binary_file(const char *path, word_t **buffer, size_t *size) {
   fclose(file);
 }
 
-void write_binary_file(const char *path, uint32_t *buffer, size_t size) {
+void write_binary_file(const char *path, word_t *buffer, size_t size) {
   FILE *file;
 
   file = fopen(path, "wb");
   if (!file) {
     fprintf(stderr, "Unable to open file %s. \n", path);
-    exit(EXIT_FAILURE);
-  }
-
-  if (!buffer) {
-    fprintf(stderr, "Memory error!\n");
-    fclose(file);
     exit(EXIT_FAILURE);
   }
 

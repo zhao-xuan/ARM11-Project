@@ -20,9 +20,11 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  word_t *buffer = NULL;
   size_t size;
-  read_binary_file(argv[1], &buffer, &size);
+  word_t *buffer  = (word_t *) malloc(MEM_ADDR);
+  read_binary_file(argv[1], buffer, &size);
+  buffer = eRealloc(buffer, size*4);
+
   init_state();
   load_program(buffer, size);
 
