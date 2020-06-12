@@ -17,7 +17,7 @@ int main(){
 
   /* loop01 */
   assembly_program *program1;
-  char **buffer1 = calloc(5, sizeof(char *));
+  char **buffer1 = eCalloc(5, sizeof(char *));
   buffer1[0] = "mov r2,#0x3F0000";
   buffer1[1] = "wait:";
   buffer1[2] = "sub r2,r2,#1";
@@ -46,7 +46,7 @@ int main(){
 
   /* opt_ldr12 (modified) */
   assembly_program *program2;
-  char **buffer2 = calloc(5, sizeof(char *));
+  char **buffer2 = eCalloc(5, sizeof(char *));
   buffer2[0] = "mov r1,#4128768";
   buffer2[1] = "ldr r2,[r1]";
   buffer2[2] = "ldr r3,[r1,r2,lsr #2]";
@@ -76,7 +76,7 @@ int main(){
 
   /* opt_add & tst04 */
   assembly_program *program3;
-  char **buffer3 = calloc(5, sizeof(char *));
+  char **buffer3 = eCalloc(5, sizeof(char *));
   buffer3[0] = "mov r1,#1";
   buffer3[1] = "b foo";
   buffer3[2] = "foo:";

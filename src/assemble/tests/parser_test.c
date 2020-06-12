@@ -25,14 +25,14 @@ static char *trim_field(char *str) {
   while (!(str[j] - '0' >= 0 && str[j] - '0' <= 9) && !(str[j] - 'a' >= 0 && str[j] - 'a' <= 25)) {
     j--;
   }
-  char *trimmed = malloc((j - i) * sizeof(char));
+  char *trimmed = eMalloc((j - i) * sizeof(char));
   strncpy(trimmed, str + i, j - i + 1);
 
   return trimmed;
 }
 
 static char **operand_processor(const char *operand, int field_count) {
-  char **tokens = calloc(field_count, sizeof(char *));
+  char **tokens = eCalloc(field_count, sizeof(char *));
   int i = 0;
   char str[strlen(operand) + 1];
   for (int j = 0; j < strlen(operand); j++) {
@@ -41,13 +41,13 @@ static char **operand_processor(const char *operand, int field_count) {
   str[strlen(operand)] = '\0';
   char *literal = strtok(str, ",");
   while (literal != NULL && i < field_count) {
-    tokens[i] = malloc(strlen(literal) * sizeof(char));
+    tokens[i] = eMalloc(strlen(literal) * sizeof(char));
     strcpy(tokens[i], literal);
     i++;
     literal = strtok(NULL, ",");
   }
 
-  tokens = realloc(tokens, (i + 1) * sizeof(char *));
+  tokens = eRealloc(tokens, (i + 1) * sizeof(char *));
   tokens[i] = NULL;
 
   return tokens;
@@ -124,7 +124,7 @@ static word_t parse_operand2(char *operand2) {
 int main(void) {
   /* Testing trim_field() ... */
   char *name = "Testing if the helper function trim_field works properly";
-  char *trimmed = malloc(4 * sizeof(char));
+  char *trimmed = eMalloc(4 * sizeof(char));
   trimmed = trim_field(" r1");
   teststring(trimmed, "r1", name);
   free(trimmed);
@@ -166,7 +166,7 @@ int main(void) {
   /* Testing parse_dp ... */
   name = "testing if parse_dp() and parse_dp_operand2() work properly";
   /* Assembly Code: add r2,r4,r3 */
-  assembly_line *line = malloc(sizeof(assembly_line));
+  assembly_line *line = eMalloc(sizeof(assembly_line));
   line->opcode = "add";
   line->operands = "r2,r4,r3";
   mnemonic_p content = get_mnemonic_data(line->opcode);

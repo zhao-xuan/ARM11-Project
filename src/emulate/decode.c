@@ -20,29 +20,29 @@ static void branch_helper(word_t binary, instruction_t *struct_p,
 
 instruction_t *decode(const word_t binary) {
   enum InstructionType instr_type = check_instruction_type(binary);
-  instruction_t *instr_struct = malloc(sizeof(instruction_t));
+  instruction_t *instr_struct = eMalloc(sizeof(instruction_t));
 
   instr_struct->type = instr_type;
   instr_struct->cond = (binary >> COND_LOCATION) & FOUR_BIT_FIELD;
 
   switch (instr_type) {
     case DATA_PROCESSING: {
-      data_processing_t *instr_ptr = malloc(sizeof(data_processing_t));
+      data_processing_t *instr_ptr = eMalloc(sizeof(data_processing_t));
       data_processing_helper(binary, instr_struct, instr_ptr);
       break;
     }
     case MULTIPLY: {
-      multiply_t *instr_ptr = malloc(sizeof(multiply_t));
+      multiply_t *instr_ptr = eMalloc(sizeof(multiply_t));
       multiply_helper(binary, instr_struct, instr_ptr);
       break;
     }
     case DATA_TRANSFER: {
-      data_transfer_t *instr_ptr = malloc(sizeof(data_transfer_t));
+      data_transfer_t *instr_ptr = eMalloc(sizeof(data_transfer_t));
       data_transfer_helper(binary, instr_struct, instr_ptr);
       break;
     }
     case BRANCH: {
-      branch_t *instr_ptr = malloc(sizeof(branch_t));
+      branch_t *instr_ptr = eMalloc(sizeof(branch_t));
       branch_helper(binary, instr_struct, instr_ptr);
       break;
     }
@@ -88,12 +88,12 @@ static void data_processing_helper(const word_t binary, instruction_t *struct_p,
 
   /* Setting the operand2 field for DATA_PROCESSING instructions */
   if (instr_p->imm_const) {
-    imm_value_t *imm_p = malloc(sizeof(imm_value_t));
+    imm_value_t *imm_p = eMalloc(sizeof(imm_value_t));
     imm_p->imm = (binary >> OPERAND2_IMM_LOCATION) & EIGHT_BIT_FIELD;
     imm_p->rotate = (binary >> OPERAND2_ROTATE_LOCATION) & FOUR_BIT_FIELD;
     (instr_p->operand2).imm_value = imm_p;
   } else {
-    register_form_t *reg_p = malloc(sizeof(register_form_t));
+    register_form_t *reg_p = eMalloc(sizeof(register_form_t));
     reg_p->shift_type =
         (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
     reg_p->rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;
@@ -134,7 +134,7 @@ static void data_transfer_helper(const word_t binary, instruction_t *struct_p,
 
   /* Setting the offset field for DATA_TRANSFER instructions */
   if (instr_p->imm_offset) {
-    register_form_t *reg_p = malloc(sizeof(register_form_t));
+    register_form_t *reg_p = eMalloc(sizeof(register_form_t));
     reg_p->shift_type =
         (binary >> OPERAND2_SHIFT_TYPE_LOCATION) & TWO_BIT_FIELD;
     reg_p->rm = (binary >> OPERAND2_RM_LOCATION) & FOUR_BIT_FIELD;

@@ -5,6 +5,7 @@
 
 #include "mnemonic_table.h"
 #include "symbol_table.h"
+#include "utils.h"
 
 #define NUM_DP_MNEMONICS 10
 #define NUM_ML_MNEMONICS 2
@@ -69,9 +70,8 @@ static void get_opcode_and_set_bits(int index, word_t *opcode, word_t *set) {
 static bool init_dp_mnemonics() {
   word_t opcode = 0, set = 0, bin = 0;
   for (int i = 0; i < NUM_DP_MNEMONICS; i++) {
-    /* Malloc pointer to value */
-    mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) return false;
+    /* eMalloc pointer to value */
+    mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
     
     /* Get opcode and S-bit shifted to the right position */
     get_opcode_and_set_bits(i, &opcode, &set);
@@ -90,8 +90,7 @@ static bool init_dp_mnemonics() {
 static bool init_dt_mnemonics() {
   word_t bin;
   for (int i = 0; i < NUM_DT_MNEMONICS; i++) {
-    mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) return false;
+    mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
 
     bin = (ALWAYS << COND_LOCATION) | DT_CONST;
     bin |= i << LOAD_STORE_LOCATION;
@@ -112,8 +111,7 @@ static word_t get_cond(int index) {
 
 static bool init_br_mnemonics() {
   for (int i = 0; i < NUM_BR_MNEMONICS; i++) {
-    mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) return false;
+    mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
     
     word_t bin = get_cond(i) | BRANCH_CONST;
     *mnemonic = (mnemonic_t) {bin, BRANCH}; 
@@ -126,8 +124,7 @@ static bool init_br_mnemonics() {
 static bool init_ml_mnemonics() {
   word_t bin = MUL_CONST | (ALWAYS << COND_LOCATION);
   for (int i = 0; i < NUM_ML_MNEMONICS; i++) {
-    mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-    if (!mnemonic) return false;
+    mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
 
     word_t set_bit = i << ACCUMULATE_LOCATION;
     *mnemonic = (mnemonic_t) {bin | set_bit, MULTIPLY}; 
@@ -138,8 +135,7 @@ static bool init_ml_mnemonics() {
 }
 
 static bool init_sp_mnemonics() {
-  mnemonic_p mnemonic = malloc(sizeof(mnemonic_t));
-  if (!mnemonic) return false;
+  mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
   
   *mnemonic = (mnemonic_t) {0, HALT};
   return INSERT_MNEMONIC("andeq"); 

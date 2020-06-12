@@ -9,7 +9,7 @@
 int main(void) {
 
   /* add03 */
-  char **buffer = calloc(2, sizeof(char *));
+  char **buffer = eCalloc(2, sizeof(char *));
   buffer[0] = "mov r1,#1";
   buffer[1] = "add r1,r1,r1";
   char *name = "add03: tokenized correctly";
@@ -25,7 +25,7 @@ int main(void) {
   free_program(program);
 
   /* loop01 */
-  buffer = calloc(5, sizeof(char *));
+  buffer = eCalloc(5, sizeof(char *));
   buffer[0] = "mov r2,#0x3F0000";
   buffer[1] = "wait:";
   buffer[2] = "sub r2,r2,#1";
@@ -44,7 +44,7 @@ int main(void) {
   free_program(program);
 
   /* opt_ldr12 (modified) */
-  buffer = calloc(5, sizeof(char *));
+  buffer = eCalloc(5, sizeof(char *));
   buffer[0] = "mov r1,#4128768";
   buffer[1] = "ldr r2,[r1]";
   buffer[2] = "ldr r3,[r1,r2,lsr #2]";
@@ -62,7 +62,7 @@ int main(void) {
   free_program(program);
 
   /* opt_add & tst04 */
-  buffer = calloc(5, sizeof(char *));
+  buffer = eCalloc(5, sizeof(char *));
   buffer[0] = "mov r1,#1";
   buffer[1] = "b foo";
   buffer[2] = "foo:";

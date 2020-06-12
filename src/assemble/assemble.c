@@ -23,11 +23,12 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  char **buffer = calloc(MAX_FILE_LINES, sizeof(char *));
+  char **buffer = eCalloc(MAX_FILE_LINES, sizeof(char *));
   int file_lines = read_assembly_file(argv[1], buffer);
-  assembly_program *aspg = tokenize(buffer, file_lines);
+  buffer = eRealloc(buffer, file_lines * sizeof(char *));
 
   /* first pass*/
+  assembly_program *aspg = tokenize(buffer, file_lines);
   symbol_table_t *labels = init_label_table(aspg);
   if (!init_mnemonic_table()) return EXIT_FAILURE;
 

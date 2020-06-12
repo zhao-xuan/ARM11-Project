@@ -4,7 +4,7 @@ symbol_table_t *init_label_table(assembly_program *aspg) {
   symbol_table_t *symbol_table = create_table();
   for (int i = 0; i < aspg->total_lines; i++) {
     if (aspg->lines[i]->label != NULL) {
-      address_t *location_counter = malloc(sizeof(address_t));
+      address_t *location_counter = eMalloc(sizeof(address_t));
       *location_counter = aspg->lines[i]->location_counter;
       insert_literal(symbol_table, aspg->lines[i]->label, location_counter);
     }

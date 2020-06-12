@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   }
 
   size_t size;
-  word_t *buffer  = (word_t *) malloc(MEM_ADDR);
+  word_t *buffer  = (word_t *) eMalloc(MEM_ADDR);
   read_binary_file(argv[1], buffer, &size);
   buffer = eRealloc(buffer, size*4);
 

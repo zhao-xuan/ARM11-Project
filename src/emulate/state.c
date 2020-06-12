@@ -33,11 +33,7 @@ static bool isGPIO(address_t addr);
 static bool isONOFF(address_t addr);
 
 void init_state() {
-  state = (state_t *)calloc(1, sizeof(state_t));
-  if (state == NULL) {
-    fprintf(stderr, "System memory error!\n");
-    exit(EXIT_FAILURE);
-  }
+  state = (state_t *)eCalloc(1, sizeof(state_t));
   empty_pipeline();
 }
 
@@ -136,7 +132,7 @@ void set_decoded(instruction_t *decoded_instruction) {
 }
 
 void empty_pipeline() {
-  instruction_t *empty_instruction = malloc(sizeof(instruction_t));
+  instruction_t *empty_instruction = eMalloc(sizeof(instruction_t));
   empty_instruction->type = EMPTY;
   set_fetched(EMPTY_INSTR);
   set_decoded(empty_instruction);

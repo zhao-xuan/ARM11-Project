@@ -93,7 +93,7 @@ int read_assembly_file(const char *path, char **buffer) {
   char readbuffer[MAX_LINE_LENGTH];
   int lines;
   for (lines = 0; fgets(readbuffer, MAX_LINE_LENGTH, file); lines++) {
-    buffer[lines] = malloc(strlen(readbuffer) + 1);
+    buffer[lines] = eMalloc(strlen(readbuffer) + 1);
 
     int index = 0;
     while(isspace((unsigned char)*(readbuffer + index))) index++;

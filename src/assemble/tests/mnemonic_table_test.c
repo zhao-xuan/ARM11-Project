@@ -53,7 +53,7 @@ void testmnemonic(mnemonic_p expected, mnemonic_p got, char *testname) {
 
 int main() {
   char *testname;
-  mnemonic_p expected = malloc(sizeof(mnemonic_t));
+  mnemonic_p expected = eMalloc(sizeof(mnemonic_t));
 
   /* Querying uninitialised table should return NULL */
   testname = "Querying uninitialised table should return NULL";
