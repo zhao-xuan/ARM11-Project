@@ -1,7 +1,7 @@
 EXTRA_SRC =
 TEX = pdflatex
 
-all: Report.pdf Checkpoint.pdf
+all: Final.pdf Interim.pdf
 
 .phony: all clean
 
@@ -13,4 +13,3 @@ all: Report.pdf Checkpoint.pdf
 clean:
 	rm -f *.aux
 	rm -f *.log
-	rm -f *.pdf

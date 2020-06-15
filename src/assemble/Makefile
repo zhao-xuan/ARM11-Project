@@ -9,7 +9,7 @@ LIB_HEADERS = $(addprefix -I, $(wildcard $(LIB_DIR)/*/.)) $(addprefix -I, $(wild
 
 CC          = gcc
 IncludePath = -Iinclude -I../common/include $(LIB_HEADERS)
-CFLAGS      = -Wall -g -D_DEFAULT_SOURCE -std=c99 -Werror -pedantic $(IncludePath)
+CFLAGS      = -Wall -g -D_DEFAULT_SOURCE -std=c99 $(IncludePath)
 LFLAGS      = $(addprefix -L, $(wildcard $(LIB_DIR)/*/.)) $(wildcard $(LIB_DIR)/*/*.a)
 
 all: libs $(BIN_DIR)/assemble
