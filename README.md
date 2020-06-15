@@ -3,7 +3,6 @@
 /doc is an subtree connected to our [overleaf repository](https://www.overleaf.com/4289975884mvfmsjfdbbyf), to update run:
 
     git remote add overleaf https://git.overleaf.com/5ecce2a9cc5e2e0001344720
-    git fetch overleaf master
     git subtree pull --prefix doc overleaf master --squash
 
 /extension/tetris-plus-plus is an subtree connected to [this repository](https://gitlab.doc.ic.ac.uk/zd419/tetris-plus-plus):
