@@ -64,22 +64,26 @@ listnode *create_listnode(void *key, size_t key_size, void *value, listnode *nex
   node->next = next;
   node->value = value;
   node->key = malloc(key_size);
-  memcpy(node->key, key, key_size);
-  
   if (!node->key) {
     free(node);
     return NULL;
+  
   }
+  memcpy(node->key, key, key_size);
   return node;
 }
 
 linked_list *create_linked_list(comparator cmp) {
   linked_list *list = (linked_list *) calloc(1, sizeof(linked_list));
+  if (!list) return NULL;
+
   list->head = create_listnode(NULL, 0, NULL, NULL);
   list->cmp = cmp;
 
-  if (!list || !list->head) free_list(list);
-  
+  if (!list->head) {
+    free_list(list);
+    return NULL;
+  }
   return list;
 }
 
