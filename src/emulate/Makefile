@@ -5,7 +5,7 @@ OBJ_DIR     = $(PROJ)/obj/emulate
 COMMON_OBJ  = $(PROJ)/obj/common
 SRC_FILES   = $(wildcard *.c)
 OBJ_FILES   = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
-DEPS = $(OBJ_FILES:%.o=%.d)
+DEPS = $(OBJ_FILES:%.o=%.d) $(COMMON_OBJ)/utils.d
 
 CC          = gcc
 IncludePath = -Iinclude -I../common/include

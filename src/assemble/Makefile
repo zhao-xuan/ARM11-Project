@@ -6,7 +6,7 @@ COMMON_OBJ  = $(PROJ)/obj/common
 SRC_FILES   = $(wildcard *.c)
 OBJ_FILES   = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 LIB_HEADERS = $(addprefix -I, $(wildcard $(LIB_DIR)/*/.)) $(addprefix -I, $(wildcard $(LIB_DIR)/*/include))
-DEPS = $(OBJ_FILES:%.o=%.d)
+DEPS = $(OBJ_FILES:%.o=%.d) $(COMMON_OBJ)/utils.d
 
 CC          = gcc
 IncludePath = -Iinclude -I../common/include $(LIB_HEADERS)
