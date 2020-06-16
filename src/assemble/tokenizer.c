@@ -29,7 +29,6 @@ assembly_program *tokenize(char **buffer, size_t max_line) {
 
   int instruction_count = 0;
   for (int i = 0; i < max_line && buffer[i]; i++) {
-    if (strlen(buffer[i]) < 2) continue;
     assembly_line *asl = eMalloc(sizeof(assembly_line));
     char **sections = eCalloc(4, sizeof(char *));
 
@@ -56,14 +55,14 @@ assembly_program *tokenize(char **buffer, size_t max_line) {
   return aspg;
 }
 
-void free_program(assembly_program *aspg){
+void free_program(assembly_program *aspg) {
   for (int i = 0; i < aspg->total_lines; i++) {
-      if (aspg->lines[i]){
-        free(aspg->lines[i]->label);
-        free(aspg->lines[i]->operands);
-        free(aspg->lines[i]->opcode);
-        free(aspg->lines[i]);
-      }
+    if (aspg->lines[i]) {
+      free(aspg->lines[i]->label);
+      free(aspg->lines[i]->operands);
+      free(aspg->lines[i]->opcode);
+      free(aspg->lines[i]);
+    }
   }
   free(aspg->lines);
   free(aspg);
