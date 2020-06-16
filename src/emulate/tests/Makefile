@@ -1,4 +1,9 @@
 # This Makefile is for testing purpose ONLY
+# We recognise the flaws of not including headers, 
+# however using proper dependency management in a 
+# test folder seems like overkill. So we just agreed
+# to use "make clean all". 
+
 PROJ        = ../../..
 LIB_DIR     = $(PROJ)/lib
 COMMON_DIR  = $(PROJ)/src/common

@@ -11,7 +11,6 @@ src:
 	cd src; make
 
 doc:
-	git submodule update --init
 	cd doc; make
 
 lib:
