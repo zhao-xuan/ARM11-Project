@@ -1,8 +1,4 @@
 # This Makefile is for testing purpose ONLY
-# We recognise the flaws of not including headers, 
-# however using proper dependency management in a 
-# test folder seems like overkill. So we just agreed
-# to use "make clean all". 
 
 PROJ        = ../../..
 LIB_DIR     = $(PROJ)/lib
@@ -13,6 +9,7 @@ TESTS       = $(patsubst %_test.c, %_test, $(TEST_FILES))
 
 SRC_FILES   = $(filter-out ../emulate.c, $(wildcard ../*.c))
 OBJ_FILES   = $(patsubst ../%.c, %.o,$(SRC_FILES)) utils.o
+DEPS = $(OBJ_FILES:%.o=%.d)
 
 CC          = gcc
 IncludePath = -I../include -I$(COMMON_DIR)/include $(addprefix -I, $(wildcard $(LIB_DIR)/*/.))
@@ -24,19 +21,23 @@ all: libs $(TESTS)
 %_test: %_test.o $(OBJ_FILES)
 	$(CC) $^ $(LFLAGS) -o $@
 
+# pre-processor automatically adds headers as dependencies
+-include $(DEPS)
+
 %_test.o: %_test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 %.o: ../%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -c -o $@ $<
 
 utils.o: $(COMMON_DIR)/utils.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -c -o $@ $<
 
 libs:
 	cd $(LIB_DIR); make
 
 clean:
+	rm -f $(DEPS)
 	rm -f $(TESTS) *.o core
 	cd $(LIB_DIR); make clean	
 
