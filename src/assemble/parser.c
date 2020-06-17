@@ -1,6 +1,8 @@
+#include "parser.h"
+
 #include <string.h>
 #include <ctype.h>
-#include "parser.h"
+
 #include "parser_private_defns.h"
 #include "exceptions.h"
 
@@ -231,7 +233,8 @@ static void parse_dt(char **operands, word_t *bin, parser_p parser_pipe) {
   *bin |= up << UP_BIT_LOCATION;
   *bin |= pre_index << P_INDEX_LOCATION;
  
-  if (data != 0) { /* Append data to the end of the machine code */
+  if (data != 0) { 
+    /* Append data to the end of the machine code */
     mcode->length++;
     mcode->bin = eRealloc(mcode->bin, mcode->length * sizeof(word_t));
     mcode->bin[mcode->length - 1] = data;

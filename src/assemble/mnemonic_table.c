@@ -15,11 +15,16 @@
 
 #define MNEMONIC_SIZE 3
 
-#define INSERT_MNEMONIC(value)\
-  insert_literal(mnemonic_table, value, mnemonic)
+#define INSERT_MNEMONIC(value) insert_literal(mnemonic_table, value, mnemonic)
 
 static symbol_table_t *mnemonic_table = NULL;
 
+/* Helper functions to initiliase instruction mnemonics */
+static bool init_dp_mnemonics();
+static bool init_dt_mnemonics();
+static bool init_br_mnemonics();
+static bool init_ml_mnemonics();
+static bool init_sp_mnemonics();
 
 static char dp_mnemonics[][4] = 
   { "and", "eor", "sub", "rsb", "add", "orr", "mov", "tst", "teq", "cmp" };
@@ -33,11 +38,6 @@ static char br_mnemonics[][4] =
 static char dt_mnemonics[][4] = 
   { "str", "ldr" };
 
-static bool init_dp_mnemonics();
-static bool init_dt_mnemonics();
-static bool init_br_mnemonics();
-static bool init_ml_mnemonics();
-static bool init_sp_mnemonics();
 
 bool init_mnemonic_table() {
   if (mnemonic_table) {
@@ -66,7 +66,7 @@ static void get_opcode_and_set_bits(int index, word_t *opcode, word_t *set) {
   *set = set_raw << SET_COND_LOCATION;
 }
 
-
+/* DATA PROCESSING */
 static bool init_dp_mnemonics() {
   word_t opcode = 0, set = 0, bin = 0;
   for (int i = 0; i < NUM_DP_MNEMONICS; i++) {
@@ -87,6 +87,7 @@ static bool init_dp_mnemonics() {
   return true;
 }
 
+/* DATA TRANSFER */
 static bool init_dt_mnemonics() {
   word_t bin;
   for (int i = 0; i < NUM_DT_MNEMONICS; i++) {
@@ -101,6 +102,9 @@ static bool init_dt_mnemonics() {
   return true;
 }
 
+/* Find the condition code of each BRANCH instruction
+ * using its index in the pre-defined array 
+ */
 static word_t get_cond(int index) {
   if (index == NUM_BR_MNEMONICS - 1) 
     return ALWAYS << COND_LOCATION;
@@ -109,6 +113,7 @@ static word_t get_cond(int index) {
   return cond_raw << COND_LOCATION;
 }
 
+/* BRANCH */
 static bool init_br_mnemonics() {
   for (int i = 0; i < NUM_BR_MNEMONICS; i++) {
     mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
@@ -134,6 +139,7 @@ static bool init_ml_mnemonics() {
   return true;
 }
 
+/* SPECIAL MNEMONIC */
 static bool init_sp_mnemonics() {
   mnemonic_p mnemonic = eMalloc(sizeof(mnemonic_t));
   
@@ -141,7 +147,7 @@ static bool init_sp_mnemonics() {
   return INSERT_MNEMONIC("andeq"); 
 }
 
-
+/* Look up fixed bits for an instruction, given its mnemonic */
 mnemonic_p get_mnemonic_data(char *mnemonic) {
   if (!mnemonic_table) {
     fprintf(stderr, "Mnemonic table uninitialised\n");
@@ -151,6 +157,7 @@ mnemonic_p get_mnemonic_data(char *mnemonic) {
   return (mnemonic_p) get_literal(mnemonic_table, mnemonic);
 }
 
+/* Free allocated resources to mnemonic table */
 void free_mnemonic_table() {
   free_table(mnemonic_table);
 }
