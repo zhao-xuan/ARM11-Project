@@ -1,9 +1,9 @@
 #include "parser.h"
+#include "parser_private_defns.h"
 
 #include <string.h>
 #include <ctype.h>
 
-#include "parser_private_defns.h"
 #include "exceptions.h"
 
 /* String processing macros */
