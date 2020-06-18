@@ -5,11 +5,11 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "global.h"
 #include "utils.h"
@@ -40,4 +40,3 @@ assembly_program *tokenize(char **buffer, size_t max_line);
  */
 void free_program(assembly_program *aspg);
 #endif
-

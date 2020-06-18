@@ -2,16 +2,15 @@
 #define PARSER_H
 
 #include <stdlib.h>
+
 #include "label_table.h"
 #include "mnemonic_table.h"
 #include "tokenizer.h"
-
 
 typedef struct {
   word_t *bin;
   size_t length;
 } machine_code;
-
 
 /*
  * Parse the tokenized assembly program into machine code

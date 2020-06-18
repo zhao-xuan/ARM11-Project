@@ -17,4 +17,3 @@ address_t get_label_address(symbol_table_t *label_table, char *mnemonic) {
   if (address == NULL) return -1;
   return *address;
 }
-

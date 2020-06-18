@@ -19,14 +19,13 @@ typedef struct {
  */
 bool init_mnemonic_table();
 
-
 /*
  *  @returns: a pointer to mnemonic_t which includes:
  *    - type: enum of instruction type
  *    - bin: partially set binary representation of instruction
  *           based on the rules below, bits which are not set
  *           have the value 0
- *  
+ *
  *  1. Data processing
  *    a. [20-24], [26-31] are set
  *    b. Operand2, Rn, Rd and I-bit are not set
@@ -42,11 +41,11 @@ bool init_mnemonic_table();
  *  4. Branch
  *    a. [24-31] are set
  *    b. Offset is not
- *  
+ *
  */
 mnemonic_p get_mnemonic_data(char *mnemonic);
 
 /* Free allocated resources to table */
 void free_mnemonic_table();
 
-#endif 
+#endif
