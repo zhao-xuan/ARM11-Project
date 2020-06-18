@@ -29,7 +29,6 @@ assembly_program *tokenize(char **buffer, size_t max_line) {
 
   int instruction_count = 0;
   for (int i = 0; i < max_line && buffer[i]; i++) {
-    if (strlen(buffer[i]) < 2) continue;
     assembly_line *asl = eMalloc(sizeof(assembly_line));
     char **sections = eCalloc(4, sizeof(char *));
 

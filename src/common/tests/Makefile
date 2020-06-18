@@ -8,10 +8,10 @@ LDLIBS = -L$(TEST_UTILS_DIR) -ltestutils
 utils_test: testutils utils.o utils_test.o
 	$(CC) utils.o utils_test.o $(LDFLAGS) $(LDLIBS) -o $@
 
-utils.o: ../utils.c
+utils.o: ../utils.c ../include/utils.h ../include/global.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-utils_test.o: utils_test.c
+utils_test.o: utils_test.c ../include/utils.h ../include/global.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 testutils:

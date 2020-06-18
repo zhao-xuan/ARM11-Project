@@ -268,7 +268,7 @@ static char **operand_processor(const char *operand, int field_count) {
 
   int i = 0;
   while (literal != NULL && i < field_count) {
-    tokens[i] = eMalloc(strlen(literal) * sizeof(char));
+    tokens[i] = eCalloc(strlen(literal) + 1, sizeof(char));
     remove_space(literal);
     strcpy(tokens[i], literal);
 

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "utils.h"
 #include "testutils.h"
 #include "mnemonic_table.h"
 
