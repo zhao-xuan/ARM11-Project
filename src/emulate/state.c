@@ -173,7 +173,6 @@ void free_instruction(instruction_t *prev) {
   }
 }
 
-
 static bool isGPIO(address_t addr) {
   if (addr == 0x20200000) {
     printf("One GPIO pin from 0 to 9 has been accessed\n");

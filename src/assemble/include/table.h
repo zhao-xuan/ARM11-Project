@@ -18,7 +18,7 @@ symbol_table_t *create_table();
 /* Free resources allocated to table */
 void free_table(symbol_table_t *table);
 
-/* Insert a label and literal into table 
+/* Insert a label and literal into table
  *  @param:
  *    - table: pointer to the table to add to
  *    - label: string identifier of the row
@@ -34,7 +34,7 @@ void free_table(symbol_table_t *table);
 
 bool insert_literal(symbol_table_t *table, char *label, void *value);
 
-/* Returns a pointer to the value with associated label 
+/* Returns a pointer to the value with associated label
  *  NULL if label not found
  */
 void *get_literal(symbol_table_t *table, char *label);

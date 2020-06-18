@@ -5,9 +5,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "global.h"
 #include <stddef.h>
 #include <stdint.h>
+
+#include "global.h"
 
 /* Wrappers for memory allocation with error detection */
 void *eMalloc(size_t size);
@@ -33,13 +34,13 @@ void write_binary_file(const char *path, uint32_t *buffer, size_t size);
 /*
  * @brief: Loads an assembly file into the buffer.
  * @param path: path to the assembly file.
- * @param buffer: buffer to load into. 
- * @returns : The number of lines in this buffer. 
+ * @param buffer: buffer to load into.
+ * @returns : The number of lines in this buffer.
  */
 int read_assembly_file(const char *path, char **buffer);
 
 /*
- * @param buffer: buffer to free. 
+ * @param buffer: buffer to free.
  * @param size: size of buffer.
  */
 void free_buffer(char **buffer, int size);

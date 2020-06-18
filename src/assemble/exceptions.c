@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 void exceptions(byte_t error_code, address_t current) {
-  fprintf(stderr, "Unhandled exception! Error code %d at address 0x%08x\n", error_code, current);
+  fprintf(stderr, "Unhandled exception! Error code %d at address 0x%08x\n",
+          error_code, current);
   exit(EXIT_FAILURE);
 }
