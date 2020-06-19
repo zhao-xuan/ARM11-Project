@@ -35,8 +35,6 @@ typedef struct {
  */
 assembly_program *tokenize(char **buffer, size_t max_line);
 
-/*
- * @param aspg: assembly_program to free.
- */
+/* @param aspg: assembly_program to free. */
 void free_program(assembly_program *aspg);
 #endif
