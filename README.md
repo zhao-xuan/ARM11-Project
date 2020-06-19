@@ -5,9 +5,7 @@
     git remote add overleaf https://git.overleaf.com/5ecce2a9cc5e2e0001344720
     git fetch overleaf master
     git subtree pull --prefix doc overleaf master --squash
-Any updates from this repository should be pushed upstream via: 
-
-    git subtree push --prefix extension/tetris-plus-plus extension master
+Please do not change this folder directly, all editting should be done on overleaf. 
 
 /extension/tetris-plus-plus is an subtree connected to [this repository](https://gitlab.doc.ic.ac.uk/zd419/tetris-plus-plus):
 
