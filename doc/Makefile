@@ -13,3 +13,5 @@ all: Final.pdf Interim.pdf
 clean:
 	rm -f *.aux
 	rm -f *.log
+	rm -f Final.pdf
+	rm -f Interim.pdf
