@@ -2,7 +2,6 @@
 
 #include "label_table.h"
 #include "parser.h"
-#include "table.h"
 #include "tokenizer.h"
 
 void free_assemble(machine_code *mcode, assembly_program *aspg,
